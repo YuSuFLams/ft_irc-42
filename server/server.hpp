@@ -21,6 +21,8 @@
 #include <sstream>
 #include <netinet/in.h>
 #include <unistd.h>
+#include <signal.h>
+#include <poll.h>
 class Server {
     
     public:
@@ -30,8 +32,10 @@ class Server {
         int               m_socket;
         int               server_fd;
         int               flg;
+        int               user_num;
         ssize_t             sizeread;
         struct sockaddr_in address;
+        struct pollfd users[3];
         struct sockaddr_in address2;
     protected:
         

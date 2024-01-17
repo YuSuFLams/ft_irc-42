@@ -21,11 +21,11 @@ int main(int ac, char **av)
     value =  S.createStocket();
     if ( value == 1)
         exit (value);
-    // while (1)
-    // {
-    //     int i = recv(S.server_fd, S.buffer, 1024, 0);
-    //     if (i > 0)
-    //         std::cout << S.buffer << std::endl;
-    // }
+    while (1)
+    {
+        int i = recv(S.server_fd, S.buffer, 1024, 0);
+        if (i > 0)
+            std::cout << S.buffer << std::endl;
+    }
     return 0;
 }
