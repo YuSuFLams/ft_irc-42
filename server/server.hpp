@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/15 14:37:30 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/01/17 12:19:15 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,25 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
+#define PORT 6666
 #include<iostream>
 #include<string>
 #include <sys/socket.h>
 #include <sstream>
-
+#include <netinet/in.h>
+#include <unistd.h>
 class Server {
     
-    private:
+    public:
         const std::string m_ipAddress;
+        std::string buffer[1024];
         int               m_port;
         int               m_socket;
         int               server_fd;
-        int               flg = 1;
+        int               flg;
+        ssize_t             sizeread;
+        struct sockaddr_in address;
+        struct sockaddr_in address2;
     protected:
         
     
@@ -37,7 +43,7 @@ class Server {
         ~Server();
 
     
-        // int init();
+        int createStocket();
         // int run();
 };
 
