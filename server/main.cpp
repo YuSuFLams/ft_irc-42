@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 09:39:17 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/17 14:25:23 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/01/19 15:55:36 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,22 @@
 
 int main(int ac, char **av)
 {
-    std::string mes;
-    (void)ac;
-    Server S(av[2], atoi(av[1]));
-    int value;
-    value =  S.createStocket();
-    if ( value == 1)
-        exit (value);
-    while (1)
+    if (ac != 3)
     {
-        int i = recv(S.server_fd, S.buffer, 1024, 0);
-        if (i > 0)
-            std::cout << S.buffer << std::endl;
+        std::cerr << "prob in arguments" << std::endl;
+        return 0;
     }
+    Server S(av[2], atoi(av[1]));
+    if (!S.CreateSocket())
+        exit (1);
+    if (!S.OptionSocket())
+        exit (1);
+    if (!S.NnBlockFd())
+        exit (1);
+    if (!S.BindSocket())
+        exit (1);
+    if (!S.listenSocket())
+        exit (1);
+    S.PollingFd();
     return 0;
 }
