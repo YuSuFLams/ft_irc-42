@@ -6,14 +6,21 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 09:39:17 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/19 15:55:36 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/01/22 12:01:35 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.hpp"
 
+// void      SplitCmd(std::string cmd)
+// {
+    
+// }
 int main(int ac, char **av)
 {
+    std::string cmd;
+    std::string token;
+
     if (ac != 3)
     {
         std::cerr << "prob in arguments" << std::endl;
@@ -31,5 +38,10 @@ int main(int ac, char **av)
     if (!S.listenSocket())
         exit (1);
     S.PollingFd();
+    // token = strtok(cmd, " ");
+    // while(std::string token != NULL)
+    // {
+        
+    // }
     return 0;
 }

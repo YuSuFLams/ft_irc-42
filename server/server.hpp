@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/19 15:50:09 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/01/22 12:13:21 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,11 @@
 #include <unistd.h>
 #include <string.h>
 #include<iostream>
+#include <cstring>
 #include <fcntl.h>
 class Server {
     
-    public:                 // temporary will be changed to private with getter and setter
+    public:        
         const std::string m_ipAddress;
         std::string       buffer[1024];
         int               m_port;
@@ -48,6 +49,8 @@ class Server {
         int                end_ser;
         int                compress_array;
         int                close_conn;
+        std::string        checkPiv;
+
     protected:
         
     

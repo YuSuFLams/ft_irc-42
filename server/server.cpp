@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:24 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/19 15:50:00 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/01/22 12:45:07 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,14 +168,8 @@ void     Server::PollingFd()
                         break ; 
                     }
                     len = flg;
-                    std::cout << len << " bytes received " << std::endl;
-                    flg = send(users[i].fd, buffer, len, 0);
-                    if (flg < 0)
-                    {
-                        perror(" Send");
-                        close_conn = 1;
-                        break ;
-                    }
+                    std::cout << len << " bytes received " << *buffer << std::endl;
+                    // checkPiv = strtok(*buffer, " ");
                 }while(1);
                 if (close_conn)
                 {
