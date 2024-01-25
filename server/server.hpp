@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/22 12:13:21 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/01/25 15:46:54 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include<iostream>
 #include <cstring>
 #include <fcntl.h>
+#include "Client.hpp"
 class Server {
     
     public:        
-        const std::string m_ipAddress;
+        const std::string m_pass;
         std::string       buffer[1024];
         int               m_port;
         int               m_socket;
@@ -67,7 +67,8 @@ class Server {
         int BindSocket();
         int listenSocket();
         void PollingFd();
-        
+        int  PassValid(std::string pwd);
+        void  NickClient(std::string nickname);
         // int run();
 };
 

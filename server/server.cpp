@@ -6,13 +6,13 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:24 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/22 12:45:07 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/01/25 15:49:19 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.hpp"
 
-Server::Server(const std::string ipAdd, int port): m_ipAddress(ipAdd),m_port(port)
+Server::Server(const std::string ipAdd, int port): m_pass(ipAdd),m_port(port)
 {
     flg = 1;
     len = 1;
@@ -94,6 +94,18 @@ int     Server::listenSocket()
     return 1;
 }
 
+int       Server::PassValid(std::string pwd)
+{
+    if (pwd == m_pass)
+        return 1;
+    else
+        std::cout << "invalid pass " << std::endl;
+    return 0;
+}
+void       Server::NickClient(std::string nickname)
+{
+    
+}
 void     Server::PollingFd()
 {
     users[0].fd = server_fd;
