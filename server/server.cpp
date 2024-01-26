@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:24 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/25 15:49:19 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/01/26 15:26:30 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,6 +151,8 @@ void     Server::PollingFd()
                     break;
                    }
                    std::cout << "new connection " << m_socket << std::endl;
+                //    Client c = new Client(m_socket);
+                //    this->Clients;
                    users[user_num].fd = m_socket;
                    users[user_num]. events = POLLIN;
                    user_num++;

@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/25 15:46:54 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/01/26 15:25:02 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 #include <string.h>
 #include <cstring>
 #include <fcntl.h>
+#include<map>
 #include "Client.hpp"
 class Server {
     
@@ -50,7 +51,7 @@ class Server {
         int                compress_array;
         int                close_conn;
         std::string        checkPiv;
-
+        std::map <int, Client> Clients;
     protected:
         
     

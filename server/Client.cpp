@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/25 15:04:50 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/25 18:23:50 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/01/26 14:08:55 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,4 +70,20 @@ Client      Client::seTValue(std::string nick, std::string pwd)
     std::cout << "set a realname : " << std::endl;
     std::cin >> c.users[3];
     return c;
-} 
+}
+
+void    Client::CheckNick(std::string NewNick)
+{
+    if (!nickname.empty())
+    {
+        if (nickname.compare(NewNick))
+            nickname = NewNick;
+    }
+    nickname = NewNick;
+}
+void       Client::CheckOper(std::string  buffer)
+{
+    std::string node;
+    
+    // node = strtok(buffer, " ");
+}
