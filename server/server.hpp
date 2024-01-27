@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/26 15:25:02 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/01/27 15:30:16 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
+#define MAX 10254
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/ioctl.h>
@@ -27,13 +28,12 @@
 #include <string.h>
 #include <cstring>
 #include <fcntl.h>
-#include<map>
 #include "Client.hpp"
 class Server {
     
     public:        
         const std::string m_pass;
-        std::string       buffer[1024];
+        char                buffer[1024];
         int               m_port;
         int               m_socket;
         int               server_fd;
@@ -51,7 +51,7 @@ class Server {
         int                compress_array;
         int                close_conn;
         std::string        checkPiv;
-        std::map <int, Client> Clients;
+        std::map <int, Client *> clients;
     protected:
         
     
@@ -70,7 +70,7 @@ class Server {
         void PollingFd();
         int  PassValid(std::string pwd);
         void  NickClient(std::string nickname);
-        // int run();
+        void commands(std::string strs[MAX]);
 };
-
+void    split(std::string str, char oper, std::string strs[MAX]);
 #endif

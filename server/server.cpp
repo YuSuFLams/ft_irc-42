@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:24 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/26 15:26:30 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/01/27 15:33:00 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,12 +102,19 @@ int       Server::PassValid(std::string pwd)
         std::cout << "invalid pass " << std::endl;
     return 0;
 }
-void       Server::NickClient(std::string nickname)
+void    Server::commands(std::string strs[MAX])
 {
-    
+    // if (!strs[0].compare("PRIVMSG"))
+    // {
+        
+    // }
+    // else if (!strs[0].compare("NICK"))
+    // if (!strs[0].compare(""))
+    // if (!strs[0].compare("PRIVMSG"))
 }
 void     Server::PollingFd()
 {
+    std::string strs[MAX];
     users[0].fd = server_fd;
     users[0].events = POLLIN;
     do
@@ -151,8 +158,8 @@ void     Server::PollingFd()
                     break;
                    }
                    std::cout << "new connection " << m_socket << std::endl;
-                //    Client c = new Client(m_socket);
-                //    this->Clients;
+                //    Client *c = new Client(m_socket);
+                //    this->clients.insert({m_socket, c});
                    users[user_num].fd = m_socket;
                    users[user_num]. events = POLLIN;
                    user_num++;
@@ -163,9 +170,13 @@ void     Server::PollingFd()
             {
                 std::cout << " Descriptor " << users[i].fd  << " is readable " << std::endl;
                 close_conn = 0;
+                memset(buffer, 0, sizeof(buffer));
                 do
                 {
                     flg = recv(users[i].fd, buffer, sizeof(buffer), 0);
+                    buffer[flg - 1] = '\0';
+                    // remove delimiteur if existe \r\n
+                    
                     if (flg < 0)
                     {
                         if (errno != EWOULDBLOCK)
@@ -182,8 +193,9 @@ void     Server::PollingFd()
                         break ; 
                     }
                     len = flg;
-                    std::cout << len << " bytes received " << *buffer << std::endl;
-                    // checkPiv = strtok(*buffer, " ");
+                    std::cout << len << " bytes received " << buffer << "From :" << users[i].fd <<  std::endl;
+                    split(buffer, ' ', strs);
+                    this->commands(strs);
                 }while(1);
                 if (close_conn)
                 {
