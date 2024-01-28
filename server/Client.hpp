@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/25 15:04:46 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/27 11:24:40 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/01/28 11:46:23 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,13 @@ class Client
         
         void   seTNick(std::string nick);
         void    seTPass(std::string pwd);
-        Client   seTValue(std::string nick, std::string pwd, int NewSocket);
+        void    setFdUser(int FdUser);
+        void    seTValues(std::string str0, std::string str1, std::string str2, std::string str3);
+        // Client   seTValue(std::string nick, std::string pwd, int NewSocket);
          
         std::string     geTNick();
         std::string     geTPass();
         
-        void            CheckNick(std::string NewNick, std::map <int, Client *> clients);
         void            CheckOper(std::string buffer);
 };
 

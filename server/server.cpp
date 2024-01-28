@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:24 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/27 15:33:00 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/01/28 14:44:39 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,16 @@ int     Server::listenSocket()
     return 1;
 }
 
+void    Server::CheckNick(std::string NewNick, Client c)
+{
+    if (!c.geTNick().empty())
+    {
+        if (c.geTNick().compare(NewNick))
+            c.seTNick(NewNick);
+    }
+    c.seTNick(NewNick);
+}
+
 int       Server::PassValid(std::string pwd)
 {
     if (pwd == m_pass)
@@ -102,15 +112,33 @@ int       Server::PassValid(std::string pwd)
         std::cout << "invalid pass " << std::endl;
     return 0;
 }
-void    Server::commands(std::string strs[MAX])
+
+void      Server::seTValue(Client *c, std::string strs[MAX])
 {
-    // if (!strs[0].compare("PRIVMSG"))
-    // {
-        
-    // }
-    // else if (!strs[0].compare("NICK"))
-    // if (!strs[0].compare(""))
-    // if (!strs[0].compare("PRIVMSG"))
+    c->seTValues(strs[1], strs[2], strs[3], strs[4]);
+}
+void    Server::commands(int fdUser, std::string strs[MAX], std::map <int, Client *> clients)
+{
+    Client *c;
+    int i;
+    if (clients.find(fdUser) != clients.end())
+        c = clients[fdUser];
+    else
+        std::cerr << "user not find" << std::endl;
+    if (!strs[0].compare("NICK"))
+        CheckNick(strs[1], *c);
+    else if (!strs[0].compare("PASS"))
+    {
+        if (!PassValid(strs[1]))
+            return ;
+    }
+    else if (!strs[0].compare("USER"))
+        seTValue(c, strs);
+    if (!strs[0].compare("PRIVMSG"))
+    {
+        UserDirection.seTNick(strs[1]);
+        msgSend = strs[2];
+    }
 }
 void     Server::PollingFd()
 {
@@ -158,8 +186,8 @@ void     Server::PollingFd()
                     break;
                    }
                    std::cout << "new connection " << m_socket << std::endl;
-                //    Client *c = new Client(m_socket);
-                //    this->clients.insert({m_socket, c});
+                   Client *c = new Client(m_socket);
+                   this->clients.insert({m_socket, c});
                    users[user_num].fd = m_socket;
                    users[user_num]. events = POLLIN;
                    user_num++;
@@ -195,7 +223,7 @@ void     Server::PollingFd()
                     len = flg;
                     std::cout << len << " bytes received " << buffer << "From :" << users[i].fd <<  std::endl;
                     split(buffer, ' ', strs);
-                    this->commands(strs);
+                    // this->commands(strs);
                 }while(1);
                 if (close_conn)
                 {

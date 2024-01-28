@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/27 15:30:16 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/01/28 14:32:10 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ class Server {
         int                end_ser;
         int                compress_array;
         int                close_conn;
+        Client               UserDirection;
+        std::string          msgSend;
         std::string        checkPiv;
         std::map <int, Client *> clients;
     protected:
@@ -69,8 +71,10 @@ class Server {
         int listenSocket();
         void PollingFd();
         int  PassValid(std::string pwd);
-        void  NickClient(std::string nickname);
-        void commands(std::string strs[MAX]);
+        // void  NickClient(std::string nickname);
+        void commands(int fdUser, std::string strs[MAX], std::map <int, Client *> clients);
+        void      seTValue(Client *c, std::string strs[MAX]);
+        void           CheckNick(std::string NewNick, Client c);
 };
 void    split(std::string str, char oper, std::string strs[MAX]);
 #endif
