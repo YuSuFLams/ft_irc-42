@@ -6,17 +6,18 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/25 15:04:46 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/28 11:46:23 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/01/28 17:06:03 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#pragma once
 #ifndef CLIENT_HPP
 #define CLIENT_HPP
 
 #include<iostream>
 #include<string>
 #include <vector>
-#include<map>
+#include "server.hpp"
 class Client
 {
     private:
@@ -31,16 +32,16 @@ class Client
         Client& operator =(const Client &cl);
         ~Client();
         
-        void   seTNick(std::string nick);
+        void    seTNick(std::string nick);
         void    seTPass(std::string pwd);
         void    setFdUser(int FdUser);
         void    seTValues(std::string str0, std::string str1, std::string str2, std::string str3);
         // Client   seTValue(std::string nick, std::string pwd, int NewSocket);
          
-        std::string     geTNick();
+        std::string     getNick();
         std::string     geTPass();
         
-        void            CheckOper(std::string buffer);
+        // void            CheckOper(std::string buffer);
 };
 
 

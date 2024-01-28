@@ -6,13 +6,13 @@
 #    By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/17 10:32:03 by araiteb           #+#    #+#              #
-#    Updated: 2024/01/26 15:20:46 by araiteb          ###   ########.fr        #
+#    Updated: 2024/01/28 17:11:01 by araiteb          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 EXEC = ircserv
-INCLUDE = server.hpp 
-SRCS = main.cpp server.cpp ft_split.cpp
+INCLUDE = server.hpp Client.hpp
+SRCS = main.cpp Client.cpp server.cpp ft_split.cpp
 CC = c++ 
 CFLAGS = -Wall -Wextra -Werror -std=c++98
 OBJS = $(SRCS:.cpp=.o)

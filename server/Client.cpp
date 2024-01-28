@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/25 15:04:50 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/28 11:49:40 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/01/28 17:13:15 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ Client::Client()
 }
 Client::Client(int fd)
 {
-    fd = fd;
+    this->fd = fd;
     nickname = "";
     pass = "";
     users[0] = "";
@@ -67,8 +67,7 @@ void    Client::seTValues(std::string str0, std::string str1, std::string str2, 
     users[2] = str2;
     users[3] = str3;
 }
-std::string     Client::geTNick()
-{
+std::string     Client::getNick() {
     return (nickname);
 }
 
@@ -77,9 +76,9 @@ std::string     Client::geTPass()
     return (pass);
 }
 
-void       Client::CheckOper(std::string  buffer)
-{
-    std::string node;
+// void       Client::CheckOper(std::string  buffer)
+// {
+//     std::string node;
     
-    // node = strtok(buffer, " ");
-}
+//     // node = strtok(buffer, " ");
+// }
