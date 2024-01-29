@@ -20,7 +20,7 @@ Server::Server(const std::string ipAdd, int port): m_pass(ipAdd),m_port(port)
     compress_array = 0;
     num = 1;
     user_num = 1;
-    timeout = 3 * 60 * 10000000000;
+    timeout = 3 * 60 * 10000000;
     memset(&address, 0, sizeof(address));
     memset(users, 0, sizeof(users));
 }
@@ -96,12 +96,19 @@ int     Server::listenSocket()
 
 void    Server::CheckNick(std::string NewNick, Client *c)
 {
-    if (!c->getNick().empty())
-    {
-        if (c->getNick().compare(NewNick))
-            c->seTNick(NewNick);
+    Client *tmpClient;
+    try{
+
+    if (NewNick.empty())
+        send (c->getFd(), "Error No NickName Provided !\n",sizeof("Error No NickName Provided !\n"), 0);
+    tmpClient = this->getClientByNickname(NewNick, this->clients);
+    if (tmpClient)
+        send (c->getFd(), "Error NickName ERR_NONICKNAMEGIVEN !\n",sizeof("Error No NickName ERR_NONICKNAMEGIVE !\n"), 0);
+    else
+        c->seTNick(NewNick);
+    }catch(...){
+        std::cout << "error \n" <<std::endl;
     }
-    c->seTNick(NewNick);
 }
 
 int       Server::PassValid(std::string pwd)
@@ -146,18 +153,24 @@ void      Server::seTValue(Client *c, std::string strs[MAX])
 }
 void    Server::commands(int fdUser, std::string strs[MAX], std::map <int, Client *> clients)
 {
-    Client *c = NULL;
+    Client *c;
    
+    std::cout<< "Traiting Commands : " << fdUser << std::endl;
     c = getClientByFd(fdUser, clients);
-    if (!strs[0].compare("NICK"))
-        CheckNick(strs[1],  c);
-    else if (!strs[0].compare("PASS"))
+    if (!this->IsAuthorized(c) && strs[0].compare("NICK") && strs[0].compare("PASS") && strs[0].compare("USER"))
+        send(fdUser, "you are not AUTHORIZED !!!\n", sizeof("you are not AUTHORIZED !!!\n"), 0);
+    else if (!this->IsAuthorized(c))
     {
-        if (!PassValid(strs[1]))
-            return ;
-    }
-    else if (!strs[0].compare("USER"))
-        seTValue(c, strs);
+        if (!strs[0].compare("NICK"))
+            CheckNick(strs[1],  c);
+        else if (!strs[0].compare("PASS"))
+        {
+            if (!PassValid(strs[1]))
+                return ;
+        }
+        else if (!strs[0].compare("USER"))
+            seTValue(c, strs);
+    } 
     if (!strs[0].compare("PRIVMSG"))
     {
         std::cout << strs[1] << std::endl;
@@ -214,8 +227,10 @@ void     Server::PollingFd()
                     break;
                    }
                    std::cout << "new connection " << m_socket << std::endl;
-                //    Client *c = new Client(m_socket);
-                //    this->clients.insert({m_socket, c});
+                   Client *c = new Client(m_socket);
+                   	// this->operators.insert(std::pair<std::string,std::string>("penguin","messi123"));
+
+                   this->clients.insert(std::pair<int, Client *>(m_socket, c));
                    users[user_num].fd = m_socket;
                    users[user_num]. events = POLLIN;
                    user_num++;
@@ -251,12 +266,12 @@ void     Server::PollingFd()
                     len = flg;
                     std::cout << len << " bytes received " << buffer << "From :" << users[i].fd <<  std::endl;
                     split(buffer, ' ', strs);
-                    std::cout<< "0 " << strs[0] << std::endl;
-                    std::cout<< "1 " << strs[1] << std::endl;
-                    std::cout << "2 " << strs[2] << std::endl;
-                    std::cout << "3 " << strs[3] << std::endl;
-                    std::cout << "4 " << strs[4] << std::endl;
-                    this->commands(m_socket ,strs , clients);
+                    // std::cout<< "0 " << strs[0] << std::endl;
+                    // std::cout<< "1 " << strs[1] << std::endl;
+                    // std::cout << "2 " << strs[2] << std::endl;
+                    // std::cout << "3 " << strs[3] << std::endl;
+                    // std::cout << "4 " << strs[4] << std::endl;
+                    this->commands(users[i].fd ,strs , clients);
                 }while(1);
                 if (close_conn)
                 {
@@ -286,4 +301,9 @@ void     Server::PollingFd()
         if (users[i].fd >= 0)
             close(users[i].fd);
     }
+}
+bool 			Server::IsAuthorized(Client *client) {
+    if (client->getNick().empty() || client->geTPass().empty() || client->getClient()[0].empty())
+        return 0;
+    return 1;
 }

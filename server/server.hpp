@@ -50,7 +50,7 @@ class Server {
 		struct pollfd            users[3];
 		int                      rc;
 		int                      len;
-		int                      timeout;
+		long int                     timeout;
 		int                      end_ser;
 		int                      compress_array;
 		int                      close_conn;
@@ -81,6 +81,7 @@ class Server {
 
 		Client*			getClientByFd(int fdUser, std::map <int, Client *> clients);
 		Client*			getClientByNickname(std::string nick, std::map <int, Client *> clients);
+		bool 			IsAuthorized(Client *client);
 };
 void    split(std::string str, char oper, std::string strs[MAX]);
 #endif

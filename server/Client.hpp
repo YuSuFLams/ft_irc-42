@@ -38,8 +38,10 @@ class Client
         void    seTValues(std::string str0, std::string str1, std::string str2, std::string str3);
         // Client   seTValue(std::string nick, std::string pwd, int NewSocket);
          
+        int             getFd();
         std::string     getNick();
         std::string     geTPass();
+        std::vector<std::string>  getClient(); 
         
         // void            CheckOper(std::string buffer);
 };

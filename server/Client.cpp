@@ -21,13 +21,14 @@ Client::Client()
 }
 Client::Client(int fd)
 {
+    std::cout << "New User Added !" << std::endl;
     this->fd = fd;
-    nickname = "";
-    pass = "";
-    users[0] = "";
-    users[1] = "";
-    users[2] = "";
-    users[3] = "";
+    this->nickname = "";
+    this->pass = "";
+    // users[0] = "";
+    // users[1] = "";
+    // users[2] = "";
+    // users[3] = "";
 }
 Client::Client(Client &cl)
 {
@@ -76,6 +77,13 @@ std::string     Client::geTPass()
     return (pass);
 }
 
+std::vector<std::string>  Client::getClient() {
+    return (this->users);
+} 
+
+int             Client::getFd() {
+    return fd;
+}
 // void       Client::CheckOper(std::string  buffer)
 // {
 //     std::string node;
