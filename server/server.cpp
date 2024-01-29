@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:24 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/28 17:13:31 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/01/29 14:35:51 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ Server::Server(const std::string ipAdd, int port): m_pass(ipAdd),m_port(port)
     compress_array = 0;
     num = 1;
     user_num = 1;
-    timeout = 3 * 60 * 1000;
+    timeout = 3 * 60 * 10000000000;
     memset(&address, 0, sizeof(address));
     memset(users, 0, sizeof(users));
 }
@@ -112,19 +112,43 @@ int       Server::PassValid(std::string pwd)
         std::cout << "invalid pass " << std::endl;
     return 0;
 }
+Client*   Server::getClientByFd(int fdUser, std::map <int, Client *> clients)
+{
+    Client *c;
+    if (clients.find(fdUser) != clients.end())
+    {
+        c = clients.find(fdUser)->second;
+        return c;
+    }
+    else
+        std::cerr << "user not find" << std::endl;
+    return NULL;
+}
 
+Client*   Server::getClientByNickname(std::string nick, std::map <int, Client *> clients)
+{
+    Client *c;
+    std::map<int , Client *>::iterator it;
+
+    for(it=clients.begin(); it != clients.end(); ++it)
+    {
+        if (it->second->getNick() == nick)
+        {
+            c = it->second;
+            return c;
+        }
+    }
+    return NULL;
+}
 void      Server::seTValue(Client *c, std::string strs[MAX])
 {
     c->seTValues(strs[1], strs[2], strs[3], strs[4]);
 }
 void    Server::commands(int fdUser, std::string strs[MAX], std::map <int, Client *> clients)
 {
-    Client *c;
-
-    if (clients.find(fdUser) != clients.end())
-        c = clients[fdUser];
-    else
-        std::cerr << "user not find" << std::endl;
+    Client *c = NULL;
+   
+    c = getClientByFd(fdUser, clients);
     if (!strs[0].compare("NICK"))
         CheckNick(strs[1],  c);
     else if (!strs[0].compare("PASS"))
@@ -136,8 +160,12 @@ void    Server::commands(int fdUser, std::string strs[MAX], std::map <int, Clien
         seTValue(c, strs);
     if (!strs[0].compare("PRIVMSG"))
     {
-        // UserDirection.seTNick(strs[1]);
-        msgSend = strs[2];
+        std::cout << strs[1] << std::endl;
+        std::cout << strs[2] << std::endl;
+        // UserDirection->seTNick(strs[1]);
+        // std::cout << UserDirection->getNick() << std::endl;
+        // msgSend = strs[2];
+        // std::cout << msgSend << std::endl;
     }
 }
 void     Server::PollingFd()
@@ -223,6 +251,11 @@ void     Server::PollingFd()
                     len = flg;
                     std::cout << len << " bytes received " << buffer << "From :" << users[i].fd <<  std::endl;
                     split(buffer, ' ', strs);
+                    std::cout<< "0 " << strs[0] << std::endl;
+                    std::cout<< "1 " << strs[1] << std::endl;
+                    std::cout << "2 " << strs[2] << std::endl;
+                    std::cout << "3 " << strs[3] << std::endl;
+                    std::cout << "4 " << strs[4] << std::endl;
                     this->commands(m_socket ,strs , clients);
                 }while(1);
                 if (close_conn)

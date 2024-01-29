@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/28 17:13:06 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/01/29 13:57:28 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ class Server {
 		int                      end_ser;
 		int                      compress_array;
 		int                      close_conn;
-		// Client                   UserDirection;
+		Client                   *UserDirection;
 		std::string              msgSend;
 		std::string              checkPiv;
 		std::map <int, Client *> clients;
@@ -78,6 +78,9 @@ class Server {
 		void            commands(int fdUser, std::string strs[MAX], std::map <int, Client *> clients);
 		void            seTValue(Client *c, std::string strs[MAX]);
 		void            CheckNick(std::string NewNick, Client *c);
+
+		Client*			getClientByFd(int fdUser, std::map <int, Client *> clients);
+		Client*			getClientByNickname(std::string nick, std::map <int, Client *> clients);
 };
 void    split(std::string str, char oper, std::string strs[MAX]);
 #endif
