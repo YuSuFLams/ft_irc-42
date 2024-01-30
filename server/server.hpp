@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/29 13:57:28 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/01/30 14:54:40 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,10 @@ class Server {
 		int             BindSocket();
 		int             listenSocket();
 		void            PollingFd();
-		int             PassValid(std::string pwd);
+		void             PassValid(std::string pwd, Client *c);
 		// void  NickClient(std::string nickname);
 		void            commands(int fdUser, std::string strs[MAX], std::map <int, Client *> clients);
-		void            seTValue(Client *c, std::string strs[MAX]);
+		void            seTValueUser(Client *c, std::string strs[MAX]);
 		void            CheckNick(std::string NewNick, Client *c);
 
 		Client*			getClientByFd(int fdUser, std::map <int, Client *> clients);

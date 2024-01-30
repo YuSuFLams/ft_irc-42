@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/25 15:04:50 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/28 17:13:15 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/01/30 13:17:18 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,7 @@ Client::Client(int fd)
     this->fd = fd;
     this->nickname = "";
     this->pass = "";
-    // users[0] = "";
-    // users[1] = "";
-    // users[2] = "";
-    // users[3] = "";
+    std::fill(users.begin(), users.end(), "");
 }
 Client::Client(Client &cl)
 {
