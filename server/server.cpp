@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:24 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/30 17:53:38 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/01/31 15:03:24 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,12 +160,10 @@ Client*   Server::getClientByNickname(std::string nick, std::map <int, Client *>
 void      Server::seTValueUser(Client *c, std::string strs[MAX])
 {
 	try {
-		if (strs[1].empty() || strs[2].empty() || strs[3].empty())
+		if (strs[1].empty() || strs[2].empty() || strs[3].empty() || strs[4].empty())
 			send(c->getFd(), "ERR_NEEDMOREPARAMS !\n",sizeof("ERR_NEEDMOREPARAMS !\n"), 0);
-		// else if ()
-		// {
-			
-		// }
+		else
+			c->seTValues(strs[1], strs[2], strs[3], strs[4]);
 	}
 	catch(...) {
 		std::cout << "error \n" <<std::endl;
@@ -185,8 +183,8 @@ void    Server::commands(int fdUser, std::string strs[MAX], std::map <int, Clien
 			CheckNick(strs[1],  c);
 		else if (!strs[0].compare("PASS"))
 			PassValid(strs[1], c);
-		// else if (!strs[0].compare("USER"))
-			// seTValue(c, strs);
+		else if (!strs[0].compare("USER"))
+			seTValueUser(c, strs);
 	}  
 	// if (!strs[0].compare("PRIVMSG"))
 	// {

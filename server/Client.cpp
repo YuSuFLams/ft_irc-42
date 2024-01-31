@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/25 15:04:50 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/30 13:17:18 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/01/31 15:50:24 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,7 @@
 
 Client::Client()
 {
-    users[0] = "";
-    users[1] = "";
-    users[2] = "";
-    users[3] = "";
+    std::fill(users.begin(), users.end(), "");
 }
 Client::Client(int fd)
 {
@@ -60,10 +57,10 @@ void    Client::setFdUser(int FdUser)
 }
 void    Client::seTValues(std::string str0, std::string str1, std::string str2, std::string str3)
 {
-    users[0] = str0;
-    users[1] = str1;
-    users[2] = str2;
-    users[3] = str3;
+   this->users.push_back(str0);
+   this->users.push_back(str1);
+   this->users.push_back(str2);
+   this->users.push_back(str3);
 }
 std::string     Client::getNick() {
     return (nickname);
@@ -81,9 +78,3 @@ std::vector<std::string>  Client::getClient() {
 int             Client::getFd() {
     return fd;
 }
-// void       Client::CheckOper(std::string  buffer)
-// {
-//     std::string node;
-    
-//     // node = strtok(buffer, " ");
-// }
