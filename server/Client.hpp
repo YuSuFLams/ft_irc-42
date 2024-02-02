@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/25 15:04:46 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/28 17:06:03 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/01/31 16:33:11 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ class Client
         int             getFd();
         std::string     getNick();
         std::string     geTPass();
-        std::vector<std::string>  getClient(); 
+        std::string  getClient(); 
         
         // void            CheckOper(std::string buffer);
 };

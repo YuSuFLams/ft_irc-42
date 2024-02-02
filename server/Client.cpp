@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/25 15:04:50 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/31 15:50:24 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/01/31 16:51:31 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,12 @@ std::string     Client::geTPass()
     return (pass);
 }
 
-std::vector<std::string>  Client::getClient() {
-    return (this->users);
+std::string  Client::getClient() {
+    if (this->users.empty()){
+    std::cout << "get info user() " << std::endl;
+        return ("");
+    }
+    return (this->users[0]);
 } 
 
 int             Client::getFd() {

@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 14:09:12 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/29 10:57:50 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/02/02 15:28:52 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ void    split(std::string str, char oper, std::string strs[MAX])
     int end = 0;
     int len = str.length();
     int SizePns = checkDoublePoints(str);
+    std::cout << len << std::endl;
     if (SizePns != len)
         len = SizePns;
     while(i <= len)
@@ -52,7 +53,11 @@ void    split(std::string str, char oper, std::string strs[MAX])
         start = str.length();
         len = i + 1;
         std::string subStr = "";
-        subStr.append(str, start, len - start);
-        strs[ind] = subStr;
+        subStr.append(str, len, start - len);
+        for (int i = 0; i < MAX; i++)
+        {
+            if (strs[i].empty())
+                strs[i] = subStr;
+        }
     }
 }

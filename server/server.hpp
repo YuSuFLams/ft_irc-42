@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/30 14:54:40 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/02/02 15:29:07 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,9 +78,11 @@ class Server {
 		void            commands(int fdUser, std::string strs[MAX], std::map <int, Client *> clients);
 		void            seTValueUser(Client *c, std::string strs[MAX]);
 		void            CheckNick(std::string NewNick, Client *c);
+		void            privMsg(std::string NewNick, std::string msg ,Client *c);
 
 		Client*			getClientByFd(int fdUser, std::map <int, Client *> clients);
 		Client*			getClientByNickname(std::string nick, std::map <int, Client *> clients);
+		// Client*			getClientByInfos(std::vector< std::string>user, std::map <int, Client *> clients);
 		bool 			IsAuthorized(Client *client);
 };
 void    split(std::string str, char oper, std::string strs[MAX]);
