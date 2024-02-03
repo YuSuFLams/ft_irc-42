@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:24 by araiteb           #+#    #+#             */
-/*   Updated: 2024/02/02 15:30:12 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/02/03 11:14:33 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,9 +175,7 @@ void      Server::seTValueUser(Client *c, std::string strs[MAX])
 				c->seTValues(strs[1], strs[2], strs[3], strs[4]);
 			}
 			else
-			{
 				send(c->getFd(), "ERR_ALREADYREGISTRED !\n",sizeof("ERR_ALREADYREGISTRED !\n"), 0);
-			}
 		}
 	}
 	catch(...) {
@@ -187,8 +185,14 @@ void      Server::seTValueUser(Client *c, std::string strs[MAX])
 
 void 	Server::privMsg(std::string NewNick, std::string msg ,Client *c)
 {
-	c = getClientByNickname(NewNick, clients);
-	send(c->getFd(), msg.c_str(), sizeof(msg), 0);
+	Client *newClient;
+	
+	newClient = getClientByNickname(NewNick, clients);
+	if (!newClient)
+		send(c->getFd(), "ERR_NOSUCHNICK \n", sizeof("ERR_NOSUCHNICK \n"), 0);
+	else {
+		send(newClient->getFd(), msg.c_str(), sizeof(msg), 0);
+	}
 }
 void    Server::commands(int fdUser, std::string strs[MAX], std::map <int, Client *> clients)
 {
