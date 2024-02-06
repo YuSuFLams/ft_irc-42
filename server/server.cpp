@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:24 by araiteb           #+#    #+#             */
-/*   Updated: 2024/02/03 11:14:33 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/02/06 15:13:37 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,38 +94,39 @@ int     Server::listenSocket()
 	return 1;
 }
 
-void    Server::CheckNick(std::string NewNick, Client *c)
+void    Server::CheckNick(std::string strs[MAX], Client *c)
 {
 	Client *tmpClient;
 	try{
-		
-	if (NewNick.empty())
-		send (c->getFd(), "Error No NickName Provided !\n",sizeof("Error No NickName Provided !\n"), 0);
-	else {
-		tmpClient = this->getClientByNickname(NewNick, this->clients);
-		if (tmpClient)
-			send (c->getFd(), "Error NickName ERR_NONICKNAMEGIVEN !\n",sizeof("Error No NickName ERR_NONICKNAMEGIVE !\n"), 0);
-		else
-			c->seTNick(NewNick); 
+		if (!strs[2].empty())
+			send (c->getFd(), "ERR_ERRONEUSNICKNAME !\n",sizeof("ERR_ERRONEUSNICKNAME !\n"), 0);
+		else if (strs[1].empty())
+			send (c->getFd(), "ERR_NONICKNAMEGIVEN !\n",sizeof("ERR_NONICKNAMEGIVEN !\n"), 0);
+		else if (!strs[1].empty() && strs[2].empty()) {
+			tmpClient = this->getClientByNickname(strs[1], this->clients);
+			if (tmpClient)
+				send (c->getFd(), "ERR_NICKNAMEINUSE !\n",sizeof("ERR_NICKNAMEINUSE !\n"), 0);
+			else
+				c->seTNick(strs[1]); 
 	}
 	}catch(...){
 		std::cout << "error \n" <<std::endl;
 	}
 }
 
-void       Server::PassValid(std::string pwd, Client *c)
+void       Server::PassValid(std::string strs[MAX], Client *c)
 {
 	std::cout << "CHECKING PASS " << std::endl;
 	try{
-		if (pwd.empty())
-			send (c->getFd(), "Error No PASSWORD Provided !\n",sizeof("Error No PASSWORD Provided !\n"), 0);
+		if (strs[1].empty())
+			send (c->getFd(), "ERR_NEEDMOREPARAMS !\n",sizeof("ERR_NEEDMOREPARAMS !\n"), 0);
 		else {
-			if (pwd.compare(this->m_pass))
-				send (c->getFd(), "Error PASSWORD ERR_ALREADYREGISTRED !\n",sizeof("Error No PASSWORD ERR_ALREADYREGISTRED!\n"), 0);
+			if (strs[1].compare(this->m_pass))
+				send (c->getFd(), "ERR_ALREADYREGISTRED !\n",sizeof("ERR_ALREADYREGISTRED!\n"), 0);
 			else
 			{
-				c->seTPass(pwd);
-				send (c->getFd(), "Welcome in server !\n",sizeof("Welcome in server !\n"), 0);
+				c->seTPass(strs[1]);
+				// send (c->getFd(), "Welcome in server !\n",sizeof("Welcome in server !\n"), 0);
 			}
 		}
 	}
@@ -183,15 +184,27 @@ void      Server::seTValueUser(Client *c, std::string strs[MAX])
 	}
 }
 
-void 	Server::privMsg(std::string NewNick, std::string msg ,Client *c)
+void 	Server::privMsg(std::string strs[MAX] ,Client *c)
 {
-	Client *newClient;
-	
-	newClient = getClientByNickname(NewNick, clients);
-	if (!newClient)
-		send(c->getFd(), "ERR_NOSUCHNICK \n", sizeof("ERR_NOSUCHNICK \n"), 0);
-	else {
-		send(newClient->getFd(), msg.c_str(), sizeof(msg), 0);
+	try{
+		if (strs[1]. empty())
+			send(c->getFd(), "ERR_NOSUCHNICK \n", sizeof("ERR_NOSUCHNICK \n"), 0);
+		else if (strs[2].empty())
+			send(c->getFd(), "ERR_NOTEXTTOSEND \n", sizeof("ERR_NOTEXTTOSEND \n"), 0);
+		else if (!strs[4].empty())
+			send(c->getFd(), "ERR_TOOMANYTARGETS \n", sizeof("ERR_TOOMANYTARGETS \n"), 0);
+		else {
+			Client *newClient;
+			newClient = getClientByNickname(strs[1], clients);
+			if (!newClient)
+				send(c->getFd(), "ERR_NORECIPIENT \n", sizeof("ERR_NORECIPIENT \n"), 0);
+			else {
+				send(newClient->getFd(), strs[2].c_str(), sizeof(strs[2]), 0);
+			}
+		}
+	}
+	catch(...) {
+		std::cout << "error \n" <<std::endl;
 	}
 }
 void    Server::commands(int fdUser, std::string strs[MAX], std::map <int, Client *> clients)
@@ -205,16 +218,16 @@ void    Server::commands(int fdUser, std::string strs[MAX], std::map <int, Clien
 	else if (!this->IsAuthorized(c))
 	{
 		if (!strs[0].compare("NICK"))
-			CheckNick(strs[1],  c);
+			CheckNick(strs,  c);
 		else if (!strs[0].compare("PASS"))
-			PassValid(strs[1], c);
+			PassValid(strs, c);
 		else if (!strs[0].compare("USER"))
 			seTValueUser(c, strs);
 	}
 	
-	std::cout << strs[0] << std::endl; 
+	// std::cout << strs[0] << std::endl; 
 	if (!strs[0].compare("PRIVMSG"))
-		privMsg(strs[1], strs[2], UserDirection);
+		privMsg(strs, c);
 }
 void     Server::PollingFd()
 {

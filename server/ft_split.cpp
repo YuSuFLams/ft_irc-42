@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 14:09:12 by araiteb           #+#    #+#             */
-/*   Updated: 2024/02/06 11:10:09 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/02/06 15:16:52 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ void    split(std::string str, char oper, std::string strs[MAX])
         }
         i++;
     }
+    strs[ind] = "";
     SizePns = str.length();
     if (SizePns != len && str[i])
     {
@@ -55,11 +56,14 @@ void    split(std::string str, char oper, std::string strs[MAX])
         len = i + 1;
         std::string subStr = "";
         subStr.append(str, len, start - len);
-        for (int i = 0; i < MAX; i++)
+        for (i = 0; i < MAX; i++)
         {
             if (strs[i].empty())
+            {
                 strs[i] = subStr;
+                break ;
+            }
         }
+        strs[i + 1] = ""; 
     }
-    // std::cout << "split string " << std::endl;
 }

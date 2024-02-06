@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/25 15:04:46 by araiteb           #+#    #+#             */
-/*   Updated: 2024/02/06 10:20:29 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/02/06 14:45:41 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ class Client
         std::string hostname;
         std::string servername;
         std::string realname;
-        // std::vector<std::string> users;
         int fd;
     public:
         Client();
@@ -40,14 +39,11 @@ class Client
         void    seTPass(std::string pwd);
         void    setFdUser(int FdUser);
         void    seTValues(std::string str0, std::string str1, std::string str2, std::string str3);
-        // Client   seTValue(std::string nick, std::string pwd, int NewSocket);
          
         int             getFd();
         std::string     getNick();
         std::string     geTPass();
-        std::string  getClient(); 
-        
-        // void            CheckOper(std::string buffer);
+        std::string  getClient();
 };
 
 

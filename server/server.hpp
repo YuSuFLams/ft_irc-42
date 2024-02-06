@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/02/02 15:29:07 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/02/06 14:01:13 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,16 +73,14 @@ class Server {
 		int             BindSocket();
 		int             listenSocket();
 		void            PollingFd();
-		void             PassValid(std::string pwd, Client *c);
-		// void  NickClient(std::string nickname);
+		void             PassValid(std::string strs[MAX], Client *c);
 		void            commands(int fdUser, std::string strs[MAX], std::map <int, Client *> clients);
 		void            seTValueUser(Client *c, std::string strs[MAX]);
-		void            CheckNick(std::string NewNick, Client *c);
-		void            privMsg(std::string NewNick, std::string msg ,Client *c);
+		void            CheckNick(std::string strs[MAX], Client *c);
+		void            privMsg(std::string strs[MAX] ,Client *c);
 
 		Client*			getClientByFd(int fdUser, std::map <int, Client *> clients);
 		Client*			getClientByNickname(std::string nick, std::map <int, Client *> clients);
-		// Client*			getClientByInfos(std::vector< std::string>user, std::map <int, Client *> clients);
 		bool 			IsAuthorized(Client *client);
 };
 void    split(std::string str, char oper, std::string strs[MAX]);
