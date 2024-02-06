@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/25 15:04:46 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/31 16:33:11 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/02/06 10:20:29 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,11 @@ class Client
     private:
         std::string nickname;
         std::string pass;
-        std::vector<std::string> users;
+        std::string username;
+        std::string hostname;
+        std::string servername;
+        std::string realname;
+        // std::vector<std::string> users;
         int fd;
     public:
         Client();

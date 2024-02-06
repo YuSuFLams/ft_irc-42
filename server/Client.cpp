@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/25 15:04:50 by araiteb           #+#    #+#             */
-/*   Updated: 2024/01/31 16:51:31 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/02/06 10:18:45 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,12 @@
 
 Client::Client()
 {
-    std::fill(users.begin(), users.end(), "");
+    this->nickname = "";
+    this->pass = "";
+    this->username = "";
+    this->hostname = "";
+    this->servername = "";
+    this->realname = "";
 }
 Client::Client(int fd)
 {
@@ -22,7 +27,11 @@ Client::Client(int fd)
     this->fd = fd;
     this->nickname = "";
     this->pass = "";
-    std::fill(users.begin(), users.end(), "");
+    this->username = "";
+    this->hostname = "";
+    this->servername = "";
+    this->realname = "";
+    // std::fill(users.begin(), users.end(), "");
 }
 Client::Client(Client &cl)
 {
@@ -32,10 +41,10 @@ Client& Client::operator=(const Client &cl)
 {
     nickname = cl.nickname;
     pass = cl.pass;
-    users[0] = cl.users[0];
-    users[1] = cl.users[1];
-    users[2] = cl.users[2];
-    users[3] = cl.users[3];
+    this->username = cl.username;
+    this->hostname = cl.hostname;
+    this->realname = cl.realname;
+    this->servername = cl.servername;
     return (*this);
 }
 Client::~Client()
@@ -57,10 +66,10 @@ void    Client::setFdUser(int FdUser)
 }
 void    Client::seTValues(std::string str0, std::string str1, std::string str2, std::string str3)
 {
-   this->users.push_back(str0);
-   this->users.push_back(str1);
-   this->users.push_back(str2);
-   this->users.push_back(str3);
+   this->username = str0;
+   this->hostname = str1;
+   this->servername = str2;
+   this->realname = str3;
 }
 std::string     Client::getNick() {
     return (nickname);
@@ -72,11 +81,11 @@ std::string     Client::geTPass()
 }
 
 std::string  Client::getClient() {
-    if (this->users.empty()){
-    std::cout << "get info user() " << std::endl;
+    if (this->username.empty()){
+        std::cout << "get info user() " << std::endl;
         return ("");
     }
-    return (this->users[0]);
+    return (this->username);
 } 
 
 int             Client::getFd() {
