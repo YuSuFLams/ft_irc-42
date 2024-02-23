@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 03:03:46 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/23 16:09:37 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/02/23 19:11:15 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,6 +168,15 @@ class Channel
                 it++;
             }
             return (*operators.begin());
+        }
+        void print_users()
+        {
+            std::set<std::string>::iterator it = users.begin();
+            while(it != users.end())
+            {
+                std::cout << *it << std::endl;
+                it++;
+            }
         }
        
 

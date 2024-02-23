@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 04:52:32 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/23 15:33:17 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/02/23 19:10:54 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -282,6 +282,14 @@ class Server
                     return (it->first);
             }
             return (-1);
+        }
+
+        void priny_users(std::string channel)
+        {
+            std::map<std::string, Channel *>::iterator it;
+            it = this->channels.find(channel);
+            if(it != this->channels.end())
+                channels[channel]->print_users();
         }
 
         void send_reply(int fd, const std::string& server_name, int reply_code, const std::string& nickname, const std::string& channel, const std::string& message)

@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 04:36:22 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/23 16:07:31 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/02/23 18:46:19 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -319,23 +319,23 @@ int main2(int ac, char **av)
                             }
                         }
                     
-                        // else if(words[0] == "PART" && server.get_password(fds[i].fd) != "" && server.is_registered(fds[i].fd) == 1)
-                        // {
-                        //     if(words.size() == 1)
-                        //     {
-                        //         std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NEEDMOREPARAMS) + " " + words[0] + " :Not enough parameters\r\n";
-                        //         send(fds[i].fd, str.c_str(), str.length(), 0);
-                        //         continue;
-                        //     }
-                        //     else
-                        //     {
-                        //         if(server.PartChannel(words , server.getChannels(), fds[i].fd, server.get_nickname(fds[i].fd), server) == -1)
-                        //         {
-                        //             std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NOSUCHCHANNEL) + " " + server.get_nickname(fds[i].fd) + " " + words[1] + " :No such channel\r\n";
-                        //             send(fds[i].fd, str.c_str(), str.length(), 0);
-                        //         }
-                        //     }
-                        // }
+                        else if(words[0] == "PART" && server.get_password(fds[i].fd) != "" && server.is_registered(fds[i].fd) == 1)
+                        {
+                            if(words.size() == 1)
+                            {
+                                std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NEEDMOREPARAMS) + " " + words[0] + " :Not enough parameters\r\n";
+                                send(fds[i].fd, str.c_str(), str.length(), 0);
+                                continue;
+                            }
+                            else
+                            {
+                                if(server.PartChannel(words , server.getChannels(), fds[i].fd, server.get_nickname(fds[i].fd), server) == -1)
+                                {
+                                    std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NOSUCHCHANNEL) + " " + server.get_nickname(fds[i].fd) + " " + words[1] + " :No such channel\r\n";
+                                    send(fds[i].fd, str.c_str(), str.length(), 0);
+                                }
+                            }
+                        }
 
                         
                         
