@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/23 19:29:10 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/24 16:18:45 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/02/24 19:24:57 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ void Server::KickChannel(std::vector<std::string> strs, std::map<std::string, Ch
         it++;
     }
 
+    
     // Remove the user from the channel
     channels[strs[1]]->removeUser(strs[2]);
 }
