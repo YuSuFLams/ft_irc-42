@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 04:52:32 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/23 19:10:54 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/02/24 16:30:54 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -273,6 +273,8 @@ class Server
         int	PartChannel(std::vector<std::string> strs ,std::map<std::string, Channel *> &channels,  int fd, std::string nickname,  Server &server);
         void handleChannels(std::vector<std::pair<std::string, std::string> >& pairs, int fd, const std::string& nickname , Server &server);
         int	TopicChannel(std::vector<std::string> strs ,std::map<std::string, Channel *> &channels,  int fd,  Server &server);
+        void KickChannel(std::vector<std::string> strs, std::map<std::string, Channel *> &channels, int fd, std::string nickname, Server &server);
+        
         int get_fd_users(const std::string& nickname) const 
         {
             std::map<int, Client *>::const_iterator it;

@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 03:03:46 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/23 19:11:15 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/02/24 19:23:46 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,6 +169,7 @@ class Channel
             }
             return (*operators.begin());
         }
+        
         void print_users()
         {
             std::set<std::string>::iterator it = users.begin();
@@ -178,26 +179,6 @@ class Channel
                 it++;
             }
         }
-       
-
-        // channel info
-        // std::string getChannelInfo() const 
-        // {
-        //     std::string info = "Channel: " + name + "\n";
-        //     info += "Topic: " + topic + "\n";
-        //     info += "Password: " + password + "\n";
-        //     info += "Invite Only: " + std::to_string(inviteOnly) + "\n";
-        //     info += "Topic Restriction: " + std::to_string(topicRestriction) + "\n";
-        //     info += "Channel Key: " + channelKey + "\n";
-        //     info += "Operators: ";
-        //     for (const auto& op : operators)
-        //         info += op + " ";
-        //     info += "\nUsers: ";
-        //     for (const auto& user : users)
-        //         info += user + " ";
-        //     info += "\n";
-        //     return info;
-        // }
     
 };
 

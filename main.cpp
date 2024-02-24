@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 04:36:22 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/23 18:46:19 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/02/24 18:54:34 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,43 +26,105 @@
 // socket() -> bind() -> listen() -> accept() -> send() -> recv() -> close()
 // client side
 // socket() -> connect() -> send() -> recv() -> close()
-void handleClient(int client_fd) 
+
+int kick_command(std::vector<std::string > words , Server &server , int fd)
 {
-    char buffer[1024] = {0};
-    std::string hello = "Hello from server";
-    send(client_fd, hello.c_str(), hello.length(), 0); 
-    std::cout << "Hello message sent" << std::endl;
-    while(true)
-    {
-        ssize_t bytesRead = read(client_fd, buffer, sizeof(buffer) - 1);
-        if (bytesRead <= 0) 
-            break;
-        buffer[bytesRead] = '\0';
-        std::cout << "Received: " << buffer << std::endl;
-    }
-    std::cout << "Client disconnected" << std::endl;
-    close(client_fd);
-}
-
-
-
-int checkPassword(std::string buffer, std::string password)
-{
-    std::vector<std::string> words;
-    std::string word;
-    word = buffer.substr(0, buffer.find(" "));
-    words.push_back(word);
-    buffer = buffer.substr(buffer.find(" ") + 1);
-    words.push_back(buffer);
     if(words.size() == 1)
-        return (0);
-    
-    if(words[0] == "PASS" && words[1] == password)
     {
+        std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NEEDMOREPARAMS) + " " + words[0] + " :Not enough parameters\r\n";
+        send(fd, str.c_str(), str.length(), 0);
         return (1);
+    }
+    else
+    {
+        server.KickChannel(words, server.getChannels(), fd, server.get_nickname(fd), server);
     }
     return (0);
 }
+
+int join_command(std::vector<std::string > words , Server &server , int fd)
+{
+    if(words.size() == 1)
+    {
+            std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NEEDMOREPARAMS) + " " + words[0] + " :Not enough parameters\r\n";
+            send(fd, str.c_str(), str.length(), 0);
+            return (1);
+    }
+    else
+    {
+        if(server.JoinChannel(words, server.get_nickname(fd), fd , server) == -1)
+        {
+            std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NOSUCHCHANNEL) + " " + server.get_nickname(fd) + " " + words[1] + " :No such channel\r\n";
+            send(fd, str.c_str(), str.length(), 0);
+        }
+    }
+    return (0);
+}
+
+int topic_command(std::vector<std::string > words , Server &server , int fd)
+{
+    if(words.size() == 1)
+    {
+        std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NEEDMOREPARAMS) + " " + words[0] + " :Not enough parameters\r\n";
+        send(fd, str.c_str(), str.length(), 0);
+        return (1);
+    }
+    else
+    {
+        if(server.TopicChannel(words , server.getChannels(), fd, server) == -1)
+        {
+            std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NOSUCHCHANNEL) + " " + server.get_nickname(fd) + " " + words[1] + " :No such channel\r\n";
+            send(fd, str.c_str(), str.length(), 0);
+        }
+    }
+    return (0);
+}
+
+int part_command(std::vector<std::string > words , Server &server , int fd)
+{
+    if(words.size() == 1)
+    {
+        std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NEEDMOREPARAMS) + " " + words[0] + " :Not enough parameters\r\n";
+        send(fd, str.c_str(), str.length(), 0);
+        return (1);
+    }
+    else
+    {
+        if(server.PartChannel(words , server.getChannels(), fd, server.get_nickname(fd), server) == -1)
+        {
+            std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NOSUCHCHANNEL) + " " + server.get_nickname(fd) + " " + words[1] + " :No such channel\r\n";
+            send(fd, str.c_str(), str.length(), 0);
+        }
+    }
+    return (0);
+}
+
+int join_topic_part_part(std::vector<std::string > words, Server &server, int fd)
+{
+    if(words[0] == "JOIN" && server.get_password(fd) != "" && server.is_registered(fd) == 1)
+    {
+        if(join_command(words, server, fd) == 1)
+            return (1);
+    }
+    else if(words[0] == "TOPIC" && server.get_password(fd) != "" && server.is_registered(fd) == 1)
+    {
+        if(topic_command(words, server, fd) == 1)
+            return (1);
+    }
+    else if(words[0] == "PART" && server.get_password(fd) != "" && server.is_registered(fd) == 1)
+    {
+        if(part_command(words, server, fd) == 1)
+            return (1);
+    }
+    else if(words[0] == "KICK" && server.get_password(fd) != "" && server.is_registered(fd) == 1)
+    {
+        if(kick_command(words, server, fd) == 1)
+            return (1);
+    }
+    
+    return (0);
+}
+
 
 
 int main2(int ac, char **av)
@@ -133,7 +195,7 @@ int main2(int ac, char **av)
     {
         if (fds[i].revents & POLLIN) 
         {
-            if (fds[i].fd == server.getServer_fd()) 
+            if (fds[i].fd == server.getServer_fd())
             {
                 // New connection
                 sockaddr_in client_address;
@@ -279,65 +341,13 @@ int main2(int ac, char **av)
                             close(fds[i].fd);
                             delete server.getClients()[fds[i].fd];
                             server.removeClient(fds[i].fd);
+                            // if user disconnects, remove from fds and channels if in any
+                            // fds.erase(fds.begin() + i); 
                             break;
                         }
                         
-            
-                        if(words[0] == "JOIN" && server.get_password(fds[i].fd) != "" && server.is_registered(fds[i].fd) == 1)
-                        {
-                            
-                            if(words.size() == 1)
-                            {
-                                std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NEEDMOREPARAMS) + " " + words[0] + " :Not enough parameters\r\n";
-                                send(fds[i].fd, str.c_str(), str.length(), 0);
-                                continue;
-                            }
-                            else
-                            {
-                                if(server.JoinChannel(words, server.get_nickname(fds[i].fd), fds[i].fd , server) == -1)
-                                {
-                                    std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NOSUCHCHANNEL) + " " + server.get_nickname(fds[i].fd) + " " + words[1] + " :No such channel\r\n";
-                                    send(fds[i].fd, str.c_str(), str.length(), 0);
-                                }
-                            }
-                        }
-                        else if(words[0] == "TOPIC" && server.get_password(fds[i].fd) != "" && server.is_registered(fds[i].fd) == 1)
-                        {
-                            if(words.size() == 1)
-                            {
-                                std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NEEDMOREPARAMS) + " " + words[0] + " :Not enough parameters\r\n";
-                                send(fds[i].fd, str.c_str(), str.length(), 0);
-                                continue;
-                            }
-                            else
-                            {
-                                if(server.TopicChannel(words , server.getChannels(), fds[i].fd, server) == -1)
-                                {
-                                    std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NOSUCHCHANNEL) + " " + server.get_nickname(fds[i].fd) + " " + words[1] + " :No such channel\r\n";
-                                    send(fds[i].fd, str.c_str(), str.length(), 0);
-                                }
-                            }
-                        }
-                    
-                        else if(words[0] == "PART" && server.get_password(fds[i].fd) != "" && server.is_registered(fds[i].fd) == 1)
-                        {
-                            if(words.size() == 1)
-                            {
-                                std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NEEDMOREPARAMS) + " " + words[0] + " :Not enough parameters\r\n";
-                                send(fds[i].fd, str.c_str(), str.length(), 0);
-                                continue;
-                            }
-                            else
-                            {
-                                if(server.PartChannel(words , server.getChannels(), fds[i].fd, server.get_nickname(fds[i].fd), server) == -1)
-                                {
-                                    std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NOSUCHCHANNEL) + " " + server.get_nickname(fds[i].fd) + " " + words[1] + " :No such channel\r\n";
-                                    send(fds[i].fd, str.c_str(), str.length(), 0);
-                                }
-                            }
-                        }
-
-                        
+                        if(join_topic_part_part(words, server, fds[i].fd) == 1)
+                            continue;
                         
                         
                         if(!server.get_password(fds[i].fd).empty() && !server.get_hostname(fds[i].fd).empty() && !server.get_username(fds[i].fd).empty() 

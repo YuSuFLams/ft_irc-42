@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 21:09:08 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/23 19:17:58 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/02/24 19:23:14 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,8 @@ int Server::PartChannel(std::vector<std::string> strs, std::map<std::string, Cha
             send(fd, msg.c_str(), msg.length(), 0);
             continue;
         }
+
+      
         // Remove the user from the channel
         channel->removeUser(nickname);
         // channel->print_users();

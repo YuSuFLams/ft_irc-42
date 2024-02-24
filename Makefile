@@ -3,6 +3,7 @@ SRCS = main.cpp\
 		join.cpp\
 		part.cpp\
 		topic.cpp\
+		kick.cpp\
 
 
 OBJ = $(SRCS:.cpp=.o)
