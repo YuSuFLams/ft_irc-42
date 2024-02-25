@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/23 19:29:10 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/24 19:24:57 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/02/25 18:13:43 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,12 @@ void Server::KickChannel(std::vector<std::string> strs, std::map<std::string, Ch
     }
 
     // Prepare and send kick message to all users in the channel
-    std::string message = ":" + nickname + "!" + nickname + "@" + server.get_hostnames() + " KICK " + strs[1] + " " + strs[2] + "\r\n";
+    std::string message = ":" + nickname + "!" + server.get_username(fd) + "@" + server.get_hostnames() + " KICK " + strs[1] + " " + strs[2] + "\r\n";
     std::set<std::string>::iterator it = channels[strs[1]]->getUsers().begin();
     while (it != channels[strs[1]]->getUsers().end())
     {
-        send(server.get_fd_users(*it), message.c_str(), message.length(), 0);
+        if (*it != strs[2])
+            send(server.get_fd_users(*it), message.c_str(), message.length(), 0);
         it++;
     }
 

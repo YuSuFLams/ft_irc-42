@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 14:59:22 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/23 17:15:55 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/02/24 20:29:48 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int Server::TopicChannel(std::vector<std::string> strs, std::map<std::string, Ch
 {
     if (strs.size() >= 2 && strs[0] == "TOPIC") 
     {
-        if(strs.size() > 1 && strs[1].compare(":") == 0)
+        if(strs.size() > 1 && (strs[1].compare(":") == 0 || strs[1].compare("::") == 0))
         {
             std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_BADCHANMASK) + " " + server.get_nickname(fd) + " " + strs[1] + " :Bad Channel Mask\r\n";
             send(fd, str.c_str(), str.length(), 0);
@@ -80,6 +80,7 @@ int Server::TopicChannel(std::vector<std::string> strs, std::map<std::string, Ch
                     {
                         // Set a new topic
                         std::string new_topic = strs[2].substr(1);
+                            
                         for (size_t i = 3; i < strs.size(); ++i) 
                         {
                             new_topic += " " + strs[i];
@@ -87,6 +88,11 @@ int Server::TopicChannel(std::vector<std::string> strs, std::map<std::string, Ch
                         channels[strs[1]]->set_topic(new_topic);
                         topic_broadcast_msg(channels, strs[1], server.get_nickname(fd), server);
                         // Send the new topic to all users in the channel
+                    }
+                    else
+                    {
+                        channels[strs[1]]->set_topic(strs[2]);
+                        topic_broadcast_msg(channels, strs[1], server.get_nickname(fd), server);
                     }
                 }
             }

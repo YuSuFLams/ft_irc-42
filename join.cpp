@@ -3,7 +3,7 @@
 
 
 
-void join_broadcast_msg(std::map<std::string, Channel*>& channels, const std::string& channelName, const std::string& nickname, Server &server)
+void join_broadcast_msg(std::map<std::string, Channel*>& channels , std::string msg, Server &server , std::string channelName)
 {
     std::map<std::string, Channel*>::iterator it = channels.find(channelName);
     if (it != channels.end()) 
@@ -11,10 +11,7 @@ void join_broadcast_msg(std::map<std::string, Channel*>& channels, const std::st
         std::set<std::string>::iterator it2 = it->second->getUsers().begin();
         while (it2 != it->second->getUsers().end()) 
         {
-                std::string msg = ":" + nickname + "!" + nickname + "@" + server.get_hostnames() + " JOIN " + channelName + "\r\n";
-                
-                send(server.get_fd_users(*it2), msg.c_str(), msg.length(), 0);
-            
+            send(server.get_fd_users(*it2), msg.c_str(), msg.length(), 0);
             it2++;
         }
     }
@@ -47,6 +44,8 @@ void Server::handleChannels(std::vector<std::pair<std::string, std::string> >& p
                 if (it2 != channels.end() && it2->second->isUser(nickname)) 
                 {
                     // User is already in the channel
+                    std::string msg = ":" + server.get_hostnames() + " 443 " + nickname + " " + it->first + " :is already on channel\r\n";
+                    send(fd, msg.c_str(), msg.length(), 0);
                     continue;
                 }
                 
@@ -62,7 +61,7 @@ void Server::handleChannels(std::vector<std::pair<std::string, std::string> >& p
                     channels[it->first] = newChannel; // Add the channel to the map
 
                     // reply to the user
-                    std::string msg = ":" + nickname + "!" + nickname + "@" + server.get_hostnames() + " JOIN " + it->first + "\r\n";
+                    std::string msg = ":" + nickname + "!" + server.get_username(fd) + "@" + server.get_hostnames() + " JOIN " + it->first + "\r\n";
                     send(fd, msg.c_str(), msg.length(), 0);
                     std::string topicMessage = ":" + server.get_hostnames() + " 313 " + nickname + " " + it->first + " :" + server.get_topic(it->first) + "\r\n";
                     send(fd, topicMessage.c_str(), topicMessage.length(), 0);
@@ -80,8 +79,8 @@ void Server::handleChannels(std::vector<std::pair<std::string, std::string> >& p
                     if(it->second == channels[it->first]->getChannelKey()) 
                     {
                         // broadcast to all users in the channel
-                        join_broadcast_msg(channels, it->first, nickname, server);
-                        
+                        std::string msg = ":" + nickname + "!" + server.get_username(fd) + "@" + server.get_hostnames() + " JOIN " + it->first + "\r\n";
+                        join_broadcast_msg(channels, msg, server, it->first);
 
                         // add user to the channel
                         it2->second->addUser(nickname);
@@ -122,6 +121,9 @@ void Server::handleChannels(std::vector<std::pair<std::string, std::string> >& p
                     std::map<std::string, Channel*>::iterator it2 = channels.find(it->first);
                     if (it2 != channels.end() && it2->second->isUser(nickname)) 
                     {
+                        // User is already in the channel
+                        std::string msg = ":" + server.get_hostnames() + " 443 " + nickname + " " + it->first + " :is already on channel\r\n";
+                        send(fd, msg.c_str(), msg.length(), 0);
                         continue;
                     }
                     if (it2 == channels.end()) 
@@ -129,17 +131,21 @@ void Server::handleChannels(std::vector<std::pair<std::string, std::string> >& p
                         // Channel doesn't exist, create it
                         Channel* newChannel = new Channel(it->first);
 
-                        join_broadcast_msg(channels, it->first, nickname, server);
+                         std::string msg = ":" + nickname + "!" + server.get_username(fd) + "@" + server.get_hostnames() + " JOIN " + it->first + "\r\n";
+                        join_broadcast_msg(channels, msg, server, it->first);
 
                         newChannel->addUser(nickname); // Add user to the channel
                         newChannel->addOperator(nickname); // Make the user an operator
                         newChannel->setChannelKey(it->second);
                         channels[it->first] = newChannel;
                         // reply to the user
-                        
-                        std::string str = ":" + server.get_hostnames() + " 331 " + nickname + " " + it->first + " :" + server.get_topic(it->first) + "\r\n";
-
+                        std::string str = ":" + nickname + "!" + server.get_username(fd) + "@" + server.get_hostnames() + " JOIN " + it->first + "\r\n";
                         send(fd, str.c_str(), str.length(), 0);
+                        
+                        str = ":" + server.get_hostnames() + " 331 " + nickname + " " + it->first + " :" + server.get_topic(it->first) + "\r\n";
+                        send(fd, str.c_str(), str.length(), 0);
+
+                        str = ":" + server.get_nickname(fd) + "!" + server.get_username(fd) + "@" + server.get_hostnames() + " JOIN " + it->first + "\r\n";
                         str = ":" + server.get_hostnames() + " " + server.to_string(RPL_TOPICWHOTIME) + " " + nickname + " = " + it->first + " :@" + server.get_creator_name(it->first) + "\r\n";
                         send(fd, str.c_str(), str.length(), 0);
                     
@@ -151,7 +157,8 @@ void Server::handleChannels(std::vector<std::pair<std::string, std::string> >& p
                         // Channel exists, add the user to the channel
                         if(it->second == channels[it->first]->getChannelKey()) 
                         {
-                            join_broadcast_msg(channels, it->first, nickname, server);
+                             std::string msg = ":" + nickname + "!" + server.get_username(fd) + "@" + server.get_hostnames() + " JOIN " + it->first + "\r\n";
+                            join_broadcast_msg(channels, msg, server, it->first);
                             
                             it2->second->addUser(nickname);
                             std::string str;

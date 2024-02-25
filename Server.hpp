@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 04:52:32 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/24 16:30:54 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/02/24 21:24:35 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -306,6 +306,15 @@ class Server
             std::stringstream ss;
             ss << number;
             return (ss.str());
+        }
+
+        void remove_client_from_channels(int fd)
+        {
+            std::map<std::string, Channel *>::iterator it;
+            for (it = this->channels.begin(); it != this->channels.end(); it++)
+            {
+                it->second->quit_channel(this->get_nickname(fd));
+            }
         }
 };
 

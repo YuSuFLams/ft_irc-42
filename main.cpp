@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 04:36:22 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/24 18:54:34 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/02/25 18:05:26 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,7 +183,8 @@ int main2(int ac, char **av)
     fds.back().events = POLLIN;
 
     std::cout << "Server is listening on port " << server.getPort() << std::endl;
-    while (true) {
+    while (true) 
+    {
     int ready = poll(&fds[0], fds.size(), -1);
     if (ready == -1) 
     {
@@ -327,24 +328,7 @@ int main2(int ac, char **av)
                                 words.clear();
                                 continue;
                             }
-                        }
-                        else if(words[0] == "QUIT" && server.get_password(fds[i].fd) != "" && server.is_registered(fds[i].fd) == 1)
-                        {
-                            std::string str = ":" + server.get_nickname(fds[i].fd) + " QUIT :Quit: " + words[1] + "\r\n";
-                            for (size_t j = 1; j < fds.size(); j++) 
-                            {
-                                if (fds[j].fd != fds[i].fd) 
-                                {
-                                    send(fds[j].fd, str.c_str(), str.length(), 0);
-                                }
-                            }
-                            close(fds[i].fd);
-                            delete server.getClients()[fds[i].fd];
-                            server.removeClient(fds[i].fd);
-                            // if user disconnects, remove from fds and channels if in any
-                            // fds.erase(fds.begin() + i); 
-                            break;
-                        }
+                        } 
                         
                         if(join_topic_part_part(words, server, fds[i].fd) == 1)
                             continue;

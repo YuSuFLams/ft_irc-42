@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 03:03:46 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/24 19:23:46 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/02/24 21:22:46 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,7 +167,17 @@ class Channel
                     return (*it);
                 it++;
             }
-            return (*operators.begin());
+            if(operators.size() > 0)
+                return (*operators.begin());
+            return ("");
+        }
+        
+        void quit_channel(std::string nickname)
+        {
+            if (users.find(nickname) != users.end())
+                users.erase(nickname);
+            if (operators.find(nickname) != operators.end())
+                operators.erase(nickname);
         }
         
         void print_users()

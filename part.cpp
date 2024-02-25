@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 21:09:08 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/24 19:23:14 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/02/24 22:35:58 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,8 @@ int Server::PartChannel(std::vector<std::string> strs, std::map<std::string, Cha
         }
 
       
-        // Remove the user from the channel
-        channel->removeUser(nickname);
         // channel->print_users();
-        std::string msg = ":" + nickname + "!" + nickname + "@" + server.get_hostnames() + " PART " + channel_name + "\r\n";
+        std::string msg = ":" + server.get_nickname(fd) + "!" + server.get_realname(fd) + "@" + server.get_hostnames() + " PART " + channel_name + "\r\n";
 
         // Send to all users in the channel
         for (std::set<std::string>::iterator it = channel->getUsers().begin(); it != channel->getUsers().end(); ++it) 
@@ -76,6 +74,10 @@ int Server::PartChannel(std::vector<std::string> strs, std::map<std::string, Cha
             send(user_fd, msg.c_str(), msg.length(), 0);
         }
 
+        // Remove the user from the channel
+        channel->removeUser(nickname);
+        if(channel->isOperator(nickname))
+            channel->removeOperator(nickname);
         // If the channel is empty after the user leaves, remove it from the map
         if (channel->getUsers().empty()) 
         {
