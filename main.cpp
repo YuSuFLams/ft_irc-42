@@ -6,11 +6,11 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 09:39:17 by araiteb           #+#    #+#             */
-/*   Updated: 2024/02/10 17:47:20 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/02/25 03:06:38 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.hpp"
+#include "./server/server.hpp"
 
 int main(int ac, char **av)
 {

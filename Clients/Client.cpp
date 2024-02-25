@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/25 15:04:50 by araiteb           #+#    #+#             */
-/*   Updated: 2024/02/10 17:38:15 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/02/25 02:57:44 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,30 +63,33 @@ void    Client::setFdUser(int FdUser)
 {
 	fd = FdUser;
 }
-void    Client::seTValues(std::string str0, std::string str1, std::string str2, std::string str3)
-{
-   this->username = str0;
-   this->hostname = str1;
-   this->servername = str2;
-   this->realname = str3;
-}
-std::string     Client::getNick() {
-	return (nickname);
-}
 
-std::string     Client::geTPass()
-{
-	return (pass);
-}
+std::string     Client::getNick() { return (nickname); }
 
-std::string  Client::getClient() {
-	if (this->username.empty()){
-		std::cout << "get info user() " << std::endl;
-		return ("");
-	}
-	return (this->username);
-} 
+std::string     Client::geTPass(){ return (pass); }
+
+void	Client::setusename(std::string val) { this->username = val; }
+void	Client::sethostname(std::string val) { this->hostname = val; }
+void	Client::setservername(std::string val) { this->servername = val; }
+void	Client::setrealname(std::string val) { this->realname = val; }
+
+std::string		Client::getusername(){
+	return this->username;
+}
+std::string		Client::gethostname(){
+	return this->hostname;
+}
+std::string		Client::getservername(){
+	return this->servername;
+}
+std::string		Client::getrealname(){
+	return this->realname;
+}
 
 int             Client::getFd() {
-	return fd;
+	return this->fd;
+}
+
+std::string   Client::getIdent(){
+	return (this->getNick() + "!" + this->gethostname() + "@localhost");
 }

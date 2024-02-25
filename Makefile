@@ -1,42 +1,36 @@
-NAME = ircserv
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/01/17 10:32:03 by araiteb           #+#    #+#              #
+#    Updated: 2024/02/25 04:09:55 by araiteb          ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
 
-C_BLUE  = \033[1;34m
-C_CYAN  = \033[1;36m
-C_RESET = \033[34m
+EXEC = ircserv
+INCLUDE = ./server/server.hpp ./Clients/Client.hpp ./message/messages.hpp ./Exeption/Exception.hpp
+SRCS = main.cpp ./Clients/Client.cpp ./server/server.cpp ./tools/ft_split.cpp ./message/messages.cpp ./Exeption/Exception.cpp \
+	./tools/command.cpp
+CC = c++ 
+CFLAGS = -Wall -Wextra -Werror -std=c++98
+OBJS = $(SRCS:.cpp=.o)
 
-CC      = c++
+all: $(EXEC)
 
-RM      = rm -rf
+$(EXEC): $(OBJS)
+	$(CC) $(CFLAGS) $^ -o $@
 
-CFLAGS  = -Wall -Wextra -Werror -std=c++98
-
-HEADER  = includes/ft_irc.hpp
-
-O_DIR   := Exec_Obj
-
-EXEC = $(addprefix src/, )
-
-SRCS = $(EXEC) ft_irc.cpp
-OBJS = $(patsubst %.cpp,$(O_DIR)/%.o,$(SRCS))
-
-all: $(NAME)
-
-$(NAME): $(OBJS) $(HEADER)
-	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
-	@echo "$(C_BLUE)		✅ 'ft_irc' Compilation completed successfully!$(C_RESET)"
-
-$(O_DIR)/%.o: %.cpp $(HEADER) $(HEADER)
-	@mkdir -p $(dir $@)
-	@$(CC) $(CFLAGS) -c $< -o $@
+%.o: %.cpp $(INCLUDE)
+	$(CC) $(CFLAGS) -c  $< -o $@
 
 clean:
-	@$(RM) $(O_DIR)
-	@echo "$(C_CYAN)🗑️  Object Directory has been removed......$(C_RESET)"
+	rm -f $(OBJS) 
 
 fclean: clean
-	@$(RM) $(NAME)
-	@echo "$(C_CYAN)	🚀 'ft_irc' executable has been removed.....$(C_RESET)"
+	rm -f $(EXEC)
 
-re: fclean all
-
-.PHONY: all clean fclean re bonus
+re : fclean all
+.PHONY: all clean fclean

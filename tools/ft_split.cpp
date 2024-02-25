@@ -6,11 +6,23 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 14:09:12 by araiteb           #+#    #+#             */
-/*   Updated: 2024/02/11 14:38:19 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/02/25 03:51:50 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.hpp"
+#include "../server/server.hpp"
+
+void	split(std::string &msg, std::vector<std::string> SplitedMsg)
+{
+	std::vector<std::string> tmpCommand;
+	int 	len = tmpCommand.size();
+	splitCommand (msg, ':', tmpCommand);
+	splitCommand(tmpCommand[0], ' ', SplitedMsg);
+	for (int i = 1; i < len; i++)
+		SplitedMsg.push_back(tmpCommand[i]);
+	tmpCommand.clear();
+	// return 1;
+}
 
 void	initTab(std::string strs[MAX])
 {
@@ -18,29 +30,15 @@ void	initTab(std::string strs[MAX])
 		strs[i] = "";
 }
 
-int	checkDoublePoints(std::string str)
-{
-	int i = 0;
-
-	while(str[i])
-	{
-		if (str[i] == ':')
-			return i;
-		i++;
-	}
-	return i;
-}
-void    split(std::string str, char oper, std::string strs[MAX])
+void    splitCommand(std::string str, char oper, std::vector<std::string> &SplitedMsg)
 {
 	int ind = 0;
 	int i = 0;
 	int start = 0;
 	int end = 0;
 	int len = str.length();
-	int SizePns = checkDoublePoints(str);
-	if (SizePns != len)
-		len = SizePns;
-	initTab(strs);
+
+	
 	while(i <= len)
 	{
 		if ((str[i] == oper) || (i == len))
@@ -48,28 +46,17 @@ void    split(std::string str, char oper, std::string strs[MAX])
 			end = i;
 			std::string subStr = "";
 			subStr.append(str, start, end - start);
-			strs[ind] = subStr;
+			SplitedMsg.push_back(subStr);
 			ind++;
 			start = end + 1;
 		}
 		i++;
 	}
-	strs[ind] = "";
-	SizePns = str.length();
-	if (SizePns != len && str[i])
-	{
-		start = str.length();
-		len = i;
-		std::string subStr = "";
-		subStr.append(str, len, start - len);
-		for (i = 0; i < MAX; i++)
-		{
-			if (strs[i].empty())
-			{
-				strs[i] = subStr;
-				break ;
-			}
-		}
-		strs[i + 1] = "";
-	}
+}
+
+std::string const   int2string(int n) {
+    std::stringstream    ss;
+
+    ss << n;
+    return (ss.str());
 }

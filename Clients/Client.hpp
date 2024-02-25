@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/25 15:04:46 by araiteb           #+#    #+#             */
-/*   Updated: 2024/02/10 10:54:01 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/02/25 03:07:09 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include<iostream>
 #include<string>
 #include <vector>
-#include "server.hpp"
+#include "../server/server.hpp"
 class Client
 {
 	private:
@@ -38,12 +38,21 @@ class Client
 		void			seTNick(std::string nick);
 		void			seTPass(std::string pwd);
 		void			setFdUser(int FdUser);
-		void			seTValues(std::string str0, std::string str1, std::string str2, std::string str3);
+		void			setusename(std::string);
+		void			sethostname(std::string);
+		void			setservername(std::string);
+		void			setrealname(std::string);
+		
 		 
 		int				getFd();
 		std::string		getNick();
 		std::string		geTPass();
-		std::string		getClient();
+		std::string		getusername();
+		std::string		gethostname();
+		std::string		getservername();
+		std::string		getrealname();
+		
+		std::string 	getIdent();
 };
 
 

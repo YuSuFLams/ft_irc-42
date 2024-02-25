@@ -6,15 +6,16 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/02/11 16:27:39 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/02/25 05:50:00 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+# pragma once
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
-#define MAX 10254
+# define MAX 10254
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/ioctl.h>
@@ -28,15 +29,22 @@
 #include <string.h>
 #include <cstring>
 #include <fcntl.h>
-#include "Client.hpp"
+#include <sstream>
+#include "../Clients/Client.hpp"
+#include "../message/messages.hpp"
+#include "../Exeption/Exception.hpp"
 #include <map>
 
+#define LIMITCNX 80
 class Client;
+class Message;
 
 class Server {
 	
-	public:
-		const std::string			m_pass;
+	private:
+		char *						birthday;
+		std::string					name;
+		std::string					m_pass;
 		char						buffer[1024];
 		int							m_port;
 		int							m_socket;
@@ -45,17 +53,14 @@ class Server {
 		int							on;
 		int							user_num;
 		int							num;
-		ssize_t						sizeread;
 		struct sockaddr_in			address;
 		struct pollfd				users[80];
-		int							rc;
 		int							len;
 		long int					timeout;
 		int							end_ser;
 		int							compress_array;
 		int							close_conn;
-		Client						*UserDirection;
-		std::string					msgSend;
+		std::string					msgsendResponce;
 		std::string					checkPiv;
 		std::map <int, Client *>	clients;
 
@@ -65,23 +70,45 @@ class Server {
 		Server& operator=(const Server &sr);
 		~Server();
 		
+		void			seTpass(const std::string);
+		void 			seTport(int p);
+		void 			seTmsocket(int sock);
+		void 			seTServerFd(int server);
+		void 			seTmapClient(std::map<int, Client *>);
+
+		std::string			getPass();
+		int 				getport();
+		int 				getsocket();
+		int 				getSeverSocket();
+		std::map<int, Client *> getClient();
+
+
+
+		
 		int				CreateSocket();
 		int				OptionSocket();
 		int				NnBlockFd();
 		int				BindSocket();
 		int				listenSocket();
 		void			PollingFd();
-		void			PassValid(std::string strs[MAX], Client *c);
-		void			commands(int fdUser, std::string strs[MAX], std::map <int, Client *> clients);
-		void			seTValueUser(Client *c, std::string strs[MAX]);
-		void			CheckNick(std::string strs[MAX], Client *c);
-		void			privMsg(std::string strs[MAX] ,Client *c);
+		
+		void			commands(Message &, std::vector <std::string>&);
+		
+		void			cmduser(Client *c, std::vector<std::string> &SplitedMsg);
+		void			cmdpass(std::vector<std::string>& SplitedMsg, Client &c);
+		void			cmdknick(std::vector<std::string> &SplitedMsg, Client *c);
+		void			cmdprivmsg(std::vector<std::string>& SplitedMsg, Client *c);
 
-		Client*			getClientByFd(int fdUser, std::map <int, Client *> clients);
-		Client*			getClientByNickname(std::string nick, std::map <int, Client *> clients);
-		bool			IsAuthorized(Client *client);
+		Client*			getClientByFd(int fdUser);
+		Client*			getClientByNickname(std::string nickname);
+		bool			IsAuthorized(Client &);
+		void			TraiteMessage(Message &);
+
 };
 
-void	split(std::string str, char oper, std::string strs[MAX]);
+void	split(std::string &msg, std::vector<std::string> SplitedMsg);
+void    splitCommand(std::string str, char oper, std::vector<std::string> &SplitedMsg);
 void	initTab(std::string strs[MAX]);
+void 	sendResponce(int fd, const std::string &responce);
+std::string const   int2string (int n);
 #endif
