@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 03:00:11 by araiteb           #+#    #+#             */
-/*   Updated: 2024/02/25 05:50:36 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/02/25 06:17:36 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,14 @@ void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg)
 			cmdprivmsg(SplitedMsg, c);	
 }
 
+
 void	Server::cmduser(Client *c, std::vector<std::string> &SplitedMsg)
 {
 	try {
         if (this->IsAuthorized(*c))
-            throw ERR_ALREADYREGISTRED;
+            throw Myexception(ERR_ALREADYREGISTRED);
 		if (SplitedMsg[1].empty() || SplitedMsg[2].empty() || SplitedMsg[3].empty() || SplitedMsg[4].empty())
-			throw ERR_NEEDMOREPARAMS;
+			throw Myexception(ERR_NEEDMOREPARAMS);
 		c->setusename(SplitedMsg[1]);
         c->sethostname(SplitedMsg[2]);
         c->setservername(SplitedMsg[3]);
@@ -72,16 +73,16 @@ void	Server::cmdknick(std::vector<std::string> &SplitedMsg, Client *c)
 	Client *tmpClient;
 
 	try{
-        if (this->IsAuthorized(*c))
-            throw ERR_ALREADYREGISTRED;
+        // if (this->IsAuthorized(*c))
+        //     throw Myexception(ERR_ALREADYREGISTRED);
 		if (!SplitedMsg[2].empty())
-			throw ERR_ERRONEUSNICKNAME;
+			throw Myexception(ERR_ERRONEUSNICKNAME);
 		if (SplitedMsg[1].empty())
-			throw ERR_NONICKNAMEGIVEN;
+			throw Myexception(ERR_NONICKNAMEGIVEN);
 		if (!SplitedMsg[1].empty() && SplitedMsg[2].empty()) {
 			tmpClient = this->getClientByNickname(SplitedMsg[1]);
 			if (tmpClient)
-				throw ERR_NICKNAMEINUSE;
+				throw Myexception(ERR_NICKNAMEINUSE);
 				c->seTNick(SplitedMsg[1]);
             if (this->IsAuthorized(*c)) {
                 sendResponce(c->getFd(), this->name + "001 "
@@ -110,16 +111,20 @@ void	Server::cmdpass(std::vector<std::string>& SplitedMsg, Client &c)
     std::cout << "PASS COMMAND " << std::endl;
 	try{
         if (this->IsAuthorized(c))
-            throw ERR_ALREADYREGISTRED;
-		if (SplitedMsg[1].empty())
-			throw ERR_NEEDMOREPARAMS;
+        {
+            std::cout << "IsAuthorized" << std::endl;
+            throw Myexception(ERR_ALREADYREGISTRED);
+        }
+		else if (SplitedMsg[1].empty())
+			throw Myexception(ERR_NEEDMOREPARAMS);
 		else {
 			if (SplitedMsg[1].compare(this->m_pass))
-				throw ERR_ALREADYREGISTRED;
+				throw Myexception(ERR_ALREADYREGISTRED);
 			c.seTPass(SplitedMsg[1]);
 			}
 		}
    catch(Myexception & e) {
+        std::cout << e.what() << std::endl;
         sendResponce(c.getFd(), this->name
             + int2string(e.getERROR_NO()) + " "
             + c.getNick() + " "
