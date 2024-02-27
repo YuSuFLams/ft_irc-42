@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 20:23:08 by ylamsiah          #+#    #+#             */
-/*   Updated: 2024/02/27 00:59:55 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/02/27 01:23:00 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 
 #define ERR_NEEDMOREPARAMS_111(nickUser, command) ("461 " + nickUser + " " + command + " :Not enough parameters\r\n")
 
-#define ERR_NOSUCHNICK_111(nickUser, nick) ("401 " + nickUser + " " + nick + " :No such nick/channel\r\n")
+#define ERR_NOSUCHNICK_111(nickUser, nick) ("401 " + nickUser + " " + nick + " :No such nick\r\n")
 
 #define ERR_NOSUCHCHANNEL_111(nickUser, channel) ("403 " + nickUser + " " + channel + " :No such channel\r\n")
 
