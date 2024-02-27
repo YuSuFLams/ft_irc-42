@@ -47,13 +47,7 @@ int Server::public_channel(std::string channel_name , std::string key , int fd, 
         msg = ":" + server.get_hostnames() + " 313 " + server.get_nickname(fd) + " " + channel_name + " :" + server.get_topic(channel_name) + "\r\n";
         send(fd, msg.c_str(), msg.length(), 0);
         
-        std::set<std::string>::iterator it3 = channels[channel_name]->getUsers().begin();
-        while(it3 != channels[channel_name]->getUsers().end())
-        {
-            msg = ":" + server.get_hostnames() + " " + server.to_string(RPL_NAMREPLY) + " " + server.get_nickname(fd) + " = " + channel_name + " :@" + *it3 + "\r\n"; // Prefix '@' to operator's name
-            send(fd, msg.c_str(), msg.length(), 0);
-            it3++;
-        }
+        msg = ":" + server.get_hostnames() + " " + server.to_string(RPL_NAMREPLY) + " " + server.get_nickname(fd) + " = " + channel_name + " :@" + server.get_nickname(fd) + "\r\n"; // Prefix '@' to operator's name
         msg = ":" + server.get_hostnames() + " " + server.to_string(RPL_ENDOFNAMES) + " " + server.get_nickname(fd) + " " + channel_name + " :End of /NAMES list\r\n";
         send(fd, msg.c_str(), msg.length(), 0);
         msg.clear();
@@ -61,7 +55,7 @@ int Server::public_channel(std::string channel_name , std::string key , int fd, 
     else 
     {
         // Channel exists, add the user to the channel
-        if(key == channels[channel_name]->getChannelKey()) 
+        if (key == channels[channel_name]->getChannelKey()) 
         {
             // broadcast to all users in the channel
             std::string msg = ":" + server.get_nickname(fd) + "!" + server.get_username(fd) + "@" + server.get_hostnames() + " JOIN " + channel_name + "\r\n";
@@ -70,38 +64,41 @@ int Server::public_channel(std::string channel_name , std::string key , int fd, 
             // add user to the channel
             it2->second->addUser(server.get_nickname(fd));
             send(fd, msg.c_str(), msg.length(), 0);
-        
+
             // reply to the user
             std::string str;
-            if(server.get_topic(channel_name) == "No topic is set")
+            if (server.get_topic(channel_name) == "No topic is set")
             {
-                    str = ":" + server.get_hostnames() + " 313 " + server.get_nickname(fd) + " " + channel_name + " :No topic is set\r\n";
+                str = ":" + server.get_hostnames() + " 313 " + server.get_nickname(fd) + " " + channel_name + " :No topic is set\r\n";
                 send(fd, str.c_str(), str.length(), 0);
             }
             else
             {
-                std::string str = ":" + server.get_hostnames() + " " + server.to_string(RPL_TOPIC) + " " + server.get_nickname(fd) + " " + channel_name + " :" + server.get_topic(channel_name) + "\r\n";
+                str = ":" + server.get_hostnames() + " " + server.to_string(RPL_TOPIC) + " " + server.get_nickname(fd) + " " + channel_name + " :" + server.get_topic(channel_name) + "\r\n";
                 send(fd, str.c_str(), str.length(), 0);
             }
 
-            
             str = ":" + server.get_hostnames() + " " + server.to_string(RPL_TOPICWHOTIME) + " " + server.get_nickname(fd) + " = " + channel_name + " :@" + server.get_creator_name(channel_name) + "\r\n";
             send(fd, str.c_str(), str.length(), 0);
+
             // send the list of users in the channel
-           std::set<std::string>::iterator it3 = channels[channel_name]->getUsers().begin();
-            while(it3 != channels[channel_name]->getUsers().end())
+            std::set<std::string>::iterator it3 = channels[channel_name]->getUsers().begin();
+            while (it3 != channels[channel_name]->getUsers().end())
             {
-                str = ":" + server.get_hostnames() + " " + server.to_string(RPL_NAMREPLY) + " " + server.get_nickname(fd) + " = " + channel_name + " :" + *it3 + "\r\n"; // Prefix '@' to operator's name
+                std::string user = *it3;
+                if (channels[channel_name]->isOperator("@" + user))
+                    str = ":" + server.get_hostnames() + " " + server.to_string(RPL_NAMREPLY) + " " + server.get_nickname(fd) + " = " + channel_name + " :@" + user + "\r\n"; // Prefix '@' to operator's name
+                else
+                    str = ":" + server.get_hostnames() + " " + server.to_string(RPL_NAMREPLY) + " " + server.get_nickname(fd) + " = " + channel_name + " :" + user + "\r\n";
                 send(fd, str.c_str(), str.length(), 0);
                 it3++;
             }
-        
-            str =  ":" + server.get_hostnames() + " " + server.to_string(RPL_ENDOFNAMES) + " " + server.get_nickname(fd) + " " + channel_name + " :End of /NAMES list\r\n";
+
+            str = ":" + server.get_hostnames() + " " + server.to_string(RPL_ENDOFNAMES) + " " + server.get_nickname(fd) + " " + channel_name + " :End of /NAMES list\r\n";
             send(fd, str.c_str(), str.length(), 0);
             str.clear();
-            
         } 
-        else 
+        else
         {
             // Channel has a key and the user didn't provide it
             std::string msg = ":" + server.get_hostnames() + " " + server.to_string(ERR_BADCHANNELKEY) + " " + server.get_nickname(fd) + " " + channel_name + " :Cannot join channel (+k)\r\n";
