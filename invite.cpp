@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 20:23:08 by ylamsiah          #+#    #+#             */
-/*   Updated: 2024/02/27 01:23:00 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/02/27 03:45:24 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,17 @@
 // just add case Channel INVITE ONLY //
 // * * * * * * * * * * * * * * * * * //
 
-#define ERR_NEEDMOREPARAMS_111(nickUser, command) ("461 " + nickUser + " " + command + " :Not enough parameters\r\n")
+#define ERR_NEEDMOREPARAMS_111(hostname, nickUser, command) ( ":" + hostname +  " 461 " + nickUser + " " + command + " :Not enough parameters\r\n")
 
-#define ERR_NOSUCHNICK_111(nickUser, nick) ("401 " + nickUser + " " + nick + " :No such nick\r\n")
+#define ERR_NOSUCHNICK_111(hostname, nickUser, nick) ( ":" + hostname +  " 401 " + nickUser + " " + nick + " :No such nick\r\n")
 
-#define ERR_NOSUCHCHANNEL_111(nickUser, channel) ("403 " + nickUser + " " + channel + " :No such channel\r\n")
+#define ERR_NOSUCHCHANNEL_111(hostname, nickUser, channel) ( ":" + hostname +  " 403 " + nickUser + " " + channel + " :No such channel\r\n")
 
-#define ERR_NOTONCHANNEL_111(nickUser, channel) ("442 " + nickUser + " " + channel + " :You're not on that channel\r\n")
+#define ERR_NOTONCHANNEL_111(hostname, nickUser, channel) ( ":" + hostname +  " 442 " + nickUser + " " + channel + " :You're not on that channel\r\n")
 
-#define ERR_CHANOPRIVSNEEDED_111(nickUser, channel) ("482 " + nickUser + " " + channel + " :You're not channel operator\r\n")
+#define ERR_CHANOPRIVSNEEDED_111(hostname, nickUser, channel) ( ":" + hostname +  " 482 " + nickUser + " " + channel + " :You're not channel operator\r\n")
 
-#define ERR_USERONCHANNEL_111(nickUser, nick, channel) ("443 " + nickUser + " " + nick + " " + channel + " :is already on channel\r\n")
+#define ERR_USERONCHANNEL_111(hostname, nickUser, nick, channel) ( ":" + hostname +  " 443 " + nickUser + " " + nick + " " + channel + " :is already on channel\r\n")
 
 #define RPL_INVITING 341 
 
@@ -109,9 +109,9 @@ Client*   Server::getClientByNickname(std::string nick, std::map<int , Client *>
 
 void Server::invitecmd(std::vector<std::string> words, Server server, int fd)
 {
-    if (words[1].empty() || words[2].empty())
+    if (words.size() < 3 || (words[1].empty() || words[2].empty()))
     {
-        std::string errorMsg = ERR_NEEDMOREPARAMS_111(server.get_hostnames(), words[0]);
+        std::string errorMsg = ERR_NEEDMOREPARAMS_111(server.get_hostnames(), server.get_nickname(fd), words[0]);
         send(fd, errorMsg.c_str(), errorMsg.length(), 0);
     }
     else 
@@ -119,35 +119,35 @@ void Server::invitecmd(std::vector<std::string> words, Server server, int fd)
         // client does not exist
         if (!server.isClientExist(words[1]))
         {
-            std::string errorMsg = ERR_NOSUCHNICK_111(server.get_hostnames(), words[1]);
+            std::string errorMsg = ERR_NOSUCHNICK_111(server.get_hostnames(), server.get_nickname(fd), words[1]);
             send(fd, errorMsg.c_str(), errorMsg.length(), 0);
             return ;
         }
         // channel name is not valid or channel does not exist
         if (!server.isChannelExist(words[2]) || !isValidChannelName(words[2]))
         {
-            std::string errorMsg = ERR_NOSUCHCHANNEL_111(server.get_hostnames(), words[2]);
+            std::string errorMsg = ERR_NOSUCHCHANNEL_111(server.get_hostnames(), server.get_nickname(fd), words[2]);
             send(fd, errorMsg.c_str(), errorMsg.length(), 0);
             return ;
         }
         // sender is exist in channnel
         if (!isSenderInChannel(server.get_nickname(fd), words[2], server.getChannels()))
         {
-            std::string errorMsg = ERR_NOTONCHANNEL_111(server.get_hostnames(), words[2]);
+            std::string errorMsg = ERR_NOTONCHANNEL_111(server.get_hostnames(), server.get_nickname(fd), words[2]);
             send(fd, errorMsg.c_str(), errorMsg.length(), 0);
             return ;
         }
         // client is already in the channel
         if (server.isClientInChannel(words[1], server.getChannels()))
         {
-            std::string errorMsg = ERR_USERONCHANNEL_111(server.get_hostnames(), words[1], words[2]);
+            std::string errorMsg = ERR_USERONCHANNEL_111(server.get_hostnames(), server.get_nickname(fd), words[1], words[2]);
             send(fd, errorMsg.c_str(), errorMsg.length(), 0);
             return ;
         }
         // client is Operator in that Channel
         if (!server.isClientOperatorInChannel(server.get_nickname(fd), words[2], server.getChannels()))
         {
-            std::string errorMsg = ERR_CHANOPRIVSNEEDED_111(server.get_hostnames(), words[2]);
+            std::string errorMsg = ERR_CHANOPRIVSNEEDED_111(server.get_hostnames(), server.get_nickname(fd), words[2]);
             send(fd, errorMsg.c_str(), errorMsg.length(), 0);
             return ;
         }
