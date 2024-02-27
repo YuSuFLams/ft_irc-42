@@ -1,8 +1,6 @@
 #include "Server.hpp"
 
 
-
-
 void join_broadcast_msg(std::map<std::string, Channel*>& channels , std::string msg, Server &server , std::string channelName)
 {
     std::map<std::string, Channel*>::iterator it = channels.find(channelName);
@@ -17,10 +15,105 @@ void join_broadcast_msg(std::map<std::string, Channel*>& channels , std::string 
     }
 }
 
+int Server::public_channel(std::string channel_name , std::string key , int fd, Server &server)
+{
+
+    std::map<std::string, Channel*>::iterator it2 = channels.find(channel_name);
+    if (it2 != channels.end() && it2->second->isUser(server.get_nickname(fd))) 
+    {
+        // User is already in the channel
+        std::string msg = ":" + server.get_hostnames() + " 443 " + server.get_nickname(fd) + " " + channel_name + " :is already on channel\r\n";
+        send(fd, msg.c_str(), msg.length(), 0);
+        return (1);
+    }
+    
+   if (it2 == channels.end()) 
+    {
+        // Channel doesn't exist, create it
+        Channel* newChannel = new Channel(channel_name); // Create a new channel
+        newChannel->addUser(server.get_nickname(fd)); // Add the user to the channel
+        newChannel->addOperator("@" + server.get_nickname(fd)); // Make the user an operator with '@' prefix
+        newChannel->set_creater(true);
+        if(!key.empty())
+            newChannel->setChannelKey(key); // Set the channel key
+        channels[channel_name] = newChannel; // Add the channel to the map
+
+        // reply to the user
+        std::string msg = ":" + server.get_nickname(fd) + "!" + server.get_username(fd) + "@" + server.get_hostnames() + " JOIN " + channel_name + "\r\n";
+        send(fd, msg.c_str(), msg.length(), 0);
+        msg = ":" + server.get_hostnames() + " " + server.to_string(RPL_TOPICWHOTIME) + " " + server.get_nickname(fd) + " = " + channel_name + " :@" + server.get_creator_name(channel_name) + "\r\n";
+        send(fd, msg.c_str(), msg.length(), 0);
+
+        msg = ":" + server.get_hostnames() + " 313 " + server.get_nickname(fd) + " " + channel_name + " :" + server.get_topic(channel_name) + "\r\n";
+        send(fd, msg.c_str(), msg.length(), 0);
+        
+        std::set<std::string>::iterator it3 = channels[channel_name]->getUsers().begin();
+        while(it3 != channels[channel_name]->getUsers().end())
+        {
+            msg = ":" + server.get_hostnames() + " " + server.to_string(RPL_NAMREPLY) + " " + server.get_nickname(fd) + " = " + channel_name + " :@" + *it3 + "\r\n"; // Prefix '@' to operator's name
+            send(fd, msg.c_str(), msg.length(), 0);
+            it3++;
+        }
+        msg = ":" + server.get_hostnames() + " " + server.to_string(RPL_ENDOFNAMES) + " " + server.get_nickname(fd) + " " + channel_name + " :End of /NAMES list\r\n";
+        send(fd, msg.c_str(), msg.length(), 0);
+        msg.clear();
+    }
+    else 
+    {
+        // Channel exists, add the user to the channel
+        if(key == channels[channel_name]->getChannelKey()) 
+        {
+            // broadcast to all users in the channel
+            std::string msg = ":" + server.get_nickname(fd) + "!" + server.get_username(fd) + "@" + server.get_hostnames() + " JOIN " + channel_name + "\r\n";
+            join_broadcast_msg(channels, msg, server, channel_name);
+
+            // add user to the channel
+            it2->second->addUser(server.get_nickname(fd));
+            send(fd, msg.c_str(), msg.length(), 0);
+        
+            // reply to the user
+            std::string str;
+            if(server.get_topic(channel_name) == "No topic is set")
+            {
+                    str = ":" + server.get_hostnames() + " 313 " + server.get_nickname(fd) + " " + channel_name + " :No topic is set\r\n";
+                send(fd, str.c_str(), str.length(), 0);
+            }
+            else
+            {
+                std::string str = ":" + server.get_hostnames() + " " + server.to_string(RPL_TOPIC) + " " + server.get_nickname(fd) + " " + channel_name + " :" + server.get_topic(channel_name) + "\r\n";
+                send(fd, str.c_str(), str.length(), 0);
+            }
+
+            
+            str = ":" + server.get_hostnames() + " " + server.to_string(RPL_TOPICWHOTIME) + " " + server.get_nickname(fd) + " = " + channel_name + " :@" + server.get_creator_name(channel_name) + "\r\n";
+            send(fd, str.c_str(), str.length(), 0);
+            // send the list of users in the channel
+           std::set<std::string>::iterator it3 = channels[channel_name]->getUsers().begin();
+            while(it3 != channels[channel_name]->getUsers().end())
+            {
+                str = ":" + server.get_hostnames() + " " + server.to_string(RPL_NAMREPLY) + " " + server.get_nickname(fd) + " = " + channel_name + " :" + *it3 + "\r\n"; // Prefix '@' to operator's name
+                send(fd, str.c_str(), str.length(), 0);
+                it3++;
+            }
+        
+            str =  ":" + server.get_hostnames() + " " + server.to_string(RPL_ENDOFNAMES) + " " + server.get_nickname(fd) + " " + channel_name + " :End of /NAMES list\r\n";
+            send(fd, str.c_str(), str.length(), 0);
+            str.clear();
+            
+        } 
+        else 
+        {
+            // Channel has a key and the user didn't provide it
+            std::string msg = ":" + server.get_hostnames() + " " + server.to_string(ERR_BADCHANNELKEY) + " " + server.get_nickname(fd) + " " + channel_name + " :Cannot join channel (+k)\r\n";
+            send(fd, msg.c_str(), msg.length(), 0);
+        }
+       
+    }
+    return (0);
+}
 
 void Server::handleChannels(std::vector<std::pair<std::string, std::string> >& pairs, int fd, const std::string& nickname , Server &server)
 {
-    std::map<std::string, Channel*>& channels = server.getChannels();
     for(std::vector<std::pair<std::string, std::string> >::iterator it = pairs.begin(); it != pairs.end(); ++it) 
     {
         if(it->first.compare("#") == 0 || it->first.compare("&") == 0)
@@ -38,158 +131,18 @@ void Server::handleChannels(std::vector<std::pair<std::string, std::string> >& p
         } 
         else
         {
-            if(it->first.at(0) == '#')
+            if(it->first.at(0) == '#' || it->first.at(0) == '&')
             {
-                std::map<std::string, Channel*>::iterator it2 = channels.find(it->first);
-                if (it2 != channels.end() && it2->second->isUser(nickname)) 
-                {
-                    // User is already in the channel
-                    std::string msg = ":" + server.get_hostnames() + " 443 " + nickname + " " + it->first + " :is already on channel\r\n";
-                    send(fd, msg.c_str(), msg.length(), 0);
+                if(public_channel(it->first, it->second, fd, server) == 1)
                     continue;
-                }
-                
-                if (it2 == channels.end()) 
-                {
-                    // Channel doesn't exist, create it
-                    Channel* newChannel = new Channel(it->first);
-                    newChannel->addUser(nickname); // Add user to the channel
-                    newChannel->addOperator(nickname); // Make the user an operator
-                    newChannel->set_creater(true);
-                    if(!it->second.empty())
-                        newChannel->setChannelKey(it->second); // Set the channel key
-                    channels[it->first] = newChannel; // Add the channel to the map
-
-                    // reply to the user
-                    std::string msg = ":" + nickname + "!" + server.get_username(fd) + "@" + server.get_hostnames() + " JOIN " + it->first + "\r\n";
-                    send(fd, msg.c_str(), msg.length(), 0);
-                    std::string topicMessage = ":" + server.get_hostnames() + " 313 " + nickname + " " + it->first + " :" + server.get_topic(it->first) + "\r\n";
-                    send(fd, topicMessage.c_str(), topicMessage.length(), 0);
-                    
-                    std::string creatorMessage = ":" + server.get_hostnames() + " " + server.to_string(RPL_TOPICWHOTIME) + " " + nickname + " = " + it->first + " :@" + server.get_creator_name(it->first) + "\r\n";
-                    send(fd, creatorMessage.c_str(), creatorMessage.length(), 0);
-
-                    std::string endOfNamesMessage = ":" + server.get_hostnames() + " " + server.to_string(RPL_ENDOFNAMES) + " " + nickname + " " + it->first + " :End of /NAMES list\r\n";
-                    send(fd, endOfNamesMessage.c_str(), endOfNamesMessage.length(), 0);
-
-                } 
-                else 
-                {
-                    // Channel exists, add the user to the channel
-                    if(it->second == channels[it->first]->getChannelKey()) 
-                    {
-                        // broadcast to all users in the channel
-                        std::string msg = ":" + nickname + "!" + server.get_username(fd) + "@" + server.get_hostnames() + " JOIN " + it->first + "\r\n";
-                        join_broadcast_msg(channels, msg, server, it->first);
-
-                        // add user to the channel
-                        it2->second->addUser(nickname);
-                    
-                        // reply to the user
-                        std::string str;
-                    if(server.get_topic(it->first) == "No topic is set")
-                    {
-                         str = ":" + server.get_hostnames() + " 313 " + nickname + " " + it->first + " :No topic is set\r\n";
-                        send(fd, str.c_str(), str.length(), 0);
-                    }
-                    else
-                    {
-                        std::string str = ":" + server.get_hostnames() + " " + server.to_string(RPL_TOPIC) + " " + nickname + " " + it->first + " :" + server.get_topic(it->first) + "\r\n";
-                        send(fd, str.c_str(), str.length(), 0);
-                    }
-
-                    
-                    str = ":" + server.get_hostnames() + " " + server.to_string(RPL_TOPICWHOTIME) + " " + nickname + " = " + it->first + " :@" + server.get_creator_name(it->first) + "\r\n";
-                    send(fd, str.c_str(), str.length(), 0);
-                
-                    str =  ":" + server.get_hostnames() + " " + server.to_string(RPL_ENDOFNAMES) + " " + nickname + " " + it->first + " :End of /NAMES list\r\n";
-                    send(fd, str.c_str(), str.length(), 0);
-                        
-                    } 
-                    else 
-                    {
-                        // invalid key
-                       std::string msg = ":" + server.get_hostnames() + " " + server.to_string(ERR_BADCHANNELKEY) + " " + nickname + " " + it->first + " :Cannot join channel (+k)\r\n";
-                       send(fd, msg.c_str(), msg.length(), 0);
-                    }
-                }
-            } 
-            else
-            {
-                if(it->first.at(0) == '&') 
-                {
-                    std::map<std::string, Channel*>::iterator it2 = channels.find(it->first);
-                    if (it2 != channels.end() && it2->second->isUser(nickname)) 
-                    {
-                        // User is already in the channel
-                        std::string msg = ":" + server.get_hostnames() + " 443 " + nickname + " " + it->first + " :is already on channel\r\n";
-                        send(fd, msg.c_str(), msg.length(), 0);
-                        continue;
-                    }
-                    if (it2 == channels.end()) 
-                    {
-                        // Channel doesn't exist, create it
-                        Channel* newChannel = new Channel(it->first);
-
-                         std::string msg = ":" + nickname + "!" + server.get_username(fd) + "@" + server.get_hostnames() + " JOIN " + it->first + "\r\n";
-                        join_broadcast_msg(channels, msg, server, it->first);
-
-                        newChannel->addUser(nickname); // Add user to the channel
-                        newChannel->addOperator(nickname); // Make the user an operator
-                        newChannel->setChannelKey(it->second);
-                        channels[it->first] = newChannel;
-                        // reply to the user
-                        std::string str = ":" + nickname + "!" + server.get_username(fd) + "@" + server.get_hostnames() + " JOIN " + it->first + "\r\n";
-                        send(fd, str.c_str(), str.length(), 0);
-                        
-                        str = ":" + server.get_hostnames() + " 331 " + nickname + " " + it->first + " :" + server.get_topic(it->first) + "\r\n";
-                        send(fd, str.c_str(), str.length(), 0);
-
-                        str = ":" + server.get_nickname(fd) + "!" + server.get_username(fd) + "@" + server.get_hostnames() + " JOIN " + it->first + "\r\n";
-                        str = ":" + server.get_hostnames() + " " + server.to_string(RPL_TOPICWHOTIME) + " " + nickname + " = " + it->first + " :@" + server.get_creator_name(it->first) + "\r\n";
-                        send(fd, str.c_str(), str.length(), 0);
-                    
-                        str =  ":" + server.get_hostnames() + " " + server.to_string(RPL_ENDOFNAMES) + " " + nickname + " " + it->first + " :End of /NAMES list\r\n";
-                        send(fd, str.c_str(), str.length(), 0);
-                    } 
-                    else 
-                    {
-                        // Channel exists, add the user to the channel
-                        if(it->second == channels[it->first]->getChannelKey()) 
-                        {
-                             std::string msg = ":" + nickname + "!" + server.get_username(fd) + "@" + server.get_hostnames() + " JOIN " + it->first + "\r\n";
-                            join_broadcast_msg(channels, msg, server, it->first);
-                            
-                            it2->second->addUser(nickname);
-                            std::string str;
-
-                            if(server.get_topic(it->first) == "No topic is set")
-                            {
-                                str = ":" + server.get_hostnames() + " 331 " + nickname + " " + it->first + " :No topic is set\r\n";
-                                send(fd, str.c_str(), str.length(), 0);
-                            }
-                            else
-                            {
-                                 str = ":" + server.get_hostnames() + " " + server.to_string(RPL_TOPIC) + " " + nickname + " " + it->first + " :" + server.get_topic(it->first) + "\r\n";
-                                send(fd, str.c_str(), str.length(), 0);
-                            }
-
-                            send(fd, str.c_str(), str.length(), 0);
-                            str = ":" + server.get_hostnames() + " " + server.to_string(RPL_TOPICWHOTIME) + " " + nickname + " = " + it->first + " :@" + server.get_creator_name(it->first) + "\r\n";
-                            send(fd, str.c_str(), str.length(), 0);
-                        
-                            str =  ":" + server.get_hostnames() + " " + server.to_string(RPL_ENDOFNAMES) + " " + nickname + " " + it->first + " :End of /NAMES list\r\n";
-                            send(fd, str.c_str(), str.length(), 0);
-                        } 
-                        else 
-                        {
-                            std::string msg = ":" + server.get_hostnames() + " " + server.to_string(ERR_BADCHANNELKEY) + " " + nickname + " " + it->first + " :Cannot join channel (+k)\r\n";
-                            send(fd, msg.c_str(), msg.length(), 0);
-                        }
-                    }
-                }
             }
         }
+    std::set<std::string>::iterator it3 = channels[it->first]->getUsers().begin();
+    while(it3 != channels[it->first]->getUsers().end())
+    {
+        std::cout << "users in the channel: " << *it3 << std::endl;
+        it3++;
+    }
     }
 }
 
@@ -199,6 +152,7 @@ int Server::JoinChannel(std::vector<std::string > strs , std::string nickname, i
     std::vector<std::string> channels;
     std::vector<std::string> keys;
 
+    // pair of channel and key
     std::vector<std::pair<std::string, std::string> > pair;
     
     std::stringstream ss(strs[1]);

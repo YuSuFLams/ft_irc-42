@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 04:36:22 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/25 18:05:26 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/02/26 19:33:36 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,22 @@ int part_command(std::vector<std::string > words , Server &server , int fd)
             std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NOSUCHCHANNEL) + " " + server.get_nickname(fd) + " " + words[1] + " :No such channel\r\n";
             send(fd, str.c_str(), str.length(), 0);
         }
+    }
+    return (0);
+}
+
+int quit_command(std::vector<std::string > words , Server &server , int fd)
+{
+    if(words[0] == "QUIT" && server.get_password(fd) != "" && server.is_registered(fd) == 1)
+    {
+        close(fd);
+        // remove client from the channels
+        server.remove_client_from_channels(fd);
+        // remove client from the map
+        server.removeClient(fd);
+        // free the memory
+        delete server.getClients()[fd];
+        return (1);
     }
     return (0);
 }
@@ -219,13 +235,13 @@ int main2(int ac, char **av)
                 ssize_t bytesRead = recv(fds[i].fd, buffer, sizeof(buffer) - 1, 0);
                 if (bytesRead <= 0) 
                 {
-                    // Client disconnected
+                    // Client disconnected or CTRL+C was pressed
                     std::cout << "Client disconnected" << std::endl;
-                    close(fds[i].fd);
-                    delete server.getClients()[fds[i].fd];
+                    server.remove_client_from_channels(fds[i].fd);
                     server.removeClient(fds[i].fd);
-                    fds.erase(fds.begin() + i);
-                    --i; // Adjust index after erase
+                    delete server.getClients()[fds[i].fd];
+                    close(fds[i].fd);
+                    
                 } 
                 else 
                 {
@@ -249,6 +265,26 @@ int main2(int ac, char **av)
                         if(words.size() == 0)
                             continue;
 
+                        if(words[0] == "QUIT" && server.get_password(fds[i].fd) != "" && server.is_registered(fds[i].fd) == 1)
+                        {
+                            std::string str = ":" + server.get_nickname(fds[i].fd) + " QUIT :Quit: " + words[1] + "\r\n";
+                            for (size_t j = 1; j < fds.size(); j++) 
+                            {
+                                if (fds[j].fd != fds[i].fd) 
+                                {
+                                    send(fds[j].fd, str.c_str(), str.length(), 0);
+                                }
+                            }
+                            close(fds[i].fd);
+                            // remove client from the channels
+                            server.remove_client_from_channels(fds[i].fd);
+                            // remove client from the map
+                            server.removeClient(fds[i].fd);
+                            // free the memory
+                            delete server.getClients()[fds[i].fd];
+                            break;
+                        }
+                        
                         if(words[0] == "PASS")
                         {
                             if(str.find(" :") != std::string::npos)
@@ -328,10 +364,12 @@ int main2(int ac, char **av)
                                 words.clear();
                                 continue;
                             }
-                        } 
+                        }
                         
                         if(join_topic_part_part(words, server, fds[i].fd) == 1)
                             continue;
+                        if(quit_command(words, server, fds[i].fd) == 1)
+                            break;
                         
                         
                         if(!server.get_password(fds[i].fd).empty() && !server.get_hostname(fds[i].fd).empty() && !server.get_username(fds[i].fd).empty() 

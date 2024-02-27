@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 03:03:46 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/24 21:22:46 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/02/27 16:51:10 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@
 #define RPL_ENDOFNAMES 366
 #define ERR_BADCHANNELKEY 475
 #define ERR_BADCHANMASK 476
+#define RPL_NAMREPLY 353
 class Channel
 {
     private:
@@ -106,7 +107,7 @@ class Channel
         { 
             return channelKey; 
         }
-        std::set<std::string> getOperators() const 
+        std::set<std::string> &getOperators() 
         { 
             return operators; 
         }
@@ -169,7 +170,7 @@ class Channel
             }
             if(operators.size() > 0)
                 return (*operators.begin());
-            return ("");
+            return ("no operator found");
         }
         
         void quit_channel(std::string nickname)

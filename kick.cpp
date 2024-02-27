@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/23 19:29:10 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/25 18:13:43 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/02/27 17:44:47 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ void Server::KickChannel(std::vector<std::string> strs, std::map<std::string, Ch
     }
     
     // Check if the user is an operator
-    if (channels[strs[1]]->isOperator(nickname) == false)
+    // print the operators
+    if (channels[strs[1]]->isOperator("@" + server.get_nickname(fd)) == false)
     {
         std::string str = ":" + server.get_hostnames() + " 482 " + server.get_nickname(fd) + " " + strs[1] + " :You're not a channel operator\r\n";
         send(fd, str.c_str(), str.length(), 0);
@@ -45,18 +46,31 @@ void Server::KickChannel(std::vector<std::string> strs, std::map<std::string, Ch
         send(fd, str.c_str(), str.length(), 0);
         return;
     }
+    // reason for the kick
+    std::string message;
+    if(!strs[3].empty())
+    {
+        if(strs[3].at(0) == ':')
+            strs[3].erase(0, 1);
+        for (size_t i = 4; i < strs.size(); i++)
+        {
+            strs[3] += " " + strs[i];
+        }
+        message = ":" + nickname + "!" + server.get_username(fd) + "@" + server.get_hostnames() + " KICK " + strs[1] + " " + strs[2] + " :" + strs[3] + "\r\n";
+    }
+    else
+        message = ":" + nickname + "!" + server.get_username(fd) + "@" + server.get_hostnames() + " KICK " + strs[1] + " " + strs[2] + "\r\n";
 
-    // Prepare and send kick message to all users in the channel
-    std::string message = ":" + nickname + "!" + server.get_username(fd) + "@" + server.get_hostnames() + " KICK " + strs[1] + " " + strs[2] + "\r\n";
+    // Send the message to the user
     std::set<std::string>::iterator it = channels[strs[1]]->getUsers().begin();
     while (it != channels[strs[1]]->getUsers().end())
     {
-        if (*it != strs[2])
-            send(server.get_fd_users(*it), message.c_str(), message.length(), 0);
+        send(server.get_fd_users(*it), message.c_str(), message.length(), 0);
         it++;
     }
 
     
     // Remove the user from the channel
     channels[strs[1]]->removeUser(strs[2]);
+    /// you have been kicked from the channel
 }
