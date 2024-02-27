@@ -1,20 +1,14 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_irc.hpp                                         :+:      :+:    :+:   */
+/*   Channels.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/16 18:40:13 by ylamsiah          #+#    #+#             */
-/*   Updated: 2024/01/16 18:40:53 by ylamsiah         ###   ########.fr       */
+/*   Created: 2024/02/13 03:02:59 by abel-hid          #+#    #+#             */
+/*   Updated: 2024/02/25 19:29:30 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_IRC_HPP
-# define FT_IRC_HPP
+#include "Channel.hpp"
 
-# include <iostream>
-# include <string>
-
-
-#endif
