@@ -4,7 +4,8 @@ SRCS = main.cpp\
 		part.cpp\
 		topic.cpp\
 		kick.cpp\
-		invite.cpp  
+		invite.cpp \
+		mode.cpp
 
 
 OBJ = $(SRCS:.cpp=.o)

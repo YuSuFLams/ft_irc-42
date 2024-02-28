@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 04:52:32 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/26 19:29:12 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/02/28 01:09:54 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -364,27 +364,6 @@ class Server
 
 
 
-        
-
-        // else if (!server.isClientInChannel(fds[i].fd, server.get_nickname(c->getFd()), server.getChannels()))
-        // {
-        //      std::string errorMsg = ":" + server.get_hostnames() + " " + server.to_string(ERR_NOTONCHANNEL) + " " + server.get_nickname(fds[i].fd) + " " + words[2] + " :You're not on that channel\r\n";
-        //      send(fds[i].fd, errorMsg.c_str(), errorMsg.length(), 0);
-        // }
-        bool isChannelInviteOnly(std::string channelname);
-        // bool Server::isChannelInviteOnly(std::string channelname)
-        // {
-        //     std::map<std::string, Channel *>::iterator it;
-        //     for (it = channels.begin(); it != channels.end(); it++)
-        //     {
-        //         if (it->first == channelname)
-        //         {
-        //             if (it->second->getMode().find('i') != std::string::npos)
-        //                 return (true);
-        //         }
-        //     }
-        //     return (false);
-        // }
         bool isClientExist(std::string nickname);
         bool isValidChannelName(std::string name);
         bool isChannelExist(std::string channelname);
@@ -392,6 +371,36 @@ class Server
         bool isClientInChannel(std::string nickname, std::map<std::string, Channel *> &channel);
         bool isClientOperatorInChannel(std::string clientname, std::string channelname, std::map<std::string, Channel *> &channel);
         Client*   getClientByNickname(std::string nick, std::map <int, Client *> clients);
+        bool isSenderInChannel(std::string nickname, std::string channelname, std::map<std::string, Channel *> &channel);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        void modecmd(std::vector<std::string> words, Server server, int fd);
+        bool isValidMode(const std::string& word);
+        void addModeToChannel(Server server, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
 };
 
 

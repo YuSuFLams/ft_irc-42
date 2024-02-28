@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 04:36:22 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/25 20:28:21 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/02/27 03:59:27 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -275,7 +275,10 @@ int main2(int ac, char **av)
                         {
                             server.invitecmd(words, server, fds[i].fd);
                         }
-
+                        else if (words[0] == "MODE")
+                        {
+                            server.modecmd(words, server, fds[i].fd);
+                        }
 
 
 

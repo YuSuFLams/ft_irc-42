@@ -6,29 +6,12 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 20:23:08 by ylamsiah          #+#    #+#             */
-/*   Updated: 2024/02/27 03:45:24 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/02/28 01:28:22 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "Server.hpp"
-
-// * * * * * * * * * * * * * * * * * //
-// just add case Channel INVITE ONLY //
-// * * * * * * * * * * * * * * * * * //
-
-#define ERR_NEEDMOREPARAMS_111(hostname, nickUser, command) ( ":" + hostname +  " 461 " + nickUser + " " + command + " :Not enough parameters\r\n")
-
-#define ERR_NOSUCHNICK_111(hostname, nickUser, nick) ( ":" + hostname +  " 401 " + nickUser + " " + nick + " :No such nick\r\n")
-
-#define ERR_NOSUCHCHANNEL_111(hostname, nickUser, channel) ( ":" + hostname +  " 403 " + nickUser + " " + channel + " :No such channel\r\n")
-
-#define ERR_NOTONCHANNEL_111(hostname, nickUser, channel) ( ":" + hostname +  " 442 " + nickUser + " " + channel + " :You're not on that channel\r\n")
-
-#define ERR_CHANOPRIVSNEEDED_111(hostname, nickUser, channel) ( ":" + hostname +  " 482 " + nickUser + " " + channel + " :You're not channel operator\r\n")
-
-#define ERR_USERONCHANNEL_111(hostname, nickUser, nick, channel) ( ":" + hostname +  " 443 " + nickUser + " " + nick + " " + channel + " :is already on channel\r\n")
-
-#define RPL_INVITING 341 
+#include "message.hpp"
 
 bool Server::isValidChannelName(std::string name)
 {
@@ -86,7 +69,7 @@ bool Server::isClientOperatorInChannel(std::string nickname, std::string channel
     return (false);
 }
 
-bool isSenderInChannel(std::string nickname, std::string channelname, std::map<std::string, Channel *> &channel)
+bool Server::isSenderInChannel(std::string nickname, std::string channelname, std::map<std::string, Channel *> &channel)
 {
     for (std::map<std::string, Channel *>::iterator it = channel.begin(); it != channel.end(); it++)
     {
@@ -131,7 +114,7 @@ void Server::invitecmd(std::vector<std::string> words, Server server, int fd)
             return ;
         }
         // sender is exist in channnel
-        if (!isSenderInChannel(server.get_nickname(fd), words[2], server.getChannels()))
+        if (!server.isSenderInChannel(server.get_nickname(fd), words[2], server.getChannels()))
         {
             std::string errorMsg = ERR_NOTONCHANNEL_111(server.get_hostnames(), server.get_nickname(fd), words[2]);
             send(fd, errorMsg.c_str(), errorMsg.length(), 0);
