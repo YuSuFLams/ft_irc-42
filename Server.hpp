@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 04:52:32 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/28 18:07:38 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/02/28 19:28:36 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -369,7 +369,7 @@ class Server
         bool isValidChannelName(std::string name);
         bool isChannelExist(std::string channelname);
         void invitecmd(std::vector<std::string> words, Server server, int fd);
-        bool isClientInChannel(std::string nickname, std::map<std::string, Channel *> &channel);
+        bool isClientInChannel(std::string nickname, std::string channelname, std::map<std::string, Channel *> &channel);
         bool isClientOperatorInChannel(std::string clientname, std::string channelname, std::map<std::string, Channel *> &channel);
         Client*   getClientByNickname(std::string nick, std::map <int, Client *> clients);
         bool isSenderInChannel(std::string nickname, std::string channelname, std::map<std::string, Channel *> &channel);
@@ -402,7 +402,7 @@ class Server
         void modecmd(std::vector<std::string> words, Server server, int fd);
         bool isValidMode(const std::string& word);
         void addMode_I(Server server, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
-        
+        void addMode_O(int fd, std::vector<std::string> words, Server server, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
         void addMode_T(Server server, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
         
 };

@@ -33,4 +33,6 @@
 
 #define RPL_UMODEIS_222(hostname, nickUser, mode) ( ":" + hostname +  "221 " + nickUser + " " + mode + "\r\n")
 
+#define ERR_USERNOTINCHANNEL_111(hostname, nickUser, nick, channel) ( ":" + hostname +  " 441 " + nickUser + " " + nick + " " + channel + " :They aren't on that channel\r\n")
+
 #endif

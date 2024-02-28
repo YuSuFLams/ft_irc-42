@@ -38,7 +38,7 @@ void Server::addMode_I(Server server, std::map<std::string, Channel *> &channel,
         {
             it->second->setInviteOnly(add);
             std::set<std::string> usersInChannel = it->second->getUsers();
-            for (std::set<std::string>::iterator it = usersInChannel.begin(); it != usersInChannel.end(); it++)
+            for (std::set<std::string>::iterator it2 = usersInChannel.begin(); it2 != usersInChannel.end(); it2++)
             {
                 int fdRe;
                 std::string name;
@@ -46,7 +46,7 @@ void Server::addMode_I(Server server, std::map<std::string, Channel *> &channel,
                 {
                     fdRe = (*it1).first;
                     name = (*it1).second->getNickname();
-                    if (name == *it)
+                    if (name == *it2)
                     {
                         std::string mtype = ((add)? "+": "-") + modeType;
                         std::string mode = RPL_CHANNELMODEIS_222(server.get_hostnames(), server.get_nickname(fdRe), channelname, mtype);
@@ -66,7 +66,7 @@ void Server::addMode_T(Server server, std::map<std::string, Channel *> &channel,
         {
             it->second->setTopicRestriction(add);
             std::set<std::string> usersInChannel = it->second->getUsers();
-            for (std::set<std::string>::iterator it = usersInChannel.begin(); it != usersInChannel.end(); it++)
+            for (std::set<std::string>::iterator it2 = usersInChannel.begin(); it2 != usersInChannel.end(); it2++)
             {
                 int fdRe;
                 std::string name;
@@ -74,7 +74,57 @@ void Server::addMode_T(Server server, std::map<std::string, Channel *> &channel,
                 {
                     fdRe = (*it1).first;
                     name = (*it1).second->getNickname();
-                    if (name == *it)
+                    if (name == *it2)
+                    {
+                        std::string mtype = ((add)? "+": "-") + modeType;
+                        std::string mode = RPL_CHANNELMODEIS_222(server.get_hostnames(), server.get_nickname(fdRe), channelname, mtype);
+                        send(fdRe, mode.c_str(), mode.length(), 0);
+                    }
+                }
+            }
+        }
+    }
+}
+
+void Server::addMode_O(int fd, std::vector<std::string> words, Server server, std::map<std::string, Channel *> &channel, std::string channelname, std::string modeType, bool add)
+{
+    if (words.size() != 4)
+    {
+        std::string errorMode = ERR_NEEDMOREPARAMS_111(server.get_hostnames(), server.get_nickname(fd), words[0]);
+        send(fd, errorMode.c_str(), errorMode.length(), 0);
+        return ;
+    }
+    if (!server.isClientExist(words[3]))
+    {
+        std::string errorMode = ERR_NOSUCHNICK_111(server.get_hostnames(), server.get_nickname(fd), words[3]);
+        send(fd, errorMode.c_str(), errorMode.length(), 0);
+        return ;
+    }
+    if (!server.isClientInChannel(words[3], channelname, channel))
+    {
+        std::string errorMode = ERR_USERNOTINCHANNEL_111(server.get_hostnames(), server.get_nickname(fd), words[3], channelname);
+        send(fd, errorMode.c_str(), errorMode.length(), 0);
+        return ;
+    }
+    for (std::map<std::string, Channel *>::iterator it = channel.begin(); it != channel.end(); it++)
+    {
+        if (it->first == channelname)
+        {
+            std::string nickname = "@" + words[3];
+            if (add)
+                it->second->addOperator(nickname);
+            else
+                it->second->removeOperator(nickname);
+            std::set<std::string> usersInChannel = it->second->getUsers();
+            for (std::set<std::string>::iterator it2 = usersInChannel.begin(); it2 != usersInChannel.end(); it2++)
+            {
+                int fdRe;
+                std::string name;
+                for (std::map<int , Client *>::iterator it1 = this->clients.begin(); it1 != this->clients.end(); it1++)
+                {
+                    fdRe = (*it1).first;
+                    name = (*it1).second->getNickname();
+                    if (name == *it2)
                     {
                         std::string mtype = ((add)? "+": "-") + modeType;
                         std::string mode = RPL_CHANNELMODEIS_222(server.get_hostnames(), server.get_nickname(fdRe), channelname, mtype);
@@ -151,9 +201,12 @@ void Server::modecmd(std::vector<std::string> words, Server server, int fd)
                         server.addMode_T(server, server.getChannels(), words[1], *it, add);
                         break;
                     }
+                    case 'o':
+                    {
+                        server.addMode_O(fd, words, server, server.getChannels(), words[1], *it, add);
+                        break;
+                    }
                     // case 'k':
-                    //     ;
-                    // case 'o':
                     //     ;
                     // case 'l':
                     //     ;

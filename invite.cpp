@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 20:23:08 by ylamsiah          #+#    #+#             */
-/*   Updated: 2024/02/28 17:42:26 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/02/28 19:29:48 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,14 @@ bool Server::isChannelExist(std::string channelname)
     return false;
 }
 
-bool Server::isClientInChannel(std::string nickname, std::map<std::string, Channel *> &channels)
+bool Server::isClientInChannel(std::string nickname, std::string channelname, std::map<std::string, Channel *> &channels)
 {
     std::map<std::string, Channel *>::iterator it;
     for (it = channels.begin(); it != channels.end(); it++)
     {
-        if (it->second->isUser(nickname))
-            return (true);
+        if (it->first == channelname)
+            if (it->second->isUser(nickname))
+                return (true);
     }
     return (false);
 }
@@ -122,7 +123,7 @@ void Server::invitecmd(std::vector<std::string> words, Server server, int fd)
             return ;
         }
         // client is already in the channel
-        if (server.isClientInChannel(words[1], server.getChannels()))
+        if (server.isClientInChannel(words[1], words[2], server.getChannels()))
         {
             std::string errorMsg = ERR_USERONCHANNEL_111(server.get_hostnames(), server.get_nickname(fd), words[1], words[2]);
             send(fd, errorMsg.c_str(), errorMsg.length(), 0);
