@@ -41,18 +41,17 @@ int Server::public_channel(std::string channel_name , std::string key , int fd, 
         // reply to the user
         std::string msg = ":" + server.get_nickname(fd) + "!" + server.get_username(fd) + "@" + server.get_hostnames() + " JOIN " + channel_name + "\r\n";
         send(fd, msg.c_str(), msg.length(), 0);
-        msg = ":" + server.get_hostnames() + " " + server.to_string(RPL_TOPICWHOTIME) + " " + server.get_nickname(fd) + " = " + channel_name + " :@" + server.get_creator_name(channel_name) + "\r\n";
-        send(fd, msg.c_str(), msg.length(), 0);
 
         msg = ":" + server.get_hostnames() + " 313 " + server.get_nickname(fd) + " " + channel_name + " :" + server.get_topic(channel_name) + "\r\n";
         send(fd, msg.c_str(), msg.length(), 0);
         
         msg = ":" + server.get_hostnames() + " " + server.to_string(RPL_NAMREPLY) + " " + server.get_nickname(fd) + " = " + channel_name + " :@" + server.get_nickname(fd) + "\r\n"; // Prefix '@' to operator's name
+        send(fd, msg.c_str(), msg.length(), 0);
         msg = ":" + server.get_hostnames() + " " + server.to_string(RPL_ENDOFNAMES) + " " + server.get_nickname(fd) + " " + channel_name + " :End of /NAMES list\r\n";
         send(fd, msg.c_str(), msg.length(), 0);
         msg.clear();
     }
-    else 
+    else
     {
         // Channel exists, add the user to the channel
         if (key == channels[channel_name]->getChannelKey()) 
@@ -78,7 +77,7 @@ int Server::public_channel(std::string channel_name , std::string key , int fd, 
                 send(fd, str.c_str(), str.length(), 0);
             }
 
-            str = ":" + server.get_hostnames() + " " + server.to_string(RPL_TOPICWHOTIME) + " " + server.get_nickname(fd) + " = " + channel_name + " :@" + server.get_creator_name(channel_name) + "\r\n";
+            str = ":" + server.get_hostnames() + " " + server.to_string(RPL_TOPICWHOTIME) + " " + server.get_nickname(fd) + " = " + channel_name + " :" + server.get_creator_name(channel_name) + "\r\n";
             send(fd, str.c_str(), str.length(), 0);
 
             // send the list of users in the channel
@@ -121,8 +120,8 @@ void Server::handleChannels(std::vector<std::pair<std::string, std::string> >& p
         }
         if(it->first.at(0) != '#' && it->first.at(0) != '&') 
         {
-
-            std::string msg = ":" + server.get_hostnames() + " " + server.to_string(ERR_NOSUCHCHANNEL) + " " + nickname + " " + it->first + " :No such channel\r\n";
+            // Channel name is invalid
+            std::string msg = ":" + server.get_hostnames() + " " + server.to_string(ERR_BADCHANMASK) + " " + nickname + " " + it->first + " :Bad Channel Mask\r\n";
             send(fd, msg.c_str(), msg.length(), 0);
             continue;
         } 

@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 04:36:22 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/26 19:33:36 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/02/27 19:40:10 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,105 @@ int quit_command(std::vector<std::string > words , Server &server , int fd)
     return (0);
 }
 
+void ModeChannel(std::vector<std::string > words, std::map<std::string, Channel *> &channels, int fd, std::string nickname, Server &server)
+{
+    // if (words.size() < 3)
+    // {
+    //     std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NEEDMOREPARAMS) + " " + nickname + " MODE :Not enough parameters\r\n";
+    //     send(fd, str.c_str(), str.length(), 0);
+    //     return;
+    // }
+    if (channels.find(words[1]) == channels.end())
+    {
+        std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NOSUCHCHANNEL) + " " + nickname + " " + words[1] + " :No such channel\r\n";
+        send(fd, str.c_str(), str.length(), 0);
+        return;
+    }
+    if (channels[words[1]]->getUsers().find(nickname) == channels[words[1]]->getUsers().end())
+    {
+        std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NOTONCHANNEL) + " " + nickname + " " + words[1] + " :You're not on that channel\r\n";
+        send(fd, str.c_str(), str.length(), 0);
+        return;
+    }
+    if (words.size() == 3)
+    {
+        std::string str = ":" + server.get_hostnames() + " 324 " + nickname + " " + words[1] + " +" + words[2] + "\r\n";
+        send(fd, str.c_str(), str.length(), 0);
+        return;
+    }
+   if (words.size() == 4)
+{
+    std::cout << "ModeChannel" << std::endl;
+    if (words[2] == "+o")
+    {
+        if (channels.find(words[1]) == channels.end())
+        {
+            // Channel does not exist
+            std::string str = ":" + server.get_hostnames() + " 403 " + nickname + " " + words[1] + " :No such channel\r\n";
+            send(fd, str.c_str(), str.length(), 0);
+            return;
+        }
+
+        if (!channels[words[1]]->isOperator("@" + nickname))
+        {
+            std::string str = ":" + server.get_hostnames() + " 482 " + nickname + " " + words[1] + " :You're not a channel operator\r\n";
+            send(fd, str.c_str(), str.length(), 0);
+            return;
+        }
+
+        if (channels[words[1]]->getUsers().find(words[3]) == channels[words[1]]->getUsers().end())
+        {
+            std::string str = ":" + server.get_hostnames() + " 441 " + nickname + " " + words[3] + " " + words[1] + " :They aren't on that channel\r\n";
+            send(fd, str.c_str(), str.length(), 0);
+            return;
+        }
+        
+        channels[words[1]]->addOperator("@" + words[3]);
+        
+        std::set<std::string>::iterator it3 = channels[words[1]]->getUsers().begin();
+        std::string str = "";
+            while (it3 != channels[words[1]]->getUsers().end())
+            {
+            std::string user = *it3;
+            int user_fd = server.get_fd_users(user);
+            if (channels[words[1]]->isOperator("@" + user) == true)
+                str = ":" + server.get_hostnames() + " " + server.to_string(RPL_NAMREPLY) + " " + server.get_nickname(fd) + " = " + words[1] + " :@" + user + "\r\n"; // Prefix '@' to operator's name
+            else
+                str = ":" + server.get_hostnames() + " " + server.to_string(RPL_NAMREPLY) + " " + server.get_nickname(fd) + " = " + words[1] + " :" + user + "\r\n";
+            send(user_fd, str.c_str(), str.length(), 0);
+            it3++;
+        }
+    }
+}
+        // if (words[2] == "-o")
+        // {
+        //     if (channels[words[1]]->isOperator("@" + nickname) == false)
+        //     {
+        //         std::string str = ":" + server.get_hostnames() + " 482 " + nickname + " " + words[1] + " :You're not a channel operator\r\n";
+        //         send(fd, str.c_str(), str.length(), 0);
+        //         return;
+        //     }
+        //     if (channels[words[1]]->getUsers().find(words[3]) == channels[words[1]]->getUsers().end())
+        //     {
+        //         std::string str = ":" + server.get_hostnames() + " 441 " + nickname + " " + words[3] + " " + words[1] + " :They aren't on that channel\r\n";
+        //         send(fd, str.c_str(), str.length(), 0);
+        //         return;
+        //     }
+        //     if (channels[words[1]]->isOperator("@" + words[3]) == false)
+        //     {
+        //         std::string str = ":" + server.get_hostnames() + " 441 " + nickname + " " + words[3] + " " + words[1] + " :They aren't an operator\r\n";
+        //         send(fd, str.c_str(), str.length(), 0);
+        //         return;
+        //     }
+        //     channels[words[1]]->removeOperator("@" + words[3]);
+        //     std::string str = ":" + server.get_hostnames() + " 331 " + nickname + " " + words[1] + " " + words[3] + " :is no longer an operator\r\n";
+        //     send(fd, str.c_str(), str.length(), 0);
+        //     return;
+        // }
+    // }
+}
+
+
 int join_topic_part_part(std::vector<std::string > words, Server &server, int fd)
 {
     if(words[0] == "JOIN" && server.get_password(fd) != "" && server.is_registered(fd) == 1)
@@ -137,7 +236,6 @@ int join_topic_part_part(std::vector<std::string > words, Server &server, int fd
         if(kick_command(words, server, fd) == 1)
             return (1);
     }
-    
     return (0);
 }
 
@@ -352,11 +450,14 @@ int main2(int ac, char **av)
                                         server.set_realname(fds[i].fd, realname);
                                     }
                                 } 
-                                else {
+                                else 
+                                {
                                     std::string realname = words[4].substr(words[4].find(":") + 1);
                                     server.set_realname(fds[i].fd, realname);
                                 }
                             }
+
+                            
                             if (server.is_nickname_exist_and_registered(server.get_nickname(fds[i].fd)) == 1 && server.is_registered(fds[i].fd) == 0)
                             {
                                 std::string str = ":" +  server.get_hostnames() + " 433 " + server.get_nickname(fds[i].fd) + " :Nickname is already in use\r\n";

@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 14:59:22 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/27 17:35:16 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/02/28 21:07:37 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void topic_broadcast_msg(std::map<std::string, Channel*>& channels, const std::s
         std::set<std::string>::iterator it2 = it->second->getUsers().begin();
         while (it2 != it->second->getUsers().end()) 
         {
-                std::string msg = ":" + nickname + "!" + nickname + "@" + server.get_hostnames() + " TOPIC " + channelName + "\r\n";
+                std::string msg = ":" + nickname + "!" + nickname + "@" + server.get_hostnames() + " TOPIC " + channelName + " :" + it->second->get_topic() + "\r\n";
                 send(server.get_fd_users(*it2), msg.c_str(), msg.length(), 0);
             it2++;
         }
@@ -48,6 +48,14 @@ int Server::TopicChannel(std::vector<std::string> strs, std::map<std::string, Ch
             if (channels[strs[1]]->getUsers().find(server.get_nickname(fd)) == channels[strs[1]]->getUsers().end())
             {
                 std::string str = ":" + server.get_hostnames() + " 442 " + server.get_nickname(fd) + " " + strs[1] + " :You're not on that channel\r\n";
+                send(fd, str.c_str(), str.length(), 0);
+                return -2;
+            }
+            
+            // Channel exists and mode is set to private
+            if(channels[strs[1]]->isTopicRestriction() == true  && channels[strs[1]]->isOperator("@" + server.get_nickname(fd)) == false)
+            {
+                std::string str = ":" + server.get_hostnames() + " " + "482" + " " + server.get_nickname(fd) + " " + strs[1] + " :You're not channel operator\r\n";
                 send(fd, str.c_str(), str.length(), 0);
                 return -2;
             }

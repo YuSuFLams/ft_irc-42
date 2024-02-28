@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 21:09:08 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/24 22:35:58 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/02/27 19:15:05 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,8 @@ int Server::PartChannel(std::vector<std::string> strs, std::map<std::string, Cha
 
         // Remove the user from the channel
         channel->removeUser(nickname);
-        if(channel->isOperator(nickname))
-            channel->removeOperator(nickname);
+        if(channel->isOperator("@" + nickname))
+            channel->removeOperator("@" + nickname);
         // If the channel is empty after the user leaves, remove it from the map
         if (channel->getUsers().empty()) 
         {
