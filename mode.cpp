@@ -30,7 +30,7 @@ bool Server::isValidMode(const std::string& word) {
     return true;
 }
 
-void Server::addModeToChannel(Server server, std::map<std::string, Channel *> &channel, std::string channelname, std::string modeType, bool add)
+void Server::addMode_I(Server server, std::map<std::string, Channel *> &channel, std::string channelname, std::string modeType, bool add)
 {
     for (std::map<std::string, Channel *>::iterator it = channel.begin(); it != channel.end(); it++)
     {
@@ -58,6 +58,33 @@ void Server::addModeToChannel(Server server, std::map<std::string, Channel *> &c
     }
 }
 
+void Server::addMode_T(Server server, std::map<std::string, Channel *> &channel, std::string channelname, std::string modeType, bool add)
+{
+    for (std::map<std::string, Channel *>::iterator it = channel.begin(); it != channel.end(); it++)
+    {
+        if (it->first == channelname)
+        {
+            it->second->setTopicRestriction(add);
+            std::set<std::string> usersInChannel = it->second->getUsers();
+            for (std::set<std::string>::iterator it = usersInChannel.begin(); it != usersInChannel.end(); it++)
+            {
+                int fdRe;
+                std::string name;
+                for (std::map<int , Client *>::iterator it1 = this->clients.begin(); it1 != this->clients.end(); it1++)
+                {
+                    fdRe = (*it1).first;
+                    name = (*it1).second->getNickname();
+                    if (name == *it)
+                    {
+                        std::string mtype = ((add)? "+": "-") + modeType;
+                        std::string mode = RPL_CHANNELMODEIS_222(server.get_hostnames(), server.get_nickname(fdRe), channelname, mtype);
+                        send(fdRe, mode.c_str(), mode.length(), 0);
+                    }
+                }
+            }
+        }
+    }
+}
 
 void Server::modecmd(std::vector<std::string> words, Server server, int fd)
 {
@@ -116,11 +143,14 @@ void Server::modecmd(std::vector<std::string> words, Server server, int fd)
                 {
                     case 'i':
                     {
-                        server.addModeToChannel(server, server.getChannels(), words[1], *it, add);
+                        server.addMode_I(server, server.getChannels(), words[1], *it, add);
                         break;
                     }
-                    // case 't':
-                    //     ;
+                    case 't':
+                    {
+                        server.addMode_T(server, server.getChannels(), words[1], *it, add);
+                        break;
+                    }
                     // case 'k':
                     //     ;
                     // case 'o':

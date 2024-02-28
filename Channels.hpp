@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 03:03:46 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/28 00:16:03 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/02/28 17:38:12 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@
 #define RPL_ENDOFNAMES 366
 #define ERR_BADCHANNELKEY 475
 #define ERR_BADCHANMASK 476
+#define RPL_NAMREPLY 353
 
 class Channel
 {

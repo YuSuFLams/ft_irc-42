@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 20:23:08 by ylamsiah          #+#    #+#             */
-/*   Updated: 2024/02/28 01:28:22 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/02/28 17:42:26 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,13 @@ bool Server::isClientInChannel(std::string nickname, std::map<std::string, Chann
 
 bool Server::isClientOperatorInChannel(std::string nickname, std::string channelname, std::map<std::string, Channel *> &channels)
 {
+    std::string new_nickname = "@" + nickname;
     std::map<std::string, Channel *>::iterator it;
     for (it = channels.begin(); it != channels.end(); it++)
     {
         if (it->first == channelname)
         {
-            if (it->second->isOperator(nickname))
+            if (it->second->isOperator(new_nickname))
                 return (true);
         }
     }

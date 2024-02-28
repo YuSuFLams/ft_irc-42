@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 04:52:32 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/28 01:09:54 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/02/28 18:07:38 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -274,6 +274,7 @@ class Server
         }
         
         int	JoinChannel(std::vector<std::string> strs , std::string nickname, int fd, Server &server);
+        int public_channel(std::string channel_name , std::string key , int fd, Server &server);
         int	PartChannel(std::vector<std::string> strs ,std::map<std::string, Channel *> &channels,  int fd, std::string nickname,  Server &server);
         void handleChannels(std::vector<std::pair<std::string, std::string> >& pairs, int fd, const std::string& nickname , Server &server);
         int	TopicChannel(std::vector<std::string> strs ,std::map<std::string, Channel *> &channels,  int fd,  Server &server);
@@ -400,7 +401,10 @@ class Server
 
         void modecmd(std::vector<std::string> words, Server server, int fd);
         bool isValidMode(const std::string& word);
-        void addModeToChannel(Server server, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
+        void addMode_I(Server server, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
+        
+        void addMode_T(Server server, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
+        
 };
 
 
