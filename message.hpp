@@ -35,4 +35,10 @@
 
 #define ERR_USERNOTINCHANNEL_111(hostname, nickUser, nick, channel) ( ":" + hostname +  " 441 " + nickUser + " " + nick + " " + channel + " :They aren't on that channel\r\n")
 
+#define ERR_PASSWDMISMATCH_111(hostname, nickUser) ( ":" + hostname +  "464 " + nickUser + " :Password incorrect\r\n")
+
+#define ERR_KEYSET_111(hostname, nickUser, command) ( ":" + hostname +  "467 " + nickUser + " " + command + " :Channel key already set\r\n")
+
+#define ERR_BADCHANNELKEY_111(hostname, nickUser, channel) ( ":" + hostname +  "475 " + nickUser + " " + channel + " :Cannot join channel (+k)\r\n")
+
 #endif

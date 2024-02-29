@@ -136,6 +136,147 @@ void Server::addMode_O(int fd, std::vector<std::string> words, Server server, st
     }
 }
 
+
+
+void Server::addMode_L(int fd, std::vector<std::string> words, Server server, std::map<std::string, Channel *> &channel, std::string channelname, std::string modeType, bool add)
+{
+    if (add)
+    {
+        if (words.size() != 4)
+        {
+            std::string errorMode = ERR_NEEDMOREPARAMS_111(server.get_hostnames(), server.get_nickname(fd), words[0]);
+            send(fd, errorMode.c_str(), errorMode.length(), 0);
+            return ;
+        }
+        if (!server.isAllDigit(words[3]))
+        {
+            std::string errorMode = ":" + server.get_hostnames() + " 461 "  + words[0] + " : Invalid parameter\r\n" ;
+            send(fd, errorMode.c_str(), errorMode.length(), 0);
+            return ;
+        }
+    }
+    else
+    {
+        if (words.size() != 3)
+        {
+            std::string errorMode = ERR_NEEDMOREPARAMS_111(server.get_hostnames(), server.get_nickname(fd), words[0]);
+            send(fd, errorMode.c_str(), errorMode.length(), 0);
+            return ;
+        }
+    }
+    for (std::map<std::string, Channel *>::iterator it = channel.begin(); it != channel.end(); it++)
+    {
+        if (it->first == channelname)
+        {
+            if (add)
+                it->second->setLimit(std::atol(words[3].c_str()));
+            else
+                it->second->removeLimit();
+            std::set<std::string> usersInChannel = it->second->getUsers();
+            for (std::set<std::string>::iterator it2 = usersInChannel.begin(); it2 != usersInChannel.end(); it2++)
+            {
+                int fdRe;
+                std::string name;
+                for (std::map<int , Client *>::iterator it1 = this->clients.begin(); it1 != this->clients.end(); it1++)
+                {
+                    fdRe = (*it1).first;
+                    name = (*it1).second->getNickname();
+                    if (name == *it2)
+                    {
+                        std::string mtype = ((add)? "+": "-") + modeType;
+                        std::string mode = RPL_CHANNELMODEIS_222(server.get_hostnames(), server.get_nickname(fdRe), channelname, mtype);
+                        send(fdRe, mode.c_str(), mode.length(), 0);
+                    }
+                }
+            }
+        }
+    }
+}
+
+bool Server::isAllDigit(std::string str)
+{
+    for (std::string::iterator it = str.begin(); it != str.end(); it++)
+    {
+        if (!std::isdigit(*it))
+            return false;
+    }
+    return true;
+}
+
+
+
+void Server::addMode_K(int fd, std::vector<std::string> words, Server server, std::map<std::string, Channel *> &channel, std::string channelname, std::string modeType, bool add)
+{
+    if (add)
+    {
+        if (words.size() != 4)
+        {
+            std::string errorMode = ERR_NEEDMOREPARAMS_111(server.get_hostnames(), server.get_nickname(fd), words[0]);
+            send(fd, errorMode.c_str(), errorMode.length(), 0);
+            return ;
+        }
+    }
+    else
+    {
+        if (words.size() != 3)
+        {
+            std::string errorMode = ERR_NEEDMOREPARAMS_111(server.get_hostnames(), server.get_nickname(fd), words[0]);
+            send(fd, errorMode.c_str(), errorMode.length(), 0);
+            return ;
+        }
+    }
+    for (std::map<std::string, Channel *>::iterator it = channel.begin(); it != channel.end(); it++)
+    {
+        if (it->first == channelname)
+        {
+            if (add)
+            {
+                if (it->second->getChannelKey().empty())
+                    it->second->setChannelKey(words[3]);
+                else
+                {
+                    std::string errorMode = ERR_KEYSET_111(server.get_hostnames(), server.get_nickname(fd), channelname);
+                    send(fd, errorMode.c_str(), errorMode.length(), 0);
+                    return ;
+                }
+            }
+            else
+            {
+                if (it->second->getChannelKey() == words[3])
+                    it->second->removeChannelKey();
+                else
+                {
+                    std::string errorMode = ERR_BADCHANNELKEY_111(server.get_hostnames(), server.get_nickname(fd), channelname);
+                    send(fd, errorMode.c_str(), errorMode.length(), 0);
+                    return ;
+                }
+            }
+            std::set<std::string> usersInChannel = it->second->getUsers();
+            for (std::set<std::string>::iterator it2 = usersInChannel.begin(); it2 != usersInChannel.end(); it2++)
+            {
+                int fdRe;
+                std::string name;
+                for (std::map<int , Client *>::iterator it1 = this->clients.begin(); it1 != this->clients.end(); it1++)
+                {
+                    fdRe = (*it1).first;
+                    name = (*it1).second->getNickname();
+                    if (name == *it2)
+                    {
+                        std::string mtype = ((add)? "+": "-") + modeType;
+                        std::string mode = RPL_CHANNELMODEIS_222(server.get_hostnames(), server.get_nickname(fdRe), channelname, mtype);
+                        send(fdRe, mode.c_str(), mode.length(), 0);
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+
 void Server::modecmd(std::vector<std::string> words, Server server, int fd)
 {
     //check is enough parameters
@@ -206,10 +347,16 @@ void Server::modecmd(std::vector<std::string> words, Server server, int fd)
                         server.addMode_O(fd, words, server, server.getChannels(), words[1], *it, add);
                         break;
                     }
-                    // case 'k':
-                    //     ;
-                    // case 'l':
-                    //     ;
+                    case 'l':
+                    {
+                        server.addMode_L(fd, words, server, server.getChannels(), words[1], *it, add);
+                        break;
+                    }
+                    case 'k':
+                    {
+                        server.addMode_K(fd, words, server, server.getChannels(), words[1], *it, add);
+                        break;
+                    }
                     default:
                     {
                         std::string errorMode = ERR_UNKNOWNMODE_222(server.get_hostnames(), server.get_nickname(fd), *it);

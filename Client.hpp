@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/17 17:41:59 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/20 16:30:06 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/02/28 23:44:50 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,11 @@ class Client
         std::string hostname;
         std::string servername;
         int is_registered;
+        bool InviteToChannel;
     public:
+        void setInviteToChannel(bool flag = false) { this->InviteToChannel = flag; }
+        bool getInviteToChannel() const { return this->InviteToChannel; }
+
         Client()
         {
             this->fd = 0;

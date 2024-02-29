@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 20:23:08 by ylamsiah          #+#    #+#             */
-/*   Updated: 2024/02/28 19:29:48 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/02/28 23:44:25 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,9 +145,11 @@ void Server::invitecmd(std::vector<std::string> words, Server server, int fd)
                 if ((*it).second->getNickname() == words[1]){
                     fdRe = (*it).first;
                     name = (*it).second->getNickname();
+                    (*it).second->setInviteToChannel(true);
                     break;
                 }
             }
+            
             std::string inviteMsg = ":" + server.get_nickname(fd) + " INVITE " + words[1] + " to :" + words[2] + "\r\n";
             send(fdRe, inviteMsg.c_str(), inviteMsg.length(), 0);
             std::string inviteSent = ":" + server.get_hostnames() + " " + to_string(RPL_INVITING) + " " + server.get_nickname(fd) + " :Inviting " + words[1] + " to " + words[2] + "\r\n";

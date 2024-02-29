@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 04:52:32 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/28 19:28:36 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/02/29 00:43:11 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include "Channels.hpp"
 # include <string>
 # include <sstream>
+# include <cstdlib>
 # include <map>
 
 class Client;
@@ -404,7 +405,9 @@ class Server
         void addMode_I(Server server, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
         void addMode_O(int fd, std::vector<std::string> words, Server server, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
         void addMode_T(Server server, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
-        
+        void addMode_L(int fd, std::vector<std::string> words, Server server, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
+        void addMode_K(int fd, std::vector<std::string> words, Server server, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
+        bool isAllDigit(std::string str);
 };
 
 
