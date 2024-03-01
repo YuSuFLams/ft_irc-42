@@ -26,8 +26,15 @@ int Server::public_channel(std::string channel_name , std::string key , int fd, 
         send(fd, msg.c_str(), msg.length(), 0);
         return (1);
     }
+    // Check if the user is invited to the channel and the channel is invite only
+    if(server.getInviteToChannel(fd) == true && channels[channel_name]->getInviteOnly() == true)
+    {
+        std::string msg = ":" + server.get_hostnames() + " 473 " + server.get_nickname(fd) + " " + channel_name + " :Cannot join channel (+i)\r\n";
+        send(fd, msg.c_str(), msg.length(), 0);
+        return (1);
+    }
     
-   if (it2 == channels.end()) 
+    if (it2 == channels.end()) 
     {
         // Channel doesn't exist, create it
         Channel* newChannel = new Channel(channel_name); // Create a new channel

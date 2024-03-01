@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 04:52:32 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/01 19:14:41 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/01 20:50:55 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,15 @@ class Server
             if(it != this->clients.end())
                 return (clients[fd]->getNickname());
             return ("");
+        }
+        
+        bool getInviteToChannel(int fd)
+        {
+            std::map<int, Client *>::iterator it;
+            it = this->clients.find(fd);
+            if(it != this->clients.end())
+                return (clients[fd]->getInviteToChannel());
+            return (false);
         }
 
         std::string get_username(int fd)

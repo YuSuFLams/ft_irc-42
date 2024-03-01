@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 03:03:46 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/27 16:51:10 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/01 20:53:39 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,10 @@ class Channel
         void setTopicRestriction(bool isTopicRestriction) 
         { 
             topicRestriction = isTopicRestriction; 
+        }
+        bool getInviteOnly()
+        {
+            return (inviteOnly);
         }
         void setChannelKey(const std::string& key) 
         { 

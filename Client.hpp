@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/17 17:41:59 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/20 16:30:06 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/01 20:55:35 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ class Client
         std::string hostname;
         std::string servername;
         int is_registered;
+        bool InviteToChannel;
     public:
         Client()
         {
@@ -36,11 +37,21 @@ class Client
             this->hostname = "";
             this->servername = "";
             this->is_registered = 0;
+            this->InviteToChannel = false;
         }
         int getFd()
         {
             return (this->fd);
         }
+        bool getInviteToChannel()
+        {
+            return (this->InviteToChannel);
+        }
+        void setInviteToChannel(bool InviteToChannel)
+        {
+            this->InviteToChannel = InviteToChannel;
+        }
+        
         std::string getPassword()
         {
             return (this->password);
