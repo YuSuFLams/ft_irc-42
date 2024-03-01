@@ -1,1 +1,48 @@
+-------
+PASS ss
+NICK oo 
+USER dsfhgdsf hgf sdhfgdsf d
+:e3r8p1.1337.ma 001 oo :Welcome to the Internet Relay Network dsfhgdsf!hgf@sdhfgdsf
+:e3r8p1.1337.ma 002 oo :Your host is e3r8p1.1337.ma, running version 1.0
+:e3r8p1.1337.ma 003 oo :This server was created 2024-02-28.22:32:21
+JOIN #l
+:oo!dsfhgdsf@e3r8p1.1337.ma JOIN #l
+:e3r8p1.1337.ma 332 oo #l :no topic is set
+:e3r8p1.1337.ma 333 oo = #l :@ll
+:e3r8p1.1337.ma 353 oo = #l :oo
+:e3r8p1.1337.ma 366 oo #l :End of /NAMES list
+:pp!dsfjdsfghfsds@e3r8p1.1337.ma JOIN #l
+KICK #l pp
+:e3r8p1.1337.ma 482 oo #l :You're not a channel operator
+-----------
 
+PASS ss
+NICK oo 
+USER dsfhgdsf hgf sdhfgdsf d
+:e3r8p1.1337.ma 001 oo :Welcome to the Internet Relay Network dsfhgdsf!hgf@sdhfgdsf
+:e3r8p1.1337.ma 002 oo :Your host is e3r8p1.1337.ma, running version 1.0
+:e3r8p1.1337.ma 003 oo :This server was created 2024-02-28.22:32:21
+
+KICK #l pp *---- l is already created by another client -------*
+
+
+-------------
+
+PASS ss
+NICK oo
+USER dsfjdsf dsfhdsf dfs dfg 
+:e3r8p1.1337.ma 001 oo :Welcome to the Internet Relay Network dsfjdsf!dsfhdsf@dfs
+:e3r8p1.1337.ma 002 oo :Your host is e3r8p1.1337.ma, running version 1.0
+:e3r8p1.1337.ma 003 oo :This server was created 2024-02-28.22:35:07
+KICK 
+:e3r8p1.1337.ma 461 KICK :Not enough parameters
+KICK #l adsasd
+:e3r8p1.1337.ma 482 oo #l :You're not a channel operator
+
+------------
+
+TOPIC #l ajksdas dash
+:ll!ll@e3r8p1.1337.ma TOPIC #l :ajksdas
+
+KICK #k,#o agshd
+:e3r8p1.1337.ma 403 ll #k,#o :No such channel

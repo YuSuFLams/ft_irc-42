@@ -143,7 +143,7 @@ void Server::handleChannels(std::vector<std::pair<std::string, std::string> >& p
 }
 
 		
-int Server::JoinChannel(std::vector<std::string > strs , std::string nickname, int fd, Server &server)
+int Server::JoinChannel(std::vector<std::string > strs , std::string nickname, int fd, Server &server , std::string str)
 { 
     std::vector<std::string> channels;
     std::vector<std::string> keys;
@@ -152,9 +152,20 @@ int Server::JoinChannel(std::vector<std::string > strs , std::string nickname, i
     std::vector<std::pair<std::string, std::string> > pair;
     
     std::stringstream ss(strs[1]);
+
+
     if (strs.size() >= 3) 
     {
-        if (!strs[2].empty() && strs[2].find(',') != std::string::npos) 
+        if(!strs[2].empty() && strs[2].at(0) == ':')
+        {
+            // get the key after the ':'
+            keys.push_back(str.substr(str.find(":") + 1 , str.length()));
+            for (size_t i = 3; i < strs.size(); i++)
+            {
+                strs.pop_back();
+            }
+        }
+        else if (!strs[2].empty() && strs[2].find(',') != std::string::npos) 
         {
             std::stringstream ss2(strs[2]);
             std::string token_keys;
@@ -204,13 +215,14 @@ int Server::JoinChannel(std::vector<std::string > strs , std::string nickname, i
             }
         }
     }
-    // std::cout << "-----------------pair------------------" << std::endl;
-    // std::vector<std::pair<std::string, std::string> >::iterator it = pair.begin();
-    // while(it != pair.end())
-    // {
-    //     std::cout << "pair.first: " << it->first << " pair.second: " << it->second << std::endl;
-    //     it++;
-    // }
+    std::cout << "-----------------pair------------------" << std::endl;
+    std::vector<std::pair<std::string, std::string> >::iterator it = pair.begin();
+    while(it != pair.end())
+    {
+        std::cout << it->first << " | " << it->second << std::endl;
+        it++;
+    }
+    std::cout << "-----------------------------------------" << std::endl;
 
     handleChannels(pair, fd, nickname, server);
     return 0;

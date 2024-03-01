@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 04:36:22 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/27 19:40:10 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/01 19:14:19 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 // client side
 // socket() -> connect() -> send() -> recv() -> close()
 
-int kick_command(std::vector<std::string > words , Server &server , int fd)
+int kick_command(std::vector<std::string > words , Server &server , int fd , std::string str)
 {
     if(words.size() == 1)
     {
@@ -37,12 +37,12 @@ int kick_command(std::vector<std::string > words , Server &server , int fd)
     }
     else
     {
-        server.KickChannel(words, server.getChannels(), fd, server.get_nickname(fd), server);
+        server.KickChannel(words, server.getChannels(), fd, server.get_nickname(fd), server, str);
     }
     return (0);
 }
 
-int join_command(std::vector<std::string > words , Server &server , int fd)
+int join_command(std::vector<std::string > words , Server &server , int fd , std::string str)
 {
     if(words.size() == 1)
     {
@@ -52,7 +52,7 @@ int join_command(std::vector<std::string > words , Server &server , int fd)
     }
     else
     {
-        if(server.JoinChannel(words, server.get_nickname(fd), fd , server) == -1)
+        if(server.JoinChannel(words, server.get_nickname(fd), fd , server ,str) == -1)
         {
             std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NOSUCHCHANNEL) + " " + server.get_nickname(fd) + " " + words[1] + " :No such channel\r\n";
             send(fd, str.c_str(), str.length(), 0);
@@ -214,11 +214,11 @@ void ModeChannel(std::vector<std::string > words, std::map<std::string, Channel 
 }
 
 
-int join_topic_part_part(std::vector<std::string > words, Server &server, int fd)
+int join_topic_part_part(std::vector<std::string > words, Server &server, int fd , std::string str)
 {
     if(words[0] == "JOIN" && server.get_password(fd) != "" && server.is_registered(fd) == 1)
     {
-        if(join_command(words, server, fd) == 1)
+        if(join_command(words, server, fd , str) == 1)
             return (1);
     }
     else if(words[0] == "TOPIC" && server.get_password(fd) != "" && server.is_registered(fd) == 1)
@@ -233,7 +233,7 @@ int join_topic_part_part(std::vector<std::string > words, Server &server, int fd
     }
     else if(words[0] == "KICK" && server.get_password(fd) != "" && server.is_registered(fd) == 1)
     {
-        if(kick_command(words, server, fd) == 1)
+        if(kick_command(words, server, fd, str) == 1)
             return (1);
     }
     return (0);
@@ -467,7 +467,7 @@ int main2(int ac, char **av)
                             }
                         }
                         
-                        if(join_topic_part_part(words, server, fds[i].fd) == 1)
+                        if(join_topic_part_part(words, server, fds[i].fd, str) == 1)
                             continue;
                         if(quit_command(words, server, fds[i].fd) == 1)
                             break;

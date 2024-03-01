@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 04:52:32 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/26 22:09:49 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/01 19:14:41 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -270,12 +270,12 @@ class Server
             return ("No topic is set");
         }
         
-        int	JoinChannel(std::vector<std::string> strs , std::string nickname, int fd, Server &server);
+        int	JoinChannel(std::vector<std::string> strs , std::string nickname, int fd, Server &server , std::string str);
         int public_channel(std::string channel_name , std::string key , int fd, Server &server);
         int	PartChannel(std::vector<std::string> strs ,std::map<std::string, Channel *> &channels,  int fd, std::string nickname,  Server &server);
         void handleChannels(std::vector<std::pair<std::string, std::string> >& pairs, int fd, const std::string& nickname , Server &server);
         int	TopicChannel(std::vector<std::string> strs ,std::map<std::string, Channel *> &channels,  int fd,  Server &server);
-        void KickChannel(std::vector<std::string> strs, std::map<std::string, Channel *> &channels, int fd, std::string nickname, Server &server);
+        void KickChannel(std::vector<std::string> strs, std::map<std::string, Channel *> &channels, int fd, std::string nickname, Server &server , std::string str);
         
         int get_fd_users(const std::string& nickname) const 
         {

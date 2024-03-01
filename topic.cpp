@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 14:59:22 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/02/28 21:07:37 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/01 18:21:35 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,12 @@ int Server::TopicChannel(std::vector<std::string> strs, std::map<std::string, Ch
         if(strs.size() > 1 && (strs[1].compare(":") == 0 || strs[1].compare("::") == 0))
         {
             std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_BADCHANMASK) + " " + server.get_nickname(fd) + " " + strs[1] + " :Bad Channel Mask\r\n";
+            send(fd, str.c_str(), str.length(), 0);
+            return -2;
+        }
+        if(strs.size() > 3 && (strs[2].find(":") == std::string::npos && strs[2].size() != 1))
+        {
+            std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NEEDMOREPARAMS) + " " + server.get_nickname(fd) + " " + strs[1] + " :Not enough parameters\r\n";
             send(fd, str.c_str(), str.length(), 0);
             return -2;
         }
