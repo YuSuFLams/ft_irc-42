@@ -149,6 +149,12 @@ int Server::JoinChannel(std::vector<std::string > strs , std::string nickname, i
     std::vector<std::string> keys;
 
     // pair of channel and key
+    if(strs.size() > 3 && strs[2].at(0) != ':')
+    {
+        std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NEEDMOREPARAMS) + " " + server.get_nickname(fd) + " JOIN :Not enough parameters\r\n";
+        send(fd, str.c_str(), str.length(), 0);
+        return -2;
+    }
     std::vector<std::pair<std::string, std::string> > pair;
     
     std::stringstream ss(strs[1]);
