@@ -104,11 +104,17 @@ class Server {
 		bool			IsAuthorized(Client &);
 		void			TraiteMessage(Message &);
 
+		void			clientLeft(int );
+		void			quitServer(void );
 };
 
 void	split(std::string &msg, std::vector<std::string> SplitedMsg);
 void    splitCommand(std::string str, char oper, std::vector<std::string> &SplitedMsg);
 void	initTab(std::string strs[MAX]);
 void 	sendResponce(int fd, const std::string &responce);
+void	quitServer(Server &server)
+
 std::string const   int2string (int n);
+
+
 #endif

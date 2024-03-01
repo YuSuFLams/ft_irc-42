@@ -38,7 +38,37 @@ Server&	Server::operator=(const Server &sr)
 	return (*this);
 	
 }
-Server::~Server(){}
+
+void	Server::clientLeft(int fd) {
+	try
+	{
+		std::map<int, Client *>::iterator		client;
+
+		client = this->Clients.find(fd);
+		if (client != this->clients.end()) {
+			delete client->second;
+			this->clients.erase(user);
+		}
+	} catch (myException & e) {}
+}
+
+void Server::quitServer() {
+    close (this->server_fd);
+    this->~Server();
+    exit (EXIT_FAILURE);
+}
+
+
+Server::~Server(){
+	std::cout << "Deleting Server . . . " << std::endl;
+	sleep (1);
+	std::map<int, Client *>::iterator client;
+	for (user = this->client.begin(); user != this->client.end(); ++user)
+		delete user->second;
+	this->client.clear();
+
+	std::cout << "Server Deleted ! " << std::endl;
+}
 
 void 	Server::seTpass(std::string pass)
 {
@@ -222,11 +252,11 @@ void	Server::PollingFd()
 		{
 			if (users[i].revents == 0)
 				continue;
-			struct sockaddr_in newAddresse;
-			int lenadd = sizeof(newAddresse);
 
 			if (users[i].fd == this->server_fd)
 			{
+				struct sockaddr_in newAddresse;
+				int lenadd = sizeof(newAddresse);
 				std::cout << "waiting for accept new connections" << std::endl;
 				int newfd;
 				do
@@ -237,7 +267,7 @@ void	Server::PollingFd()
 						if (errno != EWOULDBLOCK)
 						{
 							std::cout << "Failed :" << errno << std::endl;
-							end_ser = 1;
+							quitServer(*this);
 						}
 						break;
 				   	}
@@ -301,24 +331,12 @@ void	Server::PollingFd()
 				}while(1); // end of accept function
 				std::cout << "out of loop : " << mesg.getMessage() << std::endl;
 				TraiteMessage(mesg);
-				// std::cout << "received : " << buffer << " From : " << users[i].fd <<  std::endl;
-				
+
 				// end of TraiteMessage
 				if (close_conn) // manage disconnect issue
 				{
-					// Manage Disconnected Users
-					close(users[i].fd); // moved to Discconected fct
-					users[i].fd = -1;	// moved to Discconected fct
-					for (int i = 0; i < user_num; i++)
-					{
-						if (users[i].fd == -1)
-						{
-							for (int j = i; j < user_num; j++)
-								users[j].fd = users[j + 1].fd;
-							i--;
-							user_num--;
-						}
-					}
+					this->clientLeft();
+					close(users[i].fd); // mkae be keept
 				}
 			}
 			//

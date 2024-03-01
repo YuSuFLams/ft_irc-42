@@ -73,15 +73,13 @@ void	Server::cmdknick(std::vector<std::string> &SplitedMsg, Client *c)
 	Client *tmpClient;
 
 	try{
-        // if (this->IsAuthorized(*c))
-        //     throw Myexception(ERR_ALREADYREGISTRED);
-		if (!SplitedMsg[2].empty())
-			throw Myexception(ERR_ERRONEUSNICKNAME);
 		if (SplitedMsg[1].empty())
 			throw Myexception(ERR_NONICKNAMEGIVEN);
+		if (!SplitedMsg[1].findfirst_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789[]\`^{}"))
+			throw Myexception(ERR_ERRONEUSNICKNAME);
 		if (!SplitedMsg[1].empty() && SplitedMsg[2].empty()) {
 			tmpClient = this->getClientByNickname(SplitedMsg[1]);
-			if (tmpClient)
+			if (tmpClient && tmpClient->getFd() != c->getFd())
 				throw Myexception(ERR_NICKNAMEINUSE);
 				c->seTNick(SplitedMsg[1]);
             if (this->IsAuthorized(*c)) {
