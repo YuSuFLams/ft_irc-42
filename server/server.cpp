@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:24 by araiteb           #+#    #+#             */
-/*   Updated: 2024/02/25 05:44:44 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/02 19:16:08 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,37 +38,7 @@ Server&	Server::operator=(const Server &sr)
 	return (*this);
 	
 }
-
-void	Server::clientLeft(int fd) {
-	try
-	{
-		std::map<int, Client *>::iterator		client;
-
-		client = this->Clients.find(fd);
-		if (client != this->clients.end()) {
-			delete client->second;
-			this->clients.erase(user);
-		}
-	} catch (myException & e) {}
-}
-
-void Server::quitServer() {
-    close (this->server_fd);
-    this->~Server();
-    exit (EXIT_FAILURE);
-}
-
-
-Server::~Server(){
-	std::cout << "Deleting Server . . . " << std::endl;
-	sleep (1);
-	std::map<int, Client *>::iterator client;
-	for (user = this->client.begin(); user != this->client.end(); ++user)
-		delete user->second;
-	this->client.clear();
-
-	std::cout << "Server Deleted ! " << std::endl;
-}
+Server::~Server(){}
 
 void 	Server::seTpass(std::string pass)
 {
@@ -222,9 +192,30 @@ void 	sendResponce(int fd, const std::string &responce)
 void 	Server::TraiteMessage(Message &msg) {
 	std::vector<std::string> SplitedMsg;
 
-	splitCommand(msg.getMessage(), ' ', SplitedMsg);
+	std::cout << "trait msg " << msg.getMessage() << std::endl;
+	split(msg.getMessage(), SplitedMsg);
+	std::cout << "[" << SplitedMsg[0] << "]" <<  " [" << SplitedMsg[1] << "]" << std::endl;
 	this->commands(msg, SplitedMsg);
 	SplitedMsg.clear();
+}
+
+void	Server::clientLeft(int fd) {
+	try
+	{
+		std::map<int, Client *>::iterator		client;
+
+		client = this->clients.find(fd);
+		if (client != this->clients.end()) {
+			delete client->second;
+			this->clients.erase(client);
+		}
+	} catch (std::exception &e) {}
+}
+
+void Server::quitServer() {
+    close (this->server_fd);
+    this->~Server();
+    exit (EXIT_FAILURE);
 }
 
 void	Server::PollingFd()
@@ -252,11 +243,11 @@ void	Server::PollingFd()
 		{
 			if (users[i].revents == 0)
 				continue;
+			struct sockaddr_in newAddresse;
+			int lenadd = sizeof(newAddresse);
 
 			if (users[i].fd == this->server_fd)
 			{
-				struct sockaddr_in newAddresse;
-				int lenadd = sizeof(newAddresse);
 				std::cout << "waiting for accept new connections" << std::endl;
 				int newfd;
 				do
@@ -267,7 +258,7 @@ void	Server::PollingFd()
 						if (errno != EWOULDBLOCK)
 						{
 							std::cout << "Failed :" << errno << std::endl;
-							quitServer(*this);
+							quitServer();
 						}
 						break;
 				   	}
@@ -295,12 +286,11 @@ void	Server::PollingFd()
 				Message mesg;
 				do
 				{
-					// check if the msg is splited
 					flg = recv(users[i].fd, buffer, sizeof(buffer), 0); // check max size for receive
-					// trait_msg(bfl, flg);
+
 					buffer[flg] = '\0';
 					msg += buffer;
-					// std::cout << msg <<  std::endl;
+					std::cout << flg << std::endl;
 					if (flg < 0)
 					{
 						if (errno != EWOULDBLOCK)
@@ -317,27 +307,19 @@ void	Server::PollingFd()
 						break ; 
 					}
 					len = flg;
-					if (msg.find_first_of("\r\n") != std::string::npos)
+					if (msg.find_first_of("\r\n") != std::string::npos && msg != "\n")
 					{
 						size_t pos = msg.find_last_of("\r\n");
 						msg = msg.substr(0, pos);
-					// 	// user->setMsgRemain(remain);
 						mesg = Message(users[i].fd, msg);
 					} 
-					// else 
-					// {
-						// user->setMsgRemain(remain);
-					// }
-				}while(1); // end of accept function
-				std::cout << "out of loop : " << mesg.getMessage() << std::endl;
-				TraiteMessage(mesg);
 
-				// end of TraiteMessage
+				}while(1); // end of accept function
+				std::cout << "out of loop : [" << mesg.getMessage()<<"]" << std::endl;
+				if (!mesg.getMessage().empty())
+					TraiteMessage(mesg);
 				if (close_conn) // manage disconnect issue
-				{
-					this->clientLeft();
-					close(users[i].fd); // mkae be keept
-				}
+					this->clientLeft(users[i].fd);
 			}
 			//
 		}

@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 03:00:11 by araiteb           #+#    #+#             */
-/*   Updated: 2024/02/25 06:17:36 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/02 18:58:58 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,24 +16,24 @@ void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg)
 {
 	Client *c ;
 
+	std::cout << "[" << SplitedMsg[0] << "]" <<  " [" << SplitedMsg[1] << "]" << std::endl;
 	c = getClientByFd(msg.getSenderFd());
 	if (!c)
 		return ;
 	for (int i = 0 ; SplitedMsg[0][i] ; i++)
 		SplitedMsg[0][i] = toupper(SplitedMsg[0][i]);
-	std::cout << "[" << SplitedMsg[0] << "]" <<  " [" << SplitedMsg[1] << "]" << std::endl;
 // 		// All Command Should be Compaired here 
 
-		if (!SplitedMsg[0].compare("PASS"))
-			cmdpass(SplitedMsg, *c);
-		else if (!SplitedMsg[0].compare("NICK"))
-			cmdknick(SplitedMsg, c);
-		else if (!SplitedMsg[0].compare("USER"))
-			cmduser(c, SplitedMsg);
-		// else if (!IsAuthorized(c))
-		// 	throw "ERR_NOTREGISTERED";
-		else if(!SplitedMsg[0].compare("PRIVMSG"))
-			cmdprivmsg(SplitedMsg, c);	
+	if (!SplitedMsg[0].compare("PASS"))
+		cmdpass(SplitedMsg, *c);
+	else if (!SplitedMsg[0].compare("NICK"))
+		cmdknick(SplitedMsg, c);
+	else if (!SplitedMsg[0].compare("USER"))
+		cmduser(c, SplitedMsg);
+	// else if (!IsAuthorized(c))
+	// 	throw "ERR_NOTREGISTERED";
+	else if(!SplitedMsg[0].compare("PRIVMSG"))
+		cmdprivmsg(SplitedMsg, c);	
 }
 
 
@@ -73,15 +73,16 @@ void	Server::cmdknick(std::vector<std::string> &SplitedMsg, Client *c)
 	Client *tmpClient;
 
 	try{
-		if (SplitedMsg[1].empty())
+      if (SplitedMsg[1].empty())
 			throw Myexception(ERR_NONICKNAMEGIVEN);
-		if (!SplitedMsg[1].findfirst_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789[]\`^{}"))
+		std::size_t found = SplitedMsg[1].find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789[]`|/^{}");
+		if (found != std::string::npos)
 			throw Myexception(ERR_ERRONEUSNICKNAME);
 		if (!SplitedMsg[1].empty() && SplitedMsg[2].empty()) {
 			tmpClient = this->getClientByNickname(SplitedMsg[1]);
 			if (tmpClient && tmpClient->getFd() != c->getFd())
 				throw Myexception(ERR_NICKNAMEINUSE);
-				c->seTNick(SplitedMsg[1]);
+			c->seTNick(SplitedMsg[1]);
             if (this->IsAuthorized(*c)) {
                 sendResponce(c->getFd(), this->name + "001 "
                     + c->getNick() + " :Welcome to the Internet Relay Network "
@@ -117,7 +118,7 @@ void	Server::cmdpass(std::vector<std::string>& SplitedMsg, Client &c)
 			throw Myexception(ERR_NEEDMOREPARAMS);
 		else {
 			if (SplitedMsg[1].compare(this->m_pass))
-				throw Myexception(ERR_ALREADYREGISTRED);
+				throw Myexception(ERR_PASSWDMISMATCH);
 			c.seTPass(SplitedMsg[1]);
 			}
 		}

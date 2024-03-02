@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/02/25 05:50:00 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/02 15:48:02 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,14 @@
 #include <string.h>
 #include <cstring>
 #include <fcntl.h>
+#include <cstddef> 
 #include <sstream>
 #include "../Clients/Client.hpp"
 #include "../message/messages.hpp"
 #include "../Exeption/Exception.hpp"
 #include <map>
 
-#define LIMITCNX 80
+#define LIMITCNX 5000
 class Client;
 class Message;
 
@@ -54,7 +55,7 @@ class Server {
 		int							user_num;
 		int							num;
 		struct sockaddr_in			address;
-		struct pollfd				users[80];
+		struct pollfd				users[LIMITCNX];
 		int							len;
 		long int					timeout;
 		int							end_ser;
@@ -104,17 +105,14 @@ class Server {
 		bool			IsAuthorized(Client &);
 		void			TraiteMessage(Message &);
 
-		void			clientLeft(int );
-		void			quitServer(void );
+		void 			clientLeft(int fd);
+		void 			quitServer();
+
 };
 
-void	split(std::string &msg, std::vector<std::string> SplitedMsg);
+void	split(std::string msg, std::vector<std::string> &SplitedMsg);
 void    splitCommand(std::string str, char oper, std::vector<std::string> &SplitedMsg);
 void	initTab(std::string strs[MAX]);
 void 	sendResponce(int fd, const std::string &responce);
-void	quitServer(Server &server)
-
 std::string const   int2string (int n);
-
-
 #endif

@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 23:09:39 by araiteb           #+#    #+#             */
-/*   Updated: 2024/02/25 03:19:30 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/02/28 16:17:56 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ std::string     Myexception::msgError(int num)
             return (":No toplevel domain specified");
         case ERR_TOOMANYTARGETS:
             return (":Duplicate recipients. No message delivered");
+        case ERR_PASSWDMISMATCH:
+            return (":Password incorrect");
         default:
             return(":Undefined reply");
     }

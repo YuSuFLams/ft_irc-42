@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 23:09:36 by araiteb           #+#    #+#             */
-/*   Updated: 2024/02/25 03:19:33 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/02/28 16:17:13 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ enum e_rronum{
     ERR_NOSUCHNICK = 401,
     ERR_NOTEXTTOSEND = 412,
     ERR_NOTOPLEVEL = 413,
-    ERR_TOOMANYTARGETS = 407
+    ERR_TOOMANYTARGETS = 407,
+    ERR_PASSWDMISMATCH = 464
 };
 
 enum  e_repl{
