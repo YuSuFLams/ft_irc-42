@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/23 19:29:10 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/01 19:26:10 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/03 01:12:44 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,13 @@ void Server::KickChannel(std::vector<std::string> strs, std::map<std::string, Ch
             send(fd, message.c_str(), message.length(), 0);
             continue;
         }
+        // Check if the user is in the channel
+        if(server.isClientInChannel(nickname, *it, channels) == false)
+        {
+            std::string message = ":" + server.get_hostnames() + " 442 " + nickname + " " + *it + " :You're not on that channel\r\n";
+            send(fd, message.c_str(), message.length(), 0);
+            continue;
+        }
         
         for(std::vector<std::string>::iterator it1 = users.begin(); it1 != users.end(); it1++)
         {
@@ -71,7 +78,7 @@ void Server::KickChannel(std::vector<std::string> strs, std::map<std::string, Ch
             // Check if the user is in the channel
             if (channels[*it]->getUsers().find(*it1) == channels[*it]->getUsers().end())
             {
-                std::string str = ":" + server.get_hostnames() + " 442 " + nickname + " " + *it + " :User " + *it1 + " is not on that channel\r\n";
+                std::string str = ":" + server.get_hostnames() + " 442 "  + *it + " :User " + *it1 + " is not on that channel\r\n";
                 send(fd, str.c_str(), str.length(), 0);
                 continue;
             }
@@ -103,6 +110,11 @@ void Server::KickChannel(std::vector<std::string> strs, std::map<std::string, Ch
             }
             // Remove the user from the channel
             channels[*it]->removeUser(*it1);
+            if(channels[*it]->get_creater() == true)
+                channels[*it]->set_creater(false);
+            // if operator remove him from the operators
+            if (channels[*it]->isOperator("@" + *it1))
+                channels[*it]->removeOperator("@" + *it1);
         }
     }
     kick_channel.clear();

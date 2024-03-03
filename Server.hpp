@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 04:52:32 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/01 20:50:55 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/03 01:34:53 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -345,6 +345,35 @@ class Server
         }
         return ("");
     }
+
+    long get_limit(std::string channel)
+    {
+        std::map<std::string, Channel *>::iterator it;
+        it = this->channels.find(channel);
+        if(it != this->channels.end())
+            return (channels[channel]->getLimit());
+        return (-1);
+    }
+
+    // invite
+    bool isClientExist(std::string nickname);
+    bool isValidChannelName(std::string name);
+    bool isChannelExist(std::string channelname);
+    void invitecmd(std::vector<std::string> words, Server server, int fd);
+    bool isClientInChannel(std::string nickname, std::string channelname, std::map<std::string, Channel *> &channel);
+    bool isClientOperatorInChannel(std::string clientname, std::string channelname, std::map<std::string, Channel *> &channel);
+    Client*   getClientByNickname(std::string nick, std::map <int, Client *> clients);
+    bool isSenderInChannel(std::string nickname, std::string channelname, std::map<std::string, Channel *> &channel);
+
+    // mode
+    void modecmd(std::vector<std::string> words, Server server, int fd);
+    bool isValidMode(const std::string& word);
+    void addMode_I(Server server, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
+    void addMode_O(int fd, std::vector<std::string> words, Server server, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
+    void addMode_T(Server server, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
+    void addMode_L(int fd, std::vector<std::string> words, Server server, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
+    void addMode_K(int fd, std::vector<std::string> words, Server server, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
+    bool isAllDigit(std::string str);
 };
 
 

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   join.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/03 01:40:02 by abel-hid          #+#    #+#             */
+/*   Updated: 2024/03/03 01:40:03 by abel-hid         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "Server.hpp"
 
 
@@ -34,6 +46,14 @@ int Server::public_channel(std::string channel_name , std::string key , int fd, 
         return (1);
     }
     
+    // limit the number of channels a user can join
+    if(server.get_limit(channel_name) != -1 && (size_t)server.get_limit(channel_name) <= channels[channel_name]->getUsers().size())
+    {
+        std::string msg = ":" + server.get_hostnames() + " 471 " + server.get_nickname(fd) + " " + channel_name + " :Cannot join channel (+l)\r\n";
+        send(fd, msg.c_str(), msg.length(), 0);
+        return (1);
+    }
+
     if (it2 == channels.end()) 
     {
         // Channel doesn't exist, create it

@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 21:09:08 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/01 19:44:20 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/02 23:03:45 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,8 @@
 
 int Server::PartChannel(std::vector<std::string> strs, std::map<std::string, Channel *> &channels, int fd, std::string nickname, Server &server) 
 {
-    if (strs.size() < 2) 
-    {
+    if (strs.size() < 2)
         return -1;
-    }
 
     std::stringstream ss(strs[1]);
     std::string msg;

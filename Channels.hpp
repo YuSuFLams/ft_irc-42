@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 03:03:46 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/01 20:53:39 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/03 01:35:01 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,16 +45,20 @@ class Channel
         std::string channelKey;
         std::set<std::string> operators;
         std::set<std::string> users;
+        long limit;
     public:
         Channel(const std::string& channelName, const std::string& channelTopic = "no topic is set", const std::string& channelPassword = ""  , bool creater = false)
-        : name(channelName), topic(channelTopic), password(channelPassword), inviteOnly(false), topicRestriction(false) , creater(creater)
+        : name(channelName), topic(channelTopic), password(channelPassword), inviteOnly(false), topicRestriction(false) , creater(creater) , limit(-1)
         {
         }
 
         // ~Channel();
         // Channel(Channel &ch);
         // Channel& operator=(const Channel &ch);
-
+        void setLimit(long limit) { this->limit = limit; }
+        long getLimit() const { return this->limit; }
+        void removeLimit() { this->limit = -1; }
+        void removeChannelKey() {this->channelKey = "";}
         // setters
         void setChannelName(const std::string& channelName) 
         { 
