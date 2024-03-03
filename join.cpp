@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 01:40:02 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/03 01:40:03 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/03 01:42:49 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,12 +160,12 @@ void Server::handleChannels(std::vector<std::pair<std::string, std::string> >& p
                     continue;
             }
         }
-    std::set<std::string>::iterator it3 = channels[it->first]->getUsers().begin();
-    while(it3 != channels[it->first]->getUsers().end())
-    {
-        std::cout << "users in the channel: " << *it3 << std::endl;
-        it3++;
-    }
+    // std::set<std::string>::iterator it3 = channels[it->first]->getUsers().begin();
+    // while(it3 != channels[it->first]->getUsers().end())
+    // {
+    //     std::cout << "users in the channel: " << *it3 << std::endl;
+    //     it3++;
+    // }
     }
 }
 
