@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 20:11:39 by araiteb           #+#    #+#             */
-/*   Updated: 2024/02/25 05:37:11 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/04 12:41:56 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,16 @@
 
 Message::Message(){
     
+}
+int     checkspace(std::string s)
+{
+    int len = s.length();
+    for(int i = 0; i < len ; i++)
+    {
+        if (s[i] != ' ')
+            return 1;
+    }
+    return 0;
 }
 Message::Message(int fd, std::string msg){
     char *ptr;
@@ -27,7 +37,10 @@ Message::Message(int fd, std::string msg){
         this->full_msg.push_back(ptr);
         ptr = strtok(NULL,"\r\n");
     }
-    this->message = full_msg[0];
+    if (checkspace(full_msg[0]) == 1)
+        this->message = full_msg[0];
+    else
+        this->message = "";
 }
 
 Message::~Message(){

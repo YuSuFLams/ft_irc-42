@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 23:09:39 by araiteb           #+#    #+#             */
-/*   Updated: 2024/02/28 16:17:56 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/04 09:15:59 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ std::string     Myexception::msgError(int num)
             return (":Duplicate recipients. No message delivered");
         case ERR_PASSWDMISMATCH:
             return (":Password incorrect");
+        case ERR_UNKNOWNCOMMAND:
+            return (":Unknown command");
         default:
             return(":Undefined reply");
     }

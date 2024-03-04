@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 23:09:36 by araiteb           #+#    #+#             */
-/*   Updated: 2024/02/28 16:17:13 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/04 08:46:42 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ enum e_rronum{
     ERR_NOTEXTTOSEND = 412,
     ERR_NOTOPLEVEL = 413,
     ERR_TOOMANYTARGETS = 407,
-    ERR_PASSWDMISMATCH = 464
+    ERR_PASSWDMISMATCH = 464,
+    ERR_UNKNOWNCOMMAND = 421
 };
 
 enum  e_repl{

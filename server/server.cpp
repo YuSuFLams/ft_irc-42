@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:24 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/02 19:16:08 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/04 09:44:02 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,9 +192,7 @@ void 	sendResponce(int fd, const std::string &responce)
 void 	Server::TraiteMessage(Message &msg) {
 	std::vector<std::string> SplitedMsg;
 
-	std::cout << "trait msg " << msg.getMessage() << std::endl;
 	split(msg.getMessage(), SplitedMsg);
-	std::cout << "[" << SplitedMsg[0] << "]" <<  " [" << SplitedMsg[1] << "]" << std::endl;
 	this->commands(msg, SplitedMsg);
 	SplitedMsg.clear();
 }
@@ -315,7 +313,6 @@ void	Server::PollingFd()
 					} 
 
 				}while(1); // end of accept function
-				std::cout << "out of loop : [" << mesg.getMessage()<<"]" << std::endl;
 				if (!mesg.getMessage().empty())
 					TraiteMessage(mesg);
 				if (close_conn) // manage disconnect issue
