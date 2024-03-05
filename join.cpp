@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 01:40:02 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/04 23:35:49 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/05 22:16:48 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,14 @@ int Server::public_channel(std::string channel_name , std::string key , int fd, 
         return (1);
     }
     // Check if the user is invited to the channel and the channel is invite only
-    if(server.getInviteToChannel(fd) == true && channels[channel_name]->getInviteOnly() == true)
+    if(server.getInviteToChannel(fd) == false && it2 != channels.end() && it2->second->getInviteOnly() == true)
     {
         std::string msg = ":" + server.get_hostnames() + " 473 " + server.get_nickname(fd) + " " + channel_name + " :Cannot join channel (+i)\r\n";
         send(fd, msg.c_str(), msg.length(), 0);
         return (1);
     }
     
+
     // limit the number of channels a user can join
     if(server.get_limit(channel_name) != -1 && (size_t)server.get_limit(channel_name) <= channels[channel_name]->getUsers().size())
     {

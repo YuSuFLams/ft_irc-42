@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 04:52:32 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/03 01:34:53 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/05 22:44:52 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -359,7 +359,7 @@ class Server
     bool isClientExist(std::string nickname);
     bool isValidChannelName(std::string name);
     bool isChannelExist(std::string channelname);
-    void invitecmd(std::vector<std::string> words, Server server, int fd);
+    void invitecmd(std::vector<std::string> words, Server server, int fd, std::string str);
     bool isClientInChannel(std::string nickname, std::string channelname, std::map<std::string, Channel *> &channel);
     bool isClientOperatorInChannel(std::string clientname, std::string channelname, std::map<std::string, Channel *> &channel);
     Client*   getClientByNickname(std::string nick, std::map <int, Client *> clients);

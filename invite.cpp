@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 20:23:08 by ylamsiah          #+#    #+#             */
-/*   Updated: 2024/03/02 20:10:15 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/05 23:04:37 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,11 +92,19 @@ Client*   Server::getClientByNickname(std::string nick, std::map<int , Client *>
     return NULL;
 }
 
-void Server::invitecmd(std::vector<std::string> words, Server server, int fd)
+void Server::invitecmd(std::vector<std::string> words, Server server, int fd, std::string str)
 {
-    if (words.size() < 3 || (words[1].empty() || words[2].empty()))
+
+    if(words.size() > 3 && words[2].at(0) == ':')
     {
-        std::string errorMsg = ERR_NEEDMOREPARAMS_111(server.get_hostnames(), server.get_nickname(fd), words[0]);
+        words[2] = str.substr(str.find(":") + 1 , str.length());
+        for(size_t i = 3; i <= words.size(); i++)
+            words.pop_back();
+    }
+    
+    if (words.size() != 3)
+    {
+        std::string errorMsg = ":" + server.get_hostnames() + " " + to_string(ERR_NEEDMOREPARAMS) + " " + server.get_nickname(fd) + " INVITE :Not enough parameters\r\n";
         send(fd, errorMsg.c_str(), errorMsg.length(), 0);
     }
     else 
@@ -104,35 +112,35 @@ void Server::invitecmd(std::vector<std::string> words, Server server, int fd)
         // client does not exist
         if (!server.isClientExist(words[1]))
         {
-            std::string errorMsg = ERR_NOSUCHNICK_111(server.get_hostnames(), server.get_nickname(fd), words[1]);
+            std::string errorMsg = ":" + server.get_hostnames() + " " + to_string(ERR_NOSUCHNICK) + " " + server.get_nickname(fd) + " " + words[1] + " :No such nick\r\n";
             send(fd, errorMsg.c_str(), errorMsg.length(), 0);
             return ;
         }
         // channel name is not valid or channel does not exist
         if (!server.isChannelExist(words[2]) || !isValidChannelName(words[2]))
         {
-            std::string errorMsg = ERR_NOSUCHCHANNEL_111(server.get_hostnames(), server.get_nickname(fd), words[2]);
+            std::string errorMsg = ":" + server.get_hostnames() + " " + to_string(ERR_NOSUCHCHANNEL) + " " + server.get_nickname(fd) + " " + words[2] + " :No such channel\r\n";
             send(fd, errorMsg.c_str(), errorMsg.length(), 0);
             return ;
         }
         // sender is exist in channnel
         if (!server.isSenderInChannel(server.get_nickname(fd), words[2], server.getChannels()))
         {
-            std::string errorMsg = ERR_NOTONCHANNEL_111(server.get_hostnames(), server.get_nickname(fd), words[2]);
+            std::string errorMsg = ":" + server.get_hostnames() + " " + to_string(ERR_NOTONCHANNEL) + " " + server.get_nickname(fd) + " " + words[2] + " :You're not on that channel\r\n";
             send(fd, errorMsg.c_str(), errorMsg.length(), 0);
             return ;
         }
         // client is already in the channel
         if (server.isClientInChannel(words[1], words[2], server.getChannels()))
         {
-            std::string errorMsg = ERR_USERONCHANNEL_111(server.get_hostnames(), server.get_nickname(fd), words[1], words[2]);
+            std::string errorMsg = ":" + server.get_hostnames() + " " + to_string(ERR_USERONCHANNEL) + " " + server.get_nickname(fd) + " " + words[1] + " " + words[2] + " :is already on channel\r\n";
             send(fd, errorMsg.c_str(), errorMsg.length(), 0);
             return ;
         }
         // client is Operator in that Channel
         if (!server.isClientOperatorInChannel(server.get_nickname(fd), words[2], server.getChannels()))
         {
-            std::string errorMsg = ERR_CHANOPRIVSNEEDED_111(server.get_hostnames(), server.get_nickname(fd), words[2]);
+            std::string errorMsg = ":" + server.get_hostnames() + " " + to_string(ERR_CHANOPRIVSNEEDED) + " " + server.get_nickname(fd) + " " + words[2] + " :You're not channel operator\r\n";
             send(fd, errorMsg.c_str(), errorMsg.length(), 0);
             return ;
         }
@@ -149,9 +157,9 @@ void Server::invitecmd(std::vector<std::string> words, Server server, int fd)
                     break;
                 }
             }
-            std::string inviteMsg = ":" + server.get_nickname(fd) + " INVITE " + words[1] + " to :" + words[2] + "\r\n";
+            std::string inviteMsg = ":" + server.get_nickname(fd) + " INVITE " + words[1] + " " + words[2] + "\r\n";
             send(fdRe, inviteMsg.c_str(), inviteMsg.length(), 0);
-            std::string inviteSent = ":" + server.get_hostnames() + " " + to_string(RPL_INVITING) + " " + server.get_nickname(fd) + " :Inviting " + words[1] + " to " + words[2] + "\r\n";
+            std::string inviteSent = ":" + server.get_nickname(fd) + " " + to_string(RPL_INVITING) + " " + server.get_nickname(fd) + " " + words[1] + " " + words[2] + "\r\n";
 			send(fd, inviteSent.c_str(), inviteSent.size(), 0);
         }
     }

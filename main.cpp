@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 04:36:22 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/04 23:46:58 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/05 22:45:14 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -374,7 +374,7 @@ int main2(int ac, char **av)
                             continue;
                         else if (words[0] == "INVITE")
                         {
-                            server.invitecmd(words, server, fds[i].fd);
+                            server.invitecmd(words, server, fds[i].fd, str);
                         }
                         else if (words[0] == "MODE")
                         {
