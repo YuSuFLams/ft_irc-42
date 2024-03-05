@@ -1,7 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   kick.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/05 01:01:38 by abel-hid          #+#    #+#             */
+/*   Updated: 2024/03/05 01:38:20 by abel-hid         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 
 #include "Server.hpp"
 #include "Channels.hpp"
-
 
 
 void Server::KickChannel(std::vector<std::string> strs, std::map<std::string, Channel *> &channels, int fd, std::string nickname, Server &server , std::string str)
@@ -21,8 +32,15 @@ void Server::KickChannel(std::vector<std::string> strs, std::map<std::string, Ch
         return;
     }
 
+    // Split the channels and the users
+    // for (std::vector<std::string>::iterator it = strs.begin(); it != strs.end(); it++)
+    // {
+    //    std::cout << "strs: " << *it << std::endl;
+    // }
+
     std::vector<std::string> kick_channel;
     std::vector<std::string> users;
+    std::string reason;
     std::string message;
     
     if(strs[1].find(',') != std::string::npos) 
@@ -57,16 +75,12 @@ void Server::KickChannel(std::vector<std::string> strs, std::map<std::string, Ch
         users.push_back(strs[2]);
     }
 
-    std::string reason;
-    if(!strs[3].empty() && strs[3].at(0) == ':')
-    {
-        if(strs[3].at(0) == ':')
+    if(strs.size() > 3 && strs[3].at(0) == ':')
         reason = str.substr(str.find(":") + 1 , str.length());
-    }
-    else if(strs[3].empty())
-        reason = "";
     else
         reason = strs[3];
+    // std::cout<< "reason: " << reason << std::endl;
+
     // Check if the channel exists
     for(std::vector<std::string>::iterator it = kick_channel.begin(); it != kick_channel.end(); it++)
     {
