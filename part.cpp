@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 21:09:08 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/02 23:03:45 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/04 23:14:18 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,5 +88,6 @@ int Server::PartChannel(std::vector<std::string> strs, std::map<std::string, Cha
     all_channels.clear();
     ss.clear();
     msg.clear();
+    strs.clear();
     return 0;
 }

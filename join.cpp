@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 01:40:02 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/03 01:42:49 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/04 23:35:49 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,6 +167,7 @@ void Server::handleChannels(std::vector<std::pair<std::string, std::string> >& p
     //     it3++;
     // }
     }
+    pairs.clear();
 }
 
 		
@@ -206,6 +207,7 @@ int Server::JoinChannel(std::vector<std::string > strs , std::string nickname, i
             {
                 keys.push_back(token_keys);
             }
+            token_keys.clear();
         } 
         else 
         {
@@ -221,6 +223,7 @@ int Server::JoinChannel(std::vector<std::string > strs , std::string nickname, i
         {
             channels.push_back(token);
         }
+        token.clear();
     } 
     else 
     {
@@ -248,15 +251,17 @@ int Server::JoinChannel(std::vector<std::string > strs , std::string nickname, i
             }
         }
     }
-    std::cout << "-----------------pair------------------" << std::endl;
-    std::vector<std::pair<std::string, std::string> >::iterator it = pair.begin();
-    while(it != pair.end())
-    {
-        std::cout << it->first << " | " << it->second << std::endl;
-        it++;
-    }
-    std::cout << "-----------------------------------------" << std::endl;
+    // std::cout << "-----------------pair------------------" << std::endl;
+    // std::vector<std::pair<std::string, std::string> >::iterator it = pair.begin();
+    // while(it != pair.end())
+    // {
+    //     std::cout << it->first << " | " << it->second << std::endl;
+    //     it++;
+    // }
+    // std::cout << "-----------------------------------------" << std::endl;
 
     handleChannels(pair, fd, nickname, server);
+    channels.clear();
+    keys.clear();
     return 0;
 }

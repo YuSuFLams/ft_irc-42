@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 04:36:22 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/03 02:03:32 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/04 23:46:58 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ int quit_command(std::vector<std::string > words , Server &server , int fd)
     return (0);
 }
 
-int join_topic_part_part(std::vector<std::string > words, Server &server, int fd , std::string str)
+int join_topic_part_part(std::vector<std::string > &words, Server &server, int fd , std::string &str)
 {
     if(words[0] == "JOIN" && server.get_password(fd) != "" && server.is_registered(fd) == 1)
     {
@@ -368,11 +368,10 @@ int main2(int ac, char **av)
                             }
                         }
                         
-                        if(join_topic_part_part(words, server, fds[i].fd, str) == 1)
-                            continue;
                         if(quit_command(words, server, fds[i].fd) == 1)
                             break;
-
+                        else if(join_topic_part_part(words, server, fds[i].fd, str) == 1)
+                            continue;
                         else if (words[0] == "INVITE")
                         {
                             server.invitecmd(words, server, fds[i].fd);
@@ -381,6 +380,9 @@ int main2(int ac, char **av)
                         {
                             server.modecmd(words, server, fds[i].fd);
                         }
+                        words.clear();
+                        str.clear();
+                        buffer[0] = '\0';
                         
                         
                         if(!server.get_password(fds[i].fd).empty() && !server.get_hostname(fds[i].fd).empty() && !server.get_username(fds[i].fd).empty() 
@@ -406,8 +408,6 @@ int main2(int ac, char **av)
                                 send(fds[i].fd, str.c_str(), str.length(), 0);
                             }
                         }
-                        words.clear();
-                        continue;
                 }
             }
        
