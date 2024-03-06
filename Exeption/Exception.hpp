@@ -17,6 +17,7 @@
 #include<string>
 
 enum e_rronum{
+    ERR_NOTREGISTERED = 451,
     ERR_NEEDMOREPARAMS = 461,
     ERR_ALREADYREGISTRED = 462,
     

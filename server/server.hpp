@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/02 15:48:02 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/06 13:20:01 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ class Server {
 		char *						birthday;
 		std::string					name;
 		std::string					m_pass;
-		char						buffer[1024];
+		char						buffer[MAX];
 		int							m_port;
 		int							m_socket;
 		int							server_fd;
@@ -60,7 +60,6 @@ class Server {
 		long int					timeout;
 		int							end_ser;
 		int							compress_array;
-		int							close_conn;
 		std::string					msgsendResponce;
 		std::string					checkPiv;
 		std::map <int, Client *>	clients;

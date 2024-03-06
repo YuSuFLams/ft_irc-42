@@ -16,9 +16,6 @@ Server::Server(std::string ipAdd, int port): m_pass(ipAdd),m_port(port)
 {
 	this->name = ":42_IRC ";
 	flg = 1;
-	len = 1;
-	end_ser = 0;
-	compress_array = 0;
 	num = 1;
 	user_num = 1;
 	timeout = 3 * 60 * 10000000;
@@ -277,7 +274,6 @@ void	Server::PollingFd()
 			{
 				std::string msg;
 				std::cout << " Receiving msg . . . " ;
-				close_conn = 0;
 				// msg += user->getMsgRemainder();
 				msg = "";
 				memset(buffer, 0, sizeof(buffer));
@@ -287,6 +283,7 @@ void	Server::PollingFd()
 					flg = recv(users[i].fd, buffer, sizeof(buffer), 0); // check max size for receive
 
 					buffer[flg] = '\0';
+					std::cout << "[" << buffer << "]" << std::endl;
 					msg += buffer;
 					std::cout << flg << std::endl;
 					if (flg < 0)
@@ -294,17 +291,15 @@ void	Server::PollingFd()
 						if (errno != EWOULDBLOCK)
 						{
 							std::cout << "Failed at receiving msg : " << errno << std::endl; 
-							close_conn = 1;
+							quitServer();
 						}
 						break ;
 					}
 					if (flg == 0)
 					{
 						std::cout << " Connection closed " << std::endl;
-						close_conn = 1;
-						break ; 
+						quitServer();
 					}
-					len = flg;
 					if (msg.find_first_of("\r\n") != std::string::npos && msg != "\n")
 					{
 						size_t pos = msg.find_last_of("\r\n");
@@ -315,12 +310,10 @@ void	Server::PollingFd()
 				}while(1); // end of accept function
 				if (!mesg.getMessage().empty())
 					TraiteMessage(mesg);
-				if (close_conn) // manage disconnect issue
-					this->clientLeft(users[i].fd);
 			}
 			//
 		}
-	} while (end_ser == 0);
+	} while (1);
 	for(int i = 0;i < user_num ;i++)// moved to Discconected fct
 	{
 		if (users[i].fd >= 0)// moved to Discconected fct

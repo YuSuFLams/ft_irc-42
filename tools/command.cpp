@@ -29,8 +29,6 @@ void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg)
 			cmdknick(SplitedMsg, c);
 		else if (!SplitedMsg[0].compare("USER"))
 			cmduser(c, SplitedMsg);
-		// else if (!IsAuthorized(c))
-		// 	throw "ERR_NOTREGISTERED";
 		else if(!SplitedMsg[0].compare("PRIVMSG"))
 			cmdprivmsg(SplitedMsg, c);
 		else 
@@ -120,11 +118,11 @@ void	Server::cmdpass(std::vector<std::string>& SplitedMsg, Client &c)
 void	Server::cmdprivmsg(std::vector<std::string>& SplitedMsg, Client *c)
 {
 	Client *newClient;
+	if (!this->IsAuthorized(*c))
+        throw Myexception(ERR_ALREADYREGISTRED);
 	newClient = getClientByNickname(SplitedMsg[1]);
-	if (!newClient) {
-		sendResponce(c->getFd(), "user not fond \n");
-		return ;
-	} 
+	if (!newClient)
+		throw Myexception(ERR_NOSUCHNICK);
 	else if (!SplitedMsg[2].empty()) {
 		std::cout<< "[" << SplitedMsg[2] <<"]" << std::endl;
 		std::string msg = ":" + c->getNick() + " " + SplitedMsg[0] + " " + SplitedMsg[1] + " :" + SplitedMsg[2];

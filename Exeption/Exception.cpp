@@ -45,6 +45,8 @@ std::string     Myexception::msgError(int num)
             return (":Password incorrect");
         case ERR_UNKNOWNCOMMAND:
             return (":Unknown command");
+        case ERR_NOTREGISTERED:
+            return (":You have not registered");
         default:
             return(":Undefined reply");
     }
