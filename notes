@@ -1,0 +1,17 @@
+PASS sa
+PASS s
+NICK f
+USER 1 1 1 1
+:e2r5p4.1337.ma 001 f :Welcome to the Internet Relay Network 1!1@1
+:e2r5p4.1337.ma 002 f :Your host is e2r5p4.1337.ma, running version 1.0
+:e2r5p4.1337.ma 003 f :This server was created 2024-03-07.00:57:32
+JOIN #ok
+:f!1@e2r5p4.1337.ma JOIN #ok
+:e2r5p4.1337.ma 313 f #ok :no topic is set
+:e2r5p4.1337.ma 353 f = #ok :@f
+:e2r5p4.1337.ma 366 f #ok :End of /NAMES list
+MODE #ok +lk 1 hs
+:e2r5p4.1337.ma MODE #ok +l
+:e2r5p4.1337.ma MODE #ok +k
+MODE #ok -l
+:e2r5p4.1337.ma MODE #ok -l

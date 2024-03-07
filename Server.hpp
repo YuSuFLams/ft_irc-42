@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 04:52:32 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/05 22:44:52 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/06 22:59:06 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@
 class Server
 {
     private:
+        bool flagMode;
+    
         int port;
         int server_fd;
         int new_socket;
@@ -35,6 +37,9 @@ class Server
         std::map<int, Client *> clients;
         std::map<std::string , Channel *> channels;
     public:
+        void setFlagMode(bool flag) { flagMode = flag; }
+        bool getFlagMode() { return flagMode; }
+        
         Server();
         ~Server();
         int getPort() const;
@@ -367,7 +372,6 @@ class Server
 
     // mode
     void modecmd(std::vector<std::string> words, Server server, int fd);
-    bool isValidMode(const std::string& word);
     void addMode_I(Server server, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
     void addMode_O(int fd, std::vector<std::string> words, Server server, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
     void addMode_T(Server server, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
