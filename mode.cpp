@@ -20,28 +20,40 @@ bool Server::isAllDigit(std::string str)
     return true;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//check number of characters egale argument
+int getNumMode(std::string mode)
+{
+    int sum = 0;
+    int i = 0;
+    while (i < (int)mode.length())
+    {
+        if (mode[i] == '+') // Fixed the condition
+        {
+            int j = i + 1;
+            while (j < (int)mode.length() && (mode[j] != '+' && mode[j] != '-')) // Fixed the condition
+            {
+                if (mode[j] == 'o' || mode[j] == 'k' || mode[j] == 'l')
+                    sum++;
+                j++; // Increment j here
+            }
+            i = j; // Update i to j after inner loop
+        }
+        if (mode[i] == '-')
+        {
+            int j = i + 1;
+            while (j < (int)mode.length() && (mode[j] != '+' && mode[j] != '-')) // Fixed the condition
+            {
+                if (mode[j] == 'o' || mode[j] == 'k')
+                    sum++;
+                j++; // Increment j here
+            }
+            i = j; // Update i to j after inner loop
+        }
+        else
+            i++;
+    }
+    return sum;
+}
 
 void Server::addMode_I(Server server, std::map<std::string, Channel *> &channel, std::string channelname, std::string modeType, bool add)
 {
@@ -74,30 +86,6 @@ void Server::addMode_I(Server server, std::map<std::string, Channel *> &channel,
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void Server::addMode_T(Server server, std::map<std::string, Channel *> &channel, std::string channelname, std::string modeType, bool add)
 {
     for (std::map<std::string, Channel *>::iterator it = channel.begin(); it != channel.end(); it++)
@@ -128,29 +116,6 @@ void Server::addMode_T(Server server, std::map<std::string, Channel *> &channel,
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void Server::addMode_O(int fd, std::vector<std::string> words, Server server, std::map<std::string, Channel *> &channel, std::string channelname, std::string modeType, bool add)
 {
@@ -238,41 +203,6 @@ void Server::addMode_O(int fd, std::vector<std::string> words, Server server, st
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// int getModes(std::string mode)
-// {
-//     int somme = 0;
-//     // mode #dd +okl-lk+o 
-//     for (std::string::iterator it = mode.begin(); it != mode.end(); it++)
-//     {
-//         if (*it == '+')
-//         {
-            
-//         }
-//     }
-// }
-
-
 void Server::addMode_L(int fd, std::vector<std::string> words, Server server, std::map<std::string, Channel *> &channel, std::string channelname, std::string modeType, bool add)
 {
     if (add)
@@ -339,34 +269,6 @@ void Server::addMode_L(int fd, std::vector<std::string> words, Server server, st
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void Server::addMode_K(int fd, std::vector<std::string> words, Server server, std::map<std::string, Channel *> &channel, std::string channelname, std::string modeType, bool add)
 {
     if (words.size() < 4)
@@ -422,29 +324,12 @@ void Server::addMode_K(int fd, std::vector<std::string> words, Server server, st
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-// valide arguments of mode 
-
-
-
-
-
-
-
 void Server::modecmd(std::vector<std::string> words, Server server, int fd)
 {
+    if ((int)(words.size() - 3) != getNumMode(words[2]))
+    {
+        return ;
+    }
     //check is enough parameters
     if (words.size() < 2)
     {
@@ -477,7 +362,6 @@ void Server::modecmd(std::vector<std::string> words, Server server, int fd)
         }
         else
         {
-
             std::vector<std::string> modes = get_modes(words[2]);
             bool add;
             for (std::vector<std::string>::iterator it = modes.begin(); it != modes.end(); ++it)
@@ -519,22 +403,18 @@ void Server::modecmd(std::vector<std::string> words, Server server, int fd)
                                 words.erase(words.begin() + 3);
                             break;
                         default:
-                            {
-                                std::string errorMode = ":" + server.get_hostnames() + " 472 " + server.get_nickname(fd) + " " + *it + " :Unknown mode\r\n";
-                                send(fd, errorMode.c_str(), errorMode.length(), 0);
-                                return;
-                            }
+                            std::string errorMode = ":" + server.get_hostnames() + " 472 " + server.get_nickname(fd) + " " + *it + " :Unknown mode\r\n";
+                            send(fd, errorMode.c_str(), errorMode.length(), 0);
+                            break ;
                     }
                 }
                 else
                 {
                     std::string errorMode = ":" + server.get_hostnames() + " 472 " + server.get_nickname(fd) + " " + *it + " :Unknown mode\r\n";
                     send(fd, errorMode.c_str(), errorMode.length(), 0);
-                    return;
                 }
                 
             }
         }
     }
 }
-
