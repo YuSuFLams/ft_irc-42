@@ -326,7 +326,7 @@ void Server::addMode_K(int fd, std::vector<std::string> words, Server server, st
 
 void Server::modecmd(std::vector<std::string> words, Server server, int fd)
 {
-    if ((int)(words.size() - 3) != getNumMode(words[2]))
+    if ((int)(words.size() - 3) > getNumMode(words[2]))
     {
         return ;
     }
