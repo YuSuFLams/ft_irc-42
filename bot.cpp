@@ -58,4 +58,3 @@ void Server::comdBot(Server server, std::vector<std::string> words, int fd)
         send(fd, botMsg.c_str(), botMsg.length(), 0);
     }
 }
-
