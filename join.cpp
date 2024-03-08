@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 01:40:02 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/08 08:25:08 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/08 10:35:19 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,12 +157,6 @@ void Server::handleChannels(std::vector<std::pair<std::string, std::string> >& p
                     continue;
             }
         }
-    // std::set<std::string>::iterator it3 = channels[it->first]->getUsers().begin();
-    // while(it3 != channels[it->first]->getUsers().end())
-    // {
-    //     std::cout << "users in the channel: " << *it3 << std::endl;
-    //     it3++;
-    // }
     }
     pairs.clear();
 }
@@ -170,8 +164,6 @@ void Server::handleChannels(std::vector<std::pair<std::string, std::string> >& p
 		
 int Server::JoinChannel(std::vector<std::string > strs , std::string nickname, int fd, Server &server , std::string str)
 { 
-    std::vector<std::string> channels;
-    std::vector<std::string> keys;
 
     // pair of channel and key
     if(strs.size() > 3 && strs[2].at(0) != ':')
@@ -180,10 +172,10 @@ int Server::JoinChannel(std::vector<std::string > strs , std::string nickname, i
         send(fd, str.c_str(), str.length(), 0);
         return -2;
     }
+    std::vector<std::string> channels;
+    std::vector<std::string> keys;
     std::vector<std::pair<std::string, std::string> > pair;
-    
     std::stringstream ss(strs[1]);
-
 
     if (strs.size() >= 3) 
     {
@@ -212,7 +204,6 @@ int Server::JoinChannel(std::vector<std::string > strs , std::string nickname, i
         }
     }
    
-    
     if(strs[1].find(',') != std::string::npos) 
     {
         std::string token;
@@ -227,10 +218,8 @@ int Server::JoinChannel(std::vector<std::string > strs , std::string nickname, i
         channels.push_back(strs[1]);
     }
 
-
     if (channels.size() > 0) 
     {
-        // std::cout << "-----------------channels------------------" << std::endl;
         std::vector<std::string>::iterator it = channels.begin();
         std::vector<std::string>::iterator it2 = keys.begin();
         while (it != channels.end() && it2 != keys.end()) 
@@ -248,15 +237,6 @@ int Server::JoinChannel(std::vector<std::string > strs , std::string nickname, i
             }
         }
     }
-    // std::cout << "-----------------pair------------------" << std::endl;
-    // std::vector<std::pair<std::string, std::string> >::iterator it = pair.begin();
-    // while(it != pair.end())
-    // {
-    //     std::cout << it->first << " | " << it->second << std::endl;
-    //     it++;
-    // }
-    // std::cout << "-----------------------------------------" << std::endl;
-
     handleChannels(pair, fd, nickname, server);
     channels.clear();
     keys.clear();

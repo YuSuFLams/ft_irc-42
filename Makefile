@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/03/08 09:43:23 by abel-hid          #+#    #+#              #
+#    Updated: 2024/03/08 09:59:10 by abel-hid         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 SRCS = main.cpp\
 		Server.cpp\
 		join.cpp\
@@ -7,6 +19,7 @@ SRCS = main.cpp\
 		invite.cpp\
 		mode.cpp\
 		bot.cpp\
+		Channels.cpp\
 
 BONUS_SRCS = bot.cpp\
 
@@ -18,7 +31,7 @@ RM = rm -f
 CPPFLAGS = -Wall -Wextra -Werror -std=c++98 
 NAME = ircserv
 BONUS = bot
-HEAD = Server.hpp
+HEAD = Server.hpp Channels.hpp
 
 
 all: $(NAME)

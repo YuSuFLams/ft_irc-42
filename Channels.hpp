@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 03:03:46 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/08 04:41:00 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/08 10:08:45 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,157 +50,47 @@ class Channel
         std::set<std::string> users;
         long limit;
     public:
-        Channel(const std::string& channelName, const std::string& channelTopic = "no topic is set", const std::string& channelPassword = ""  , bool creater = false)
-        : name(channelName), topic(channelTopic), password(channelPassword), inviteOnly(false), topicRestriction(false) , creater(creater) , limit(-1)
-        {
-        }
-
-        // ~Channel();
-        // Channel(Channel &ch);
-        // Channel& operator=(const Channel &ch);
-        void setLimit(long limit) { this->limit = limit; }
-        long getLimit() const { return this->limit; }
-        void removeLimit() { this->limit = -1; }
-        void removeChannelKey() {this->channelKey = "";}
-        // setters
-        void setChannelName(const std::string& channelName) 
-        { 
-            name = channelName; 
-        }
-        void setChannelTopic(const std::string& channelTopic) 
-        { 
-            topic = channelTopic; 
-        }
-        void setChannelPassword(const std::string& channelPassword) 
-        { 
-            password = channelPassword; 
-        }
-        void setInviteOnly(bool isInviteOnly) 
-        { 
-            inviteOnly = isInviteOnly; 
-        }
-        void setTopicRestriction(bool isTopicRestriction) 
-        { 
-            topicRestriction = isTopicRestriction; 
-        }
-        bool getInviteOnly()
-        {
-            return (inviteOnly);
-        }
-        void setChannelKey(const std::string& key) 
-        { 
-            channelKey = key; 
-        }
-        
-        // getters
-        std::string getChannelName() const 
-        { 
-            return name; 
-        }
-        std::string getChannelTopic() const 
-        { 
-            return topic; 
-        }
-        std::string getChannelPassword() const 
-        { 
-            return password; 
-        }
-        bool isInviteOnly() const 
-        { 
-            return inviteOnly; 
-        }
-        bool isTopicRestriction() const 
-        { 
-            return topicRestriction; 
-        }
-      
-        std::string getChannelKey() const 
-        { 
-            return channelKey; 
-        }
-        std::set<std::string> &getOperators() 
-        { 
-            return operators; 
-        }
-        // channel operators
-        void addOperator(const std::string& user) 
-        { 
-            operators.insert(user); 
-        }
-        void removeOperator(const std::string& user) 
-        { 
-            operators.erase(user); 
-        }
-        bool isOperator(const std::string& user) const 
-        { 
-            return operators.find(user) != operators.end(); 
-        }
-        
-        void addUser(const std::string& user) 
-        { 
-            users.insert(user); 
-        }
-        void removeUser(const std::string& user) 
-        { 
-            users.erase(user); 
-        }
-        bool isUser(const std::string& user) const 
-        { 
-            return users.find(user) != users.end(); 
-        }
-        std::set<std::string> &getUsers()
-        { 
-            return users; 
-        }
-
-        std::string get_topic()
-        {
-            return (topic);
-        }
-        void set_topic(std::string topic)
-        {
-            this->topic = topic;
-        }
-        void set_creater(bool creater)
-        {
-            this->creater = creater;
-        }
-        bool get_creater()
-        {
-            return (creater);
-        }
-
-        std::string get_creator_name()
-        {
-            std::set<std::string>::iterator it = operators.begin();
-            while(it != operators.end())
-            {
-                if (creater == true)
-                    return (*it);
-                it++;
-            }
-            if(operators.size() > 0)
-                return (*operators.begin());
-            return ("no operator found");
-        }
-        
-        void quit_channel(std::string nickname)
-        {
-            if (users.find(nickname) != users.end())
-                users.erase(nickname);
-            if (operators.find(nickname) != operators.end())
-                operators.erase(nickname);
-        }
-        
-        void print_users()
-        {
-            std::set<std::string>::iterator it = users.begin();
-            while(it != users.end())
-            {
-                std::cout << *it << std::endl;
-                it++;
-            }
-        }
+        Channel(const std::string& channelName, const std::string& channelTopic = "no topic is set", const std::string& channelPassword = ""  , bool creater = false);
+        void setChannelName(const std::string& channelName);
+        void setChannelTopic(const std::string& channelTopic);
+        void setChannelPassword(const std::string& channelPassword);
+        void setInviteOnly(bool isInviteOnly);
+        void setTopicRestriction(bool isTopicRestriction);
+        bool getInviteOnly();
+        bool getTopicRestriction();
+        void setChannelKey(const std::string& key);
+        void setChannelLimit(long limit);
+        void set_topic(const std::string& topic);
+        void set_creater(bool creater);
+        std::string get_topic();
+        void setChannelOperator(const std::string& nickname);
+        void removeChannelOperator(const std::string& nickname);
+        void addUser(const std::string& nickname);
+        void removeUser(const std::string& nickname);
+        std::string getChannelName();
+        std::string getChannelTopic();
+        std::string getChannelPassword();
+        bool isInviteOnly();
+        bool isTopicRestriction();
+        std::set<std::string> &getUsers();
+        std::set<std::string> getOperators() ;
+        long getChannelLimit() ;
+        bool isOperator(const std::string& nickname);
+        bool isUser(const std::string& nickname);
+        bool isChannelEmpty();
+        bool get_creater_name();
+        long getLimit();
+        void removeLimit();
+        void removeChannelKey();
+        void setLimit(long limit);
+        void print_users();
+        void quit_channel(std::string nickname);
+        std::string get_creator_name();
+        void removeOperator(const std::string& user);
+        void addOperator(const std::string& user);
+        bool CisUser(const std::string& user);
+        std::string getChannelKey();
+        bool get_creater();
     
 };
 
