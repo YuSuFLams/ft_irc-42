@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 04:52:32 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/06 22:59:06 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/08 01:35:12 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,9 @@
 #include "Channels.hpp"
 # include <string>
 # include <sstream>
+# include <fstream>
 # include <map>
-
+#include <iomanip>
 
 
 class Server
@@ -34,9 +35,14 @@ class Server
         int server_fd;
         int new_socket;
         sockaddr_in address;
+        std::map<std::string, float> Student_13;
         std::map<int, Client *> clients;
         std::map<std::string , Channel *> channels;
     public:
+        std::map<std::string, float> getStudent_13() { return (this->Student_13);}
+        void comdBot(Server server, std::vector<std::string> words, int fd);
+        void setStudent_13(std::map<std::string, float> Student_13) { this->Student_13 = Student_13;}
+        
         void setFlagMode(bool flag) { flagMode = flag; }
         bool getFlagMode() { return flagMode; }
         

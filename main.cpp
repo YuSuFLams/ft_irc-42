@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 04:36:22 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/05 22:45:14 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/08 01:30:28 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -375,6 +375,10 @@ int main2(int ac, char **av)
                         else if (words[0] == "INVITE")
                         {
                             server.invitecmd(words, server, fds[i].fd, str);
+                        }
+                        else if (words[0] == "BOT")
+                        {
+                            server.comdBot(server, words, fds[i].fd);
                         }
                         else if (words[0] == "MODE")
                         {

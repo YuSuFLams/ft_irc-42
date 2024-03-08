@@ -6,6 +6,7 @@ SRCS = main.cpp\
 		kick.cpp\
 		invite.cpp\
 		mode.cpp\
+		bot.cpp\
 
 BONUS_SRCS = bot.cpp\
 
