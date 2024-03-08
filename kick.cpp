@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 01:01:38 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/05 01:38:20 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/08 01:58:14 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,6 @@ void Server::KickChannel(std::vector<std::string> strs, std::map<std::string, Ch
         return;
     }
 
-    // Split the channels and the users
-    // for (std::vector<std::string>::iterator it = strs.begin(); it != strs.end(); it++)
-    // {
-    //    std::cout << "strs: " << *it << std::endl;
-    // }
 
     std::vector<std::string> kick_channel;
     std::vector<std::string> users;
@@ -101,9 +96,15 @@ void Server::KickChannel(std::vector<std::string> strs, std::map<std::string, Ch
         for(std::vector<std::string>::iterator it1 = users.begin(); it1 != users.end(); it1++)
         {
             // Check if the user is an operator and in the channel
-            if (channels[*it]->getUsers().find(*it1) == channels[*it]->getUsers().end())
+            if (channels[*it]->getUsers().find(*it1) == channels[*it]->getUsers().end() && server.isClientExist(*it1))
             {
                 std::string error_message = ":" + server.get_hostnames() + " 442 "  + *it + " :User " + *it1 + " is not on that channel\r\n";
+                send(fd, error_message.c_str(), error_message.length(), 0);
+                continue;
+            }
+            else if (!server.isClientExist(*it1))
+            {
+                std::string error_message = ":" + server.get_hostnames() + " 401 " + nickname + " " + *it1 + " :No such nick\r\n";
                 send(fd, error_message.c_str(), error_message.length(), 0);
                 continue;
             }
