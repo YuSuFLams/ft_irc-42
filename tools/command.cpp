@@ -29,12 +29,15 @@ void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg)
 			cmdknick(SplitedMsg, c);
 		else if (!SplitedMsg[0].compare("USER"))
 			cmduser(c, SplitedMsg);
-		if (!this->IsAuthorized(*c))
-        	throw Myexception(ERR_ALREADYREGISTRED);
-		if(!SplitedMsg[0].compare("PRIVMSG"))
-			cmdprivmsg(SplitedMsg, c);
-		else 
-			throw Myexception(ERR_UNKNOWNCOMMAND);
+		else if (this->IsAuthorized(*c))
+        {
+			if(!SplitedMsg[0].compare("PRIVMSG"))
+				cmdprivmsg(SplitedMsg, c);
+			else 
+				throw Myexception(ERR_UNKNOWNCOMMAND);
+		}
+		else
+			throw Myexception(ERR_ALREADYREGISTRED);
 	}
 	 catch(Myexception & e) {
         sendResponce(c->getFd(), this->name
@@ -104,7 +107,8 @@ void	Server::cmdpass(std::vector<std::string>& SplitedMsg, Client &c)
 
     if (this->IsAuthorized(c))
         throw Myexception(ERR_ALREADYREGISTRED);
-	else if (SplitedMsg.size() != 2)
+	std::cout<< "'" << SplitedMsg.size() << "'" << std::endl;
+	if (SplitedMsg.size() != 2)
 		throw Myexception(ERR_NEEDMOREPARAMS);
 	else {
 		if (SplitedMsg[1].compare(this->m_pass))
