@@ -331,7 +331,7 @@ void Server::modecmd(std::vector<std::string> words, Server server, int fd)
         return ;
     }
     //check is enough parameters
-    if (words.size() < 2)
+    if (words.size() < 1)
     {
         std::string errorMode = ":" + server.get_hostnames() + " 461 " + server.get_nickname(fd) + " " + words[0] + " :Not enough parameters\r\n";
         send(fd, errorMode.c_str(), errorMode.length(), 0);
@@ -345,6 +345,16 @@ void Server::modecmd(std::vector<std::string> words, Server server, int fd)
             std::string errorMode = ":" + server.get_hostnames() + " 403 " + server.get_nickname(fd) + " " + words[1] + " :No such channel\r\n";
             send(fd, errorMode.c_str(), errorMode.length(), 0);
             return ;
+        }
+        if (words.size() == 2 && server.getChannels().find(words[1]) != server.getChannels().end())
+        {
+            std::map<std::string, Channel *>::iterator it = server.getChannels().find(words[1]);
+            if (it != server.getChannels().end()) // Ensure the channel exists in the map
+            {
+                std::string msg = std::string(it->second->getInviteOnly() ? "i" : "") + (it->second->isTopicRestriction() ? "t" : "") + (!it->second->getChannelKey().empty() ? "k" : "") + (it->second->getLimit() == -1 ? "" : "l");
+                std::string errorMode = ":" + server.get_hostnames() + " 324 " + server.get_nickname(fd) + " " + words[1] + (msg.empty() ? "" : " +" + msg) + " \r\n";
+                send(fd, errorMode.c_str(), errorMode.length(), 0);
+            }
         }
         // check is sender in channel 
         if (!server.isSenderInChannel(server.get_nickname(fd), words[1], server.getChannels()))
