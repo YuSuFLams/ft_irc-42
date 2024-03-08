@@ -213,6 +213,77 @@ void Server::quitServer() {
     exit (EXIT_FAILURE);
 }
 
+int 		Server::acceptingData(){
+	int newfd;
+	struct sockaddr_in newAddresse;
+	int lenadd = sizeof(newAddresse);
+	do
+	{
+	   	newfd = accept (this->server_fd, (struct sockaddr *)&newAddresse, (socklen_t *)&lenadd);
+	   	if (newfd < 0)
+	   	{
+			if (errno != EWOULDBLOCK)
+			{
+				std::cout << "Failed : " << errno << std::endl;
+				return 0;
+			}
+			break ;
+	   	}
+	   std::cout << "new connection : " << newfd << std::endl;
+	   Client *c = new Client(newfd);
+		// if there is space in server
+	   this->clients.insert(std::pair<int, Client *>(newfd, c));
+	   users[user_num].fd = newfd;
+	   users[user_num]. events = POLLIN;
+	   user_num++;
+	   sendResponce(newfd, this->name + "NOTICE AUTH :*** Looking up your hostname . . .\n");
+	   sendResponce(newfd, this->name + "NOTICE AUTH :*** Found your hostname\n");
+
+	} while (newfd != -1);
+	return 1;
+}
+
+int 	Server::checkmsg(int i){
+
+	std::string msg;
+	std::cout << " Receiving msg . . . " ;
+	msg = "";
+	memset(buffer, 0, sizeof(buffer));
+	Message mesg;
+	do
+	{
+		flg = recv(users[i].fd, buffer, sizeof(buffer), 0);
+		buffer[flg] = '\0';
+		std::cout << "[" << buffer << "]" << std::endl;
+		msg += buffer;
+		std::cout << flg << std::endl;
+		if (flg < 0)
+		{
+			if (errno != EWOULDBLOCK)
+			{
+				std::cout << "Failed at receiving msg : " << errno << std::endl; 
+				return 0;
+			}
+			continue ;
+		}
+		if (flg == 0)
+		{
+			std::cout << " Connection closed " << std::endl;
+			return 0;
+		}
+		if (msg.find_first_of("\r\n") != std::string::npos && msg != "\n")
+		{
+			size_t pos = msg.find_last_of("\r\n");
+			msg = msg.substr(0, pos);
+			mesg = Message(users[i].fd, msg);
+			TraiteMessage(mesg);
+			return 1;
+		}
+		else
+			break ; 
+	}while(1); // end of accept function
+	return 1;
+}
 void	Server::PollingFd()
 {
 
@@ -225,91 +296,34 @@ void	Server::PollingFd()
 		if (flg < 0)
 		{
 			std::cout << "Failed." << errno <<std::endl;
-			break ;
+			this->quitServer();
 		}
 		if (flg == 0)
 		{
 			std::cout << "End program " << std::endl;
-			close(this->server_fd);
-			break ;
+			this->quitServer();
 		}
 		num = user_num;
 		for (int i = 0; i < num; i++)
 		{
 			if (users[i].revents == 0)
 				continue;
-			struct sockaddr_in newAddresse;
-			int lenadd = sizeof(newAddresse);
-
 			if (users[i].fd == this->server_fd)
 			{
 				std::cout << "waiting for accept new connections" << std::endl;
-				int newfd;
-				do
-				{
-				   	newfd = accept (this->server_fd, (struct sockaddr *)&newAddresse, (socklen_t *)&lenadd);
-				   	if (newfd < 0)
-				   	{
-						if (errno != EWOULDBLOCK)
-						{
-							std::cout << "Failed :" << errno << std::endl;
-							quitServer();
-						}
-						break;
-				   	}
-				   std::cout << "new connection : " << newfd << std::endl;
-				   Client *c = new Client(newfd);
-					// if there is space in server
-				   this->clients.insert(std::pair<int, Client *>(newfd, c));
-				   users[user_num].fd = newfd;
-				   users[user_num]. events = POLLIN;
-				   user_num++;
-				   sendResponce(newfd, this->name + "NOTICE AUTH :*** Looking up your hostname . . .\n");
-				   sendResponce(newfd, this->name + "NOTICE AUTH :*** Found your hostname\n");
-					// else 
-					//sendResponce(newfd, ":42_IRC ERROR ERROR :*** SORRY ! NO SPACE LEFT ON SERVER\n", ":42_IRC ERROR ERROR :*** SORRY ! NO SPACE LEFT ON SERVER\n".length(), 0);
-				} while (newfd != -1);
+				if (!acceptingData())
+					this->quitServer();
 			}
-			else
-			{
-				std::string msg;
-				std::cout << " Receiving msg . . . " ;
-				// msg += user->getMsgRemainder();
-				msg = "";
-				memset(buffer, 0, sizeof(buffer));
-				Message mesg;
-				do
-				{
-					flg = recv(users[i].fd, buffer, sizeof(buffer), 0); // check max size for receive
-
-					buffer[flg] = '\0';
-					std::cout << "[" << buffer << "]" << std::endl;
-					msg += buffer;
-					std::cout << flg << std::endl;
-					if (flg < 0)
-					{
-						if (errno != EWOULDBLOCK)
-						{
-							std::cout << "Failed at receiving msg : " << errno << std::endl; 
-							quitServer();
-						}
-						break ;
-					}
-					if (flg == 0)
-					{
-						std::cout << " Connection closed " << std::endl;
-						quitServer();
-					}
-					if (msg.find_first_of("\r\n") != std::string::npos && msg != "\n")
-					{
-						size_t pos = msg.find_last_of("\r\n");
-						msg = msg.substr(0, pos);
-						mesg = Message(users[i].fd, msg);
-					} 
-
-				}while(1); // end of accept function
-				if (!mesg.getMessage().empty())
-					TraiteMessage(mesg);
+			else{
+				if (!this->checkmsg(i)){
+					this->clientLeft(users[i].fd);
+					for (int j = i; j < this->user_num; j++)
+                    {
+                        memcpy(&this->users[j], &this->users[j + 1], sizeof(struct pollfd));
+                    }
+                    this->user_num -= 1;
+                    i --;
+				}
 			}
 			//
 		}

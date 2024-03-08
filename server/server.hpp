@@ -14,7 +14,7 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
-# define MAX 10254
+# define MAX 1024
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -54,6 +54,7 @@ class Server {
 		int							on;
 		int							user_num;
 		int							num;
+		int							end_con;
 		struct sockaddr_in			address;
 		struct pollfd				users[LIMITCNX];
 		int							len;
@@ -90,6 +91,8 @@ class Server {
 		int				NnBlockFd();
 		int				BindSocket();
 		int				listenSocket();
+		int 			acceptingData();
+		int 			checkmsg(int i);
 		void			PollingFd();
 		
 		void			commands(Message &, std::vector <std::string>&);

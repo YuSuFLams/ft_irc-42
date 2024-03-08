@@ -29,7 +29,9 @@ void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg)
 			cmdknick(SplitedMsg, c);
 		else if (!SplitedMsg[0].compare("USER"))
 			cmduser(c, SplitedMsg);
-		else if(!SplitedMsg[0].compare("PRIVMSG"))
+		if (!this->IsAuthorized(*c))
+        	throw Myexception(ERR_ALREADYREGISTRED);
+		if(!SplitedMsg[0].compare("PRIVMSG"))
 			cmdprivmsg(SplitedMsg, c);
 		else 
 			throw Myexception(ERR_UNKNOWNCOMMAND);
@@ -49,7 +51,7 @@ void	Server::cmduser(Client *c, std::vector<std::string> &SplitedMsg)
 {
     if (this->IsAuthorized(*c))
         throw Myexception(ERR_ALREADYREGISTRED);
-	if (SplitedMsg[1].empty() || SplitedMsg[2].empty() || SplitedMsg[3].empty() || SplitedMsg[4].empty())
+	if (SplitedMsg.size() != 5)
 		throw Myexception(ERR_NEEDMOREPARAMS);
 	c->setusename(SplitedMsg[1]);
     c->sethostname(SplitedMsg[2]);
@@ -72,7 +74,7 @@ void	Server::cmdknick(std::vector<std::string> &SplitedMsg, Client *c)
 {
 	Client *tmpClient;
 
-    if (SplitedMsg[1].empty())
+    if (SplitedMsg.size() < 2 ||  SplitedMsg[1].empty())
 		throw Myexception(ERR_NONICKNAMEGIVEN);
 	std::size_t found = SplitedMsg[1].find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789[]`|/^{}");
 	if (found != std::string::npos)
@@ -101,30 +103,24 @@ void	Server::cmdpass(std::vector<std::string>& SplitedMsg, Client &c)
     std::cout << "PASS COMMAND " << std::endl;
 
     if (this->IsAuthorized(c))
-    {
-        std::cout << "IsAuthorized" << std::endl;
         throw Myexception(ERR_ALREADYREGISTRED);
-    }
-	else if (SplitedMsg[1].empty())
+	else if (SplitedMsg.size() != 2)
 		throw Myexception(ERR_NEEDMOREPARAMS);
 	else {
 		if (SplitedMsg[1].compare(this->m_pass))
 			throw Myexception(ERR_PASSWDMISMATCH);
 		c.seTPass(SplitedMsg[1]);
-		}
+	}
 }
 
 
 void	Server::cmdprivmsg(std::vector<std::string>& SplitedMsg, Client *c)
 {
 	Client *newClient;
-	if (!this->IsAuthorized(*c))
-        throw Myexception(ERR_ALREADYREGISTRED);
 	newClient = getClientByNickname(SplitedMsg[1]);
 	if (!newClient)
 		throw Myexception(ERR_NOSUCHNICK);
 	else if (!SplitedMsg[2].empty()) {
-		std::cout<< "[" << SplitedMsg[2] <<"]" << std::endl;
 		std::string msg = ":" + c->getNick() + " " + SplitedMsg[0] + " " + SplitedMsg[1] + " :" + SplitedMsg[2];
 		sendResponce(newClient->getFd(), msg);
 		sendResponce(newClient->getFd(), "\n");
