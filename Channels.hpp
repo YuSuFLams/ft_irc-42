@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 03:03:46 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/05 22:23:03 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/08 04:41:00 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@
 #define RPL_NAMREPLY 353
 #define ERR_USERONCHANNEL 443
 #define ERR_CHANOPRIVSNEEDED 482
+
 class Channel
 {
     private:

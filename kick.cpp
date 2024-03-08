@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 01:01:38 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/08 01:58:14 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/08 05:26:54 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void Server::KickChannel(std::vector<std::string> strs, std::map<std::string, Ch
     {
         users.push_back(strs[2]);
     }
-
+    reason = "";
     if(strs.size() > 3 && strs[3].at(0) == ':')
         reason = str.substr(str.find(":") + 1 , str.length());
     else
@@ -115,7 +115,11 @@ void Server::KickChannel(std::vector<std::string> strs, std::map<std::string, Ch
                 send(fd, error_message.c_str(), error_message.length(), 0);
                 continue;
             }
-            message = ":" + nickname + "!" + server.get_username(fd) + "@" + server.get_hostnames() + " KICK " + *it + " " + *it1 + " :" + reason + "\r\n";
+            if(reason.empty())
+                message = ":" + nickname + "!" + server.get_username(fd) + "@" + server.get_hostnames() + " KICK " + *it + " " + *it1 + "\r\n";
+            else
+                message = ":" + nickname + "!" + server.get_username(fd) + "@" + server.get_hostnames() + " KICK " + *it + " " + *it1 + " :" + reason + "\r\n";
+
             // Send the message to the user
             std::set<std::string>::iterator it2 = channels[*it]->getUsers().begin();
             while (it2 != channels[*it]->getUsers().end())

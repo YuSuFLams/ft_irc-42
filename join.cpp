@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 01:40:02 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/05 22:16:48 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/08 08:25:08 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,11 +103,7 @@ int Server::public_channel(std::string channel_name , std::string key , int fd, 
             {
                 str = ":" + server.get_hostnames() + " " + server.to_string(RPL_TOPIC) + " " + server.get_nickname(fd) + " " + channel_name + " :" + server.get_topic(channel_name) + "\r\n";
                 send(fd, str.c_str(), str.length(), 0);
-            }
-
-            str = ":" + server.get_hostnames() + " " + server.to_string(RPL_TOPICWHOTIME) + " " + server.get_nickname(fd) + " = " + channel_name + " :" + server.get_creator_name(channel_name) + "\r\n";
-            send(fd, str.c_str(), str.length(), 0);
-
+            } 
             // send the list of users in the channel
             std::set<std::string>::iterator it3 = channels[channel_name]->getUsers().begin();
             while (it3 != channels[channel_name]->getUsers().end())

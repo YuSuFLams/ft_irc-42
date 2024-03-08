@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 04:52:32 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/08 01:35:12 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/08 04:44:13 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -336,6 +336,18 @@ class Server
             for (it = this->channels.begin(); it != this->channels.end(); it++)
             {
                 it->second->quit_channel(this->get_nickname(fd));
+            }
+
+            it = this->channels.begin();
+            while(it != this->channels.end())
+            {
+                if (it->second->getUsers().size() == 0)
+                {
+                    delete it->second;
+                    this->channels.erase(it++);
+                }
+                else
+                    it++;
             }
         }
     
