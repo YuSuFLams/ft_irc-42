@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 02:08:17 by ylamsiah          #+#    #+#             */
-/*   Updated: 2024/03/09 02:45:57 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/09 10:07:48 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int getNumMode(std::string mode)
     return sum;
 }
 
-void Server::addMode_I(Server server, std::map<std::string, Channel *> &channel, std::string channelname, std::string modeType, bool add)
+void Server::addMode_I(std::map<std::string, Channel *> &channel, std::string channelname, std::string modeType, bool add)
 {
     for (std::map<std::string, Channel *>::iterator it = channel.begin(); it != channel.end(); it++)
     {
@@ -88,7 +88,7 @@ void Server::addMode_I(Server server, std::map<std::string, Channel *> &channel,
                     if (name == *it2)
                     {
                         std::string mtype = ((add)? "+": "-") + modeType;
-                        std::string mode = ":" + server.get_hostnames() + " MODE " + channelname + " " + mtype + "\r\n";
+                        std::string mode = ":" + this->get_hostnames() + " MODE " + channelname + " " + mtype + "\r\n";
                         send(fdRe, mode.c_str(), mode.length(), 0);
                     }
                 }
@@ -97,8 +97,9 @@ void Server::addMode_I(Server server, std::map<std::string, Channel *> &channel,
     }
 }
 
-void Server::addMode_T(Server server, std::map<std::string, Channel *> &channel, std::string channelname, std::string modeType, bool add)
+void Server::addMode_T(std::map<std::string, Channel *> &channel, std::string channelname, std::string modeType, bool add)
 {
+
     for (std::map<std::string, Channel *>::iterator it = channel.begin(); it != channel.end(); it++)
     {
         if (it->first == channelname)
@@ -119,7 +120,7 @@ void Server::addMode_T(Server server, std::map<std::string, Channel *> &channel,
                     if (name == *it2)
                     {
                         std::string mtype = ((add)? "+": "-") + modeType;
-                        std::string mode = ":" + server.get_hostnames() + " MODE " + channelname + " " + mtype + "\r\n";
+                        std::string mode = ":" + this->get_hostnames() + " MODE " + channelname + " " + mtype + "\r\n";
                         send(fdRe, mode.c_str(), mode.length(), 0);
                     }
                 }
@@ -128,23 +129,24 @@ void Server::addMode_T(Server server, std::map<std::string, Channel *> &channel,
     }
 }
 
-void Server::addMode_O(int fd, std::vector<std::string> words, Server server, std::map<std::string, Channel *> &channel, std::string channelname, std::string modeType, bool add)
+void Server::addMode_O(int fd, std::vector<std::string> words,std::map<std::string, Channel *> &channel, std::string channelname, std::string modeType, bool add)
 {
+
     if (words.size() < 4)
     {
-        std::string errorMode = ":" + server.get_hostnames() + " 461 "  + words[0] + " : Not enough parameters\r\n" ;
+        std::string errorMode = ":" + this->get_hostnames() + " 461 "  + words[0] + " : Not enough parameters\r\n" ;
         send(fd, errorMode.c_str(), errorMode.length(), 0);
         return ;
     }
-    if (!server.isClientExist(words[3]))
+    if (!this->isClientExist(words[3]))
     {
-        std::string errorMode = ":" + server.get_hostnames() + " 401 "  + words[3] + " : No such nick\r\n";
+        std::string errorMode = ":" + this->get_hostnames() + " 401 "  + words[3] + " : No such nick\r\n";
         send(fd, errorMode.c_str(), errorMode.length(), 0);
         return ;
     }
-    if (!server.isClientInChannel(words[3], channelname, channel))
+    if (!this->isClientInChannel(words[3], channelname, channel))
     {
-        std::string errorMode = ":" + server.get_hostnames() + " 442 "  + words[3] + " " + channelname + " : You're not on that channel\r\n";
+        std::string errorMode = ":" + this->get_hostnames() + " 442 "  + words[3] + " " + channelname + " : You're not on that channel\r\n";
         send(fd, errorMode.c_str(), errorMode.length(), 0);
         return ;
     }
@@ -159,7 +161,7 @@ void Server::addMode_O(int fd, std::vector<std::string> words, Server server, st
                     return ;
                 else
                     it->second->addOperator(nickname);
-                std::string addop = ":" + server.get_hostnames() + " MODE " + channelname + " +o " + words[3] + "\r\n";
+                std::string addop = ":" + this->get_hostnames() + " MODE " + channelname + " +o " + words[3] + "\r\n";
                 // send to all users in the channel
                 for (std::set<std::string>::iterator it2 = it->second->getUsers().begin(); it2 != it->second->getUsers().end(); it2++)
                 {
@@ -180,7 +182,7 @@ void Server::addMode_O(int fd, std::vector<std::string> words, Server server, st
                     return ;
                 else
                     it->second->removeOperator(nickname);
-                std::string removeop = ":" + server.get_hostnames() + " MODE " + channelname + " -o " + words[3] + "\r\n";
+                std::string removeop = ":" + this->get_hostnames() + " MODE " + channelname + " -o " + words[3] + "\r\n";
                 // send to all users in the channel
                 for (std::set<std::string>::iterator it2 = it->second->getUsers().begin(); it2 != it->second->getUsers().end(); it2++)
                 {
@@ -214,13 +216,14 @@ void Server::addMode_O(int fd, std::vector<std::string> words, Server server, st
     }
 }
 
-void Server::addMode_L(int fd, std::vector<std::string> words, Server server, std::map<std::string, Channel *> &channel, std::string channelname, std::string modeType, bool add)
+void Server::addMode_L(int fd, std::vector<std::string> words,std::map<std::string, Channel *> &channel, std::string channelname, std::string modeType, bool add)
 {
+    
     if (add)
     {
         if (words.size() < 4)
         {
-            std::string errorMode = ":" + server.get_hostnames() + " 461 "  + words[0] + " : Not enough parameters\r\n";
+            std::string errorMode = ":" + this->get_hostnames() + " 461 "  + words[0] + " : Not enough parameters\r\n";
             send(fd, errorMode.c_str(), errorMode.length(), 0);
             return ;
         }
@@ -231,7 +234,7 @@ void Server::addMode_L(int fd, std::vector<std::string> words, Server server, st
     {
         if (words.size() < 3)
         {
-            std::string errorMode = ":" + server.get_hostnames() + " 461 "  + words[0] + " : Not enough parameters\r\n";
+            std::string errorMode = ":" + this->get_hostnames() + " 461 "  + words[0] + " : Not enough parameters\r\n";
             send(fd, errorMode.c_str(), errorMode.length(), 0);
             return ;
         }
@@ -271,7 +274,7 @@ void Server::addMode_L(int fd, std::vector<std::string> words, Server server, st
                     if (name == *it2)
                     {
                         std::string mtype = ((add)? "+": "-") + modeType;
-                        std::string mode = ":" + server.get_hostnames() + " MODE " + channelname + " " + mtype + "\r\n";
+                        std::string mode = ":" + this->get_hostnames() + " MODE " + channelname + " " + mtype + "\r\n";
                         send(fdRe, mode.c_str(), mode.length(), 0);
                     }
                 }
@@ -280,11 +283,12 @@ void Server::addMode_L(int fd, std::vector<std::string> words, Server server, st
     }
 }
 
-void Server::addMode_K(int fd, std::vector<std::string> words, Server server, std::map<std::string, Channel *> &channel, std::string channelname, std::string modeType, bool add)
+void Server::addMode_K(int fd, std::vector<std::string> words, std::map<std::string, Channel *> &channel, std::string channelname, std::string modeType, bool add)
 {
+  
     if (words.size() < 4)
     {
-        std::string errorMode = ":" + server.get_hostnames() + " 461 "  + words[0] + " : Not enough parameters\r\n";
+        std::string errorMode = ":" + this->get_hostnames() + " 461 "  + words[0] + " : Not enough parameters\r\n";
         send(fd, errorMode.c_str(), errorMode.length(), 0);
         return ;
     }
@@ -298,7 +302,7 @@ void Server::addMode_K(int fd, std::vector<std::string> words, Server server, st
                     it->second->setChannelKey(words[3]);
                 else
                 {
-                    std::string errorMode = ":" + server.get_hostnames() + " 475 " + server.get_nickname(fd) + " " + channelname + " :Channel key already set\r\n";
+                    std::string errorMode = ":" + this->get_hostnames() + " 475 " + this->get_nickname(fd) + " " + channelname + " :Channel key already set\r\n";
                     send(fd, errorMode.c_str(), errorMode.length(), 0);
                     return ;
                 }
@@ -309,7 +313,7 @@ void Server::addMode_K(int fd, std::vector<std::string> words, Server server, st
                     it->second->removeChannelKey();
                 else
                 {
-                    std::string errorMode = ":" + server.get_hostnames() + " 475 " + server.get_nickname(fd) + " " + channelname + " :Channel key already set\r\n";
+                    std::string errorMode = ":" + this->get_hostnames() + " 475 " + this->get_nickname(fd) + " " + channelname + " :Channel key already set\r\n";
                     send(fd, errorMode.c_str(), errorMode.length(), 0);
                     return ;
                 }
@@ -326,7 +330,7 @@ void Server::addMode_K(int fd, std::vector<std::string> words, Server server, st
                     if (name == *it2)
                     {
                         std::string mtype = ((add)? "+": "-") + modeType;
-                        std::string mode = ":" + server.get_hostnames() + " MODE " + channelname + " " + mtype + "\r\n";
+                        std::string mode = ":" + this->get_hostnames() + " MODE " + channelname + " " + mtype + "\r\n";
                         send(fdRe, mode.c_str(), mode.length(), 0);
                     }
                 }
@@ -335,8 +339,9 @@ void Server::addMode_K(int fd, std::vector<std::string> words, Server server, st
     }
 }
 
-void Server::modecmd(std::vector<std::string> words, Server server, int fd)
+void Server::modecmd(std::vector<std::string> words, int fd)
 {
+
     if ((int)(words.size() - 3) > getNumMode(words[2]))
     {
         return ;
@@ -344,40 +349,40 @@ void Server::modecmd(std::vector<std::string> words, Server server, int fd)
     //check is enough parameters
     if (words.size() < 2)
     {
-        std::string errorMode = ":" + server.get_hostnames() + " 461 " + server.get_nickname(fd) + " " + words[0] + " :Not enough parameters\r\n";
+        std::string errorMode = ":" + this->get_hostnames() + " 461 " + this->get_nickname(fd) + " " + words[0] + " :Not enough parameters\r\n";
         send(fd, errorMode.c_str(), errorMode.length(), 0);
         return;
     }
     else 
     {
         // check if channel exist && valid name of channel
-        if (!server.isChannelExist(words[1]) || !server.isValidChannelName(words[1]))
+        if (!this->isChannelExist(words[1]) || !this->isValidChannelName(words[1]))
         {
-            std::string errorMode = ":" + server.get_hostnames() + " 403 " + server.get_nickname(fd) + " " + words[1] + " :No such channel\r\n";
+            std::string errorMode = ":" + this->get_hostnames() + " 403 " + this->get_nickname(fd) + " " + words[1] + " :No such channel\r\n";
             send(fd, errorMode.c_str(), errorMode.length(), 0);
             return ;
         }
-        if (words.size() == 2 && server.getChannels().find(words[1]) != server.getChannels().end())
+        if (words.size() == 2 && this->getChannels().find(words[1]) != this->getChannels().end())
         {
-            std::map<std::string, Channel *>::iterator it = server.getChannels().find(words[1]);
-            if (it != server.getChannels().end()) // Ensure the channel exists in the map
+            std::map<std::string, Channel *>::iterator it = this->getChannels().find(words[1]);
+            if (it != this->getChannels().end()) // Ensure the channel exists in the map
             {
                 std::string msg = std::string(it->second->getInviteOnly() ? "i" : "") + (it->second->isTopicRestriction() ? "t" : "") + (!it->second->getChannelKey().empty() ? "k" : "") + (it->second->getLimit() == -1 ? "" : "l");
-                std::string errorMode = ":" + server.get_hostnames() + " 324 " + server.get_nickname(fd) + " " + words[1] + (msg.empty() ? "" : " +" + msg) + " \r\n";
+                std::string errorMode = ":" + this->get_hostnames() + " 324 " + this->get_nickname(fd) + " " + words[1] + (msg.empty() ? "" : " +" + msg) + " \r\n";
                 send(fd, errorMode.c_str(), errorMode.length(), 0);
             }
         }
         // check is sender in channel 
-        if (!server.isSenderInChannel(server.get_nickname(fd), words[1], server.getChannels()))
+        if (!this->isSenderInChannel(this->get_nickname(fd), words[1], this->getChannels()))
         {
-            std::string errorMode = ":" + server.get_hostnames() + " 442 " + server.get_nickname(fd) + " " + words[1] + " :You're not on that channel\r\n";
+            std::string errorMode = ":" + this->get_hostnames() + " 442 " + this->get_nickname(fd) + " " + words[1] + " :You're not on that channel\r\n";
             send(fd, errorMode.c_str(), errorMode.length(), 0);
             return ;
         }
         // check if sender is operator in channel
-        if (!server.isClientOperatorInChannel(server.get_nickname(fd), words[1], server.getChannels()))
+        if (!this->isClientOperatorInChannel(this->get_nickname(fd), words[1], this->getChannels()))
         {
-            std::string errorMode = ":" + server.get_hostnames() + " 482 " + server.get_nickname(fd) + " " + words[1] + " :You're not channel operator\r\n";
+            std::string errorMode = ":" + this->get_hostnames() + " 482 " + this->get_nickname(fd) + " " + words[1] + " :You're not channel operator\r\n";
             send(fd, errorMode.c_str(), errorMode.length(), 0);
             return ;
         }
@@ -389,49 +394,49 @@ void Server::modecmd(std::vector<std::string> words, Server server, int fd)
             {
                 if ((*it)[0] == '+')
                 {
-                    server.setFlagMode(true);
+                    this->setFlagMode(true);
                     continue;
                 }
                 if ((*it)[0] == '-')
                 {
-                    server.setFlagMode(false);
+                    this->setFlagMode(false);
                     continue;
                 }
-                add = server.getFlagMode();
+                add = this->getFlagMode();
                 if (*it != "+" && *it != "-")
                 {
                     switch ((*it)[0])
                     {
                         case 'i':
-                            server.addMode_I(server, server.getChannels(), words[1], *it, add);
+                            this->addMode_I(this->getChannels(), words[1], *it, add);
                             break;
                         case 't':
-                            server.addMode_T(server, server.getChannels(), words[1], *it, add);
+                            this->addMode_T(this->getChannels(), words[1], *it, add);
                             break;
                         case 'o':
-                            server.addMode_O(fd, words, server, server.getChannels(), words[1], *it, add);
+                            this->addMode_O(fd, words, this->getChannels(), words[1], *it, add);
                             if (words.size() > 3)
                                 words.erase(words.begin() + 3);
                             break;
                         case 'l':
-                            server.addMode_L(fd, words, server, server.getChannels(), words[1], *it, add);
+                            this->addMode_L(fd, words, this->getChannels(), words[1], *it, add);
                             if (words.size() > 3 && add == true)
                                 words.erase(words.begin() + 3);
                             break;
                         case 'k':
-                            server.addMode_K(fd, words, server, server.getChannels(), words[1], *it, add);
+                            this->addMode_K(fd, words, this->getChannels(), words[1], *it, add);
                             if (words.size() > 3)
                                 words.erase(words.begin() + 3);
                             break;
                         default:
-                            std::string errorMode = ":" + server.get_hostnames() + " 472 " + server.get_nickname(fd) + " " + *it + " :Unknown mode\r\n";
+                            std::string errorMode = ":" + this->get_hostnames() + " 472 " + this->get_nickname(fd) + " " + *it + " :Unknown mode\r\n";
                             send(fd, errorMode.c_str(), errorMode.length(), 0);
                             break ;
                     }
                 }
                 else
                 {
-                    std::string errorMode = ":" + server.get_hostnames() + " 472 " + server.get_nickname(fd) + " " + *it + " :Unknown mode\r\n";
+                    std::string errorMode = ":" + this->get_hostnames() + " 472 " + this->get_nickname(fd) + " " + *it + " :Unknown mode\r\n";
                     send(fd, errorMode.c_str(), errorMode.length(), 0);
                 }
                 

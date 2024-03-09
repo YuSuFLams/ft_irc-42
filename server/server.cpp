@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:24 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/09 02:41:47 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/09 11:22:49 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 Server::Server(std::string ipAdd, int port): m_pass(ipAdd),m_port(port)
 {
-	this->name = ":42_IRC ";
+	this->name = this->get_hostnames();
 	flg = 1;
 	num = 1;
 	user_num = 1;
@@ -79,47 +79,37 @@ std::map<int, Client *>	Server::getClient(){
 }
 int	Server::CreateSocket()
 {
-	std::cout << "building socket ... " ;
 	this->server_fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (this->server_fd < 0)
 	{
-		std::cout << " failed : " << errno << std::endl;
+		std::cout << "socket failed : " << errno << std::endl;
 		return 0;
 	}
-	std::cout << " created" << std::endl;
 	return 1;
 }
 int	Server::OptionSocket()
 {
-	std::cout << "making socket reusable ... ";
-	flg = setsockopt(this->server_fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
-	if (flg < 0)
-	{
-		std::cout << " failed : " << errno << std::endl;
-		close (this->server_fd);
-		return 0;
-	}
-		std::cout << " Finished." << std::endl;
+	int opt = 1;
+	if(setsockopt(this->server_fd , SOL_SOCKET,SO_REUSEPORT, &opt, sizeof(opt)) < 0)
+    {
+        std::cout << "Setsockopt failed" << std::endl;
+        return (0);
+    }
 	return 1;
 }
 
 int	Server::NnBlockFd()
 {
-	std::cout << "making socket non bloking ... ";
-	flg = fcntl(this->server_fd, F_SETFL, O_NONBLOCK);
-	if (flg < 0)
-	{
-		std::cout << " failed : " << errno << std::endl;
-		close(this->server_fd);
-		return 0;
-	}
-	std::cout << " Finished." << std::endl;
+	if (fcntl(this->server_fd , F_SETFL, O_NONBLOCK) < 0)
+    {
+        std::cout << "Fcntl failed" << std::endl;
+        return (0);
+    }
 	return 1;
 }
 
 int		Server::BindSocket()
 {
-	std::cout << "binding socket . . . ";
 	address.sin_family = AF_INET;
 	address.sin_addr.s_addr = INADDR_ANY;
 	address.sin_port = htons(this->getport());
@@ -130,12 +120,10 @@ int		Server::BindSocket()
 		close(this->server_fd);
 		return 0;
 	}
-	std::cout << " Finished." << std::endl;
 	return 1;
 }
 int	Server::listenSocket()
 {
-	std::cout <<  "Making socket lisening. . . ";
 	flg = listen(this->server_fd, LIMITCNX);
 	if (flg < 0)
 	{
@@ -143,7 +131,6 @@ int	Server::listenSocket()
 		close(this->server_fd);
 		return 0;
 	}
-	std::cout << " Finished." << std::endl;
 	return 1;
 }
 
@@ -176,21 +163,15 @@ Client*	Server::getClientByNickname(std::string nickname)
 
 void 	sendResponce(int fd, const std::string &responce)
 {
-	size_t total = 0;
-    while (total != responce.length())
-    {
-        ssize_t nb = send(fd,responce.c_str() + total,responce.length() - total, 0);
-        if (nb == -1)
-            std::cout << "sending error" << std::endl; // to check later 
-        total += nb;
-    }
+	send(fd, responce.c_str(), responce.length(), 0);
 }
 
-void 	Server::TraiteMessage(Server server, Message &msg) {
+void 	Server::TraiteMessage(Message &msg) {
 	std::vector<std::string> SplitedMsg;
 
 	split(msg.getMessage(), SplitedMsg);
-	this->commands(server, msg, SplitedMsg);
+	std::string tmp = msg.getMessage();
+	this->commands(msg, SplitedMsg, tmp);
 	SplitedMsg.clear();
 }
 
@@ -229,24 +210,22 @@ int 		Server::acceptingData(){
 			}
 			break ;
 		}
-		std::cout << "new connection : " << newfd << std::endl;
 		Client *c = new Client(newfd);
 		// if there is space in server
 		this->clients.insert(std::pair<int, Client *>(newfd, c));
 		users[user_num].fd = newfd;
 		users[user_num]. events = POLLIN;
 		user_num++;
-		sendResponce(newfd, this->name + "NOTICE AUTH :*** Looking up your hostname . . .\n");
-		sendResponce(newfd, this->name + "NOTICE AUTH :*** Found your hostname\n");
 
 	} while (newfd != -1);
 	return 1;
 }
 
-int 	Server::checkmsg(Server server, int i){
+int 	Server::checkmsg(int i)
+{
 
 	std::string msg;
-	std::cout << " Receiving msg . . . " ;
+
 	msg = "";
 	memset(buffer, 0, sizeof(buffer));
 	Message mesg;
@@ -254,30 +233,27 @@ int 	Server::checkmsg(Server server, int i){
 	{
 		flg = recv(users[i].fd, buffer, sizeof(buffer), 0);
 		buffer[flg] = '\0';
-		std::cout << "[" << buffer << "]" << std::endl;
 		msg += buffer;
-		std::cout << flg << std::endl;
+		std::cout << "Received: " << buffer << std::endl;
 		if (flg < 0)
 		{
 			if (errno != EWOULDBLOCK)
 			{
-				std::cout << "Failed at receiving msg : " << errno << std::endl; 
 				return 0;
 			}
 			continue ;
 		}
 		if (flg == 0)
 		{
-			std::cout << " Connection closed " << std::endl;
+			std::cout << "Client left. . ." << std::endl;
 			return 0;
 		}
 		if (msg.find_first_of("\r\n") != std::string::npos && msg != "\n")
 		{
 			size_t pos = msg.find_last_of("\r\n");
 			msg = msg.substr(0, pos);
-			server.set_allstring(msg);
 			mesg = Message(users[i].fd, msg);
-			TraiteMessage(server, mesg);
+			TraiteMessage(mesg);
 			return 1;
 		}
 		else
@@ -285,14 +261,14 @@ int 	Server::checkmsg(Server server, int i){
 	}while(1); // end of accept function
 	return 1;
 }
-void	Server::PollingFd(Server server)
+void	Server::PollingFd()
 {
 
 	users[0].fd = server_fd;
 	users[0].events = POLLIN;
+	std::cout << "Server is running . . . " << std::endl;
 	do
 	{
-		std:: cout << "Waiting for a request . . ." << std::endl;
 		flg = poll(users , user_num, timeout);
 		if (flg < 0)
 		{
@@ -311,12 +287,12 @@ void	Server::PollingFd(Server server)
 				continue;
 			if (users[i].fd == this->server_fd)
 			{
-				std::cout << "waiting for accept new connections" << std::endl;
+				std::cout << "New connection" << std::endl;
 				if (!acceptingData())
 					this->quitServer();
 			}
 			else{
-				if (!this->checkmsg(server, i)){
+				if (!this->checkmsg(i)){
 					this->clientLeft(users[i].fd);
 					for (int j = i; j < this->user_num; j++)
                     {
@@ -326,7 +302,6 @@ void	Server::PollingFd(Server server)
                     i --;
 				}
 			}
-			//
 		}
 	} while (1);
 	for(int i = 0;i < user_num ;i++)// moved to Discconected fct
@@ -621,7 +596,7 @@ std::string Server::get_password(int fd)
         return (clients[fd]->geTPass());
     return ("");
 }
-std::map<int, Client *> Server::getClients()
+std::map<int, Client *> &Server::getClients()
 {
     return (this->clients);
 }

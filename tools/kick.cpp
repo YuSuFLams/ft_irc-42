@@ -3,28 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 01:01:38 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/09 02:20:51 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/09 10:06:28 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../server/server.hpp"
 
-void Server::KickChannel(std::vector<std::string> strs, std::map<std::string, Channel *> &channels, int fd, std::string nickname, Server &server , std::string str)
+void Server::KickChannel(std::vector<std::string> strs, std::map<std::string, Channel *> &channels, int fd, std::string nickname , std::string str)
 {
-
     // Check if the command has enough parameters
     if (strs.size() < 3)
     {
-        std::string error_message = ":" + server.get_hostnames() + " " + server.to_string(ERR_NEEDMOREPARAMS) + " " + server.get_nickname(fd) + " KICK :Not enough parameters\r\n";
+        std::string error_message = ":" + this->get_hostnames() + " " + this->to_string(ERR_NEEDMOREPARAMS) + " " + this->get_nickname(fd) + " KICK :Not enough parameters\r\n";
         send(fd, error_message.c_str(), error_message.length(), 0);
         return;
     }
     else if(strs.size() > 4 && strs[3].at(0) != ':')
     {
-        std::string error_message = ":" + server.get_hostnames() + " " + server.to_string(ERR_NEEDMOREPARAMS) + " " + server.get_nickname(fd) + " KICK :Not enough parameters\r\n";
+        std::string error_message = ":" + this->get_hostnames() + " " + this->to_string(ERR_NEEDMOREPARAMS) + " " + this->get_nickname(fd) + " KICK :Not enough parameters\r\n";
         send(fd, error_message.c_str(), error_message.length(), 0);
         return;
     }
@@ -78,14 +77,14 @@ void Server::KickChannel(std::vector<std::string> strs, std::map<std::string, Ch
     {
         if (channels.find(*it) == channels.end())
         {
-            std::string error_message = ":" + server.get_hostnames() + " 403 " + nickname + " " + *it + " :No such channel\r\n";
+            std::string error_message = ":" + this->get_hostnames() + " 403 " + nickname + " " + *it + " :No such channel\r\n";
             send(fd, error_message.c_str(), error_message.length(), 0);
             continue;
         }
         // Check if the user is in the channel
-        if(server.isClientInChannel(nickname, *it, channels) == false)
+        if(this->isClientInChannel(nickname, *it, channels) == false)
         {
-            std::string error_message = ":" + server.get_hostnames() + " 442 " + nickname + " " + *it + " :You're not on that channel\r\n";
+            std::string error_message = ":" + this->get_hostnames() + " 442 " + nickname + " " + *it + " :You're not on that channel\r\n";
             send(fd, error_message.c_str(), error_message.length(), 0);
             continue;
         }
@@ -93,35 +92,35 @@ void Server::KickChannel(std::vector<std::string> strs, std::map<std::string, Ch
         for(std::vector<std::string>::iterator it1 = users.begin(); it1 != users.end(); it1++)
         {
             // Check if the user is an operator and in the channel
-            if (channels[*it]->getUsers().find(*it1) == channels[*it]->getUsers().end() && server.isClientExist(*it1))
+            if (channels[*it]->getUsers().find(*it1) == channels[*it]->getUsers().end() && this->isClientExist(*it1))
             {
-                std::string error_message = ":" + server.get_hostnames() + " 442 "  + *it + " :User " + *it1 + " is not on that channel\r\n";
+                std::string error_message = ":" + this->get_hostnames() + " 442 "  + *it + " :User " + *it1 + " is not on that channel\r\n";
                 send(fd, error_message.c_str(), error_message.length(), 0);
                 continue;
             }
-            else if (!server.isClientExist(*it1))
+            else if (!this->isClientExist(*it1))
             {
-                std::string error_message = ":" + server.get_hostnames() + " 401 " + nickname + " " + *it1 + " :No such nick\r\n";
+                std::string error_message = ":" + this->get_hostnames() + " 401 " + nickname + " " + *it1 + " :No such nick\r\n";
                 send(fd, error_message.c_str(), error_message.length(), 0);
                 continue;
             }
             // Check if the command issuer is an operator
-            if (!channels[*it]->isOperator("@" + server.get_nickname(fd)))
+            if (!channels[*it]->isOperator("@" + this->get_nickname(fd)))
             {
-                std::string error_message = ":" + server.get_hostnames() + " 482 " + nickname + " " + *it + " :You're not a channel operator\r\n";
+                std::string error_message = ":" + this->get_hostnames() + " 482 " + nickname + " " + *it + " :You're not a channel operator\r\n";
                 send(fd, error_message.c_str(), error_message.length(), 0);
                 continue;
             }
             if(reason.empty())
-                message = ":" + nickname + "!" + server.get_username(fd) + "@" + server.get_hostnames() + " KICK " + *it + " " + *it1 + "\r\n";
+                message = ":" + nickname + "!" + this->get_username(fd) + "@" + this->get_hostnames() + " KICK " + *it + " " + *it1 + "\r\n";
             else
-                message = ":" + nickname + "!" + server.get_username(fd) + "@" + server.get_hostnames() + " KICK " + *it + " " + *it1 + " :" + reason + "\r\n";
+                message = ":" + nickname + "!" + this->get_username(fd) + "@" + this->get_hostnames() + " KICK " + *it + " " + *it1 + " :" + reason + "\r\n";
 
             // Send the message to the user
             std::set<std::string>::iterator it2 = channels[*it]->getUsers().begin();
             while (it2 != channels[*it]->getUsers().end())
             {
-                send(server.get_fd_users(*it2), message.c_str(), message.length(), 0);
+                send(this->get_fd_users(*it2), message.c_str(), message.length(), 0);
                 it2++;
             }
             // Remove the user from the channel

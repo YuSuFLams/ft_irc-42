@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bot.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 00:19:26 by ylamsiah          #+#    #+#             */
-/*   Updated: 2024/03/09 01:20:09 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/09 10:10:07 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,11 @@ std::map<std::string, float> first_read(std::string file)
     return listStud;
 }
 
-void Server::comdBot(Server server, std::vector<std::string> &words, int fd)
+void Server::comdBot(std::vector<std::string> &words, int fd)
 {
     std::string file = "bot.txt";
-    server.setStudent_13(first_read(file));
-    std::map<std::string, float> listStud = server.getStudent_13();
+    this->setStudent_13(first_read(file));
+    std::map<std::string, float> listStud = this->getStudent_13();
 
     if (words.size() < 2) {
         std::string botMsg = "Bot: Insufficient arguments.\r\n";

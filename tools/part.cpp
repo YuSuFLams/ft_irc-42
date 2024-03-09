@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 21:09:08 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/09 02:08:23 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/09 10:15:40 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../server/server.hpp"
 
-int Server::PartChannel(std::vector<std::string> strs, std::map<std::string, Channel *> &channels, int fd, std::string nickname, Server &server) 
+int Server::PartChannel(std::vector<std::string> strs, std::map<std::string, Channel *> &channels, int fd, std::string nickname) 
 {
     if (strs.size() < 2)
         return -1;
@@ -39,7 +39,7 @@ int Server::PartChannel(std::vector<std::string> strs, std::map<std::string, Cha
         std::string channel_name = *it;
         if (channel_name[0] != '#' && channel_name[0] != '&') 
         {
-            msg = ":" + server.get_hostnames() + " " + server.to_string(ERR_BADCHANMASK) + " " + nickname + " " + channel_name + " :Bad channel mask\r\n";
+            msg = ":" + this->get_hostnames() + " " + this->to_string(ERR_BADCHANMASK) + " " + nickname + " " + channel_name + " :Bad channel mask\r\n";
             send(fd, msg.c_str(), msg.length(), 0);
             continue;
         }
@@ -47,7 +47,7 @@ int Server::PartChannel(std::vector<std::string> strs, std::map<std::string, Cha
        // Check if the channel exists
         if (channels.find(channel_name) == channels.end()) 
         {
-            msg = ":" + server.get_hostnames() + " 403 " + nickname + " " + channel_name + " :No such channel\r\n";
+            msg = ":" + this->get_hostnames() + " 403 " + nickname + " " + channel_name + " :No such channel\r\n";
             send(fd, msg.c_str(), msg.length(), 0);
             continue;
         }
@@ -57,19 +57,19 @@ int Server::PartChannel(std::vector<std::string> strs, std::map<std::string, Cha
         // Check if the user is in the channel before removing them
         if (channel->getUsers().find(nickname) == channel->getUsers().end()) 
         {
-            msg = ":" + server.get_hostnames() + " 442 " + nickname + " " + channel_name + " :You're not on that channel\r\n";
+            msg = ":" + this->get_hostnames() + " 442 " + nickname + " " + channel_name + " :You're not on that channel\r\n";
             send(fd, msg.c_str(), msg.length(), 0);
             continue;
         }
 
       
         // channel->print_users();
-        msg = ":" + server.get_nickname(fd) + "!" + server.get_realname(fd) + "@" + server.get_hostnames() + " PART " + channel_name + "\r\n";
+        msg = ":" + this->get_nickname(fd) + "!" + this->get_realname(fd) + "@" + this->get_hostnames() + " PART " + channel_name + "\r\n";
 
         // Send to all users in the channel
         for (std::set<std::string>::iterator it = channel->getUsers().begin(); it != channel->getUsers().end(); ++it) 
         {
-            int user_fd = server.get_fd_users(*it);
+            int user_fd = this->get_fd_users(*it);
             send(user_fd, msg.c_str(), msg.length(), 0);
         }
         msg.clear();
