@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 03:00:11 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/09 03:31:45 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/09 05:14:52 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,8 +147,12 @@ void	Server::commands(Server server, Message &msg, std::vector <std::string> &Sp
 				cmdprivmsg(SplitedMsg, c);
 			else if (!SplitedMsg[0].compare("BOT"))
 				server.comdBot(server, SplitedMsg, c->getFd());
-			else if (server.quit_command(SplitedMsg, server, c->getFd()) == 1)
+			else if (!SplitedMsg[0].compare("QUIT"))
+            {
+                if (server.quit_command(SplitedMsg, server, c->getFd()) == 1)
 					return ;
+					// break ;
+            }
 			else if(!SplitedMsg[0].compare("JOIN") || !SplitedMsg[0].compare("TOPIC") || !SplitedMsg[0].compare("PART") || !SplitedMsg[0].compare("KICK"))
 			{
 				if (server.join_topic_part_part(SplitedMsg, server, c->getFd(), server.get_allstring()) == 1)
