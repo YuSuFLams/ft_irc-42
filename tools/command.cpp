@@ -3,16 +3,128 @@
 /*                                                        :::      ::::::::   */
 /*   command.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 03:00:11 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/04 14:25:04 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/09 03:31:45 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../server/server.hpp"
 
-void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg)
+int Server::kick_command(std::vector<std::string > words , Server &server , int fd , std::string str)
+{
+    if(words.size() == 1)
+    {
+        std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NEEDMOREPARAMS) + " " + words[0] + " :Not enough parameters\r\n";
+        send(fd, str.c_str(), str.length(), 0);
+        return (1);
+    }
+    else
+    {
+        server.KickChannel(words, server.getChannels(), fd, server.get_nickname(fd), server, str);
+    }
+    return (0);
+}
+
+int Server::join_command(std::vector<std::string > words , Server &server , int fd , std::string str)
+{
+    if(words.size() == 1)
+    {
+            std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NEEDMOREPARAMS) + " " + words[0] + " :Not enough parameters\r\n";
+            send(fd, str.c_str(), str.length(), 0);
+            return (1);
+    }
+    else
+    {
+        if(server.JoinChannel(words, server.get_nickname(fd), fd , server ,str) == -1)
+        {
+            std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NOSUCHCHANNEL) + " " + server.get_nickname(fd) + " " + words[1] + " :No such channel\r\n";
+            send(fd, str.c_str(), str.length(), 0);
+        }
+    }
+    return (0);
+}
+
+int Server::topic_command(std::vector<std::string > words , Server &server , int fd)
+{
+    if(words.size() == 1)
+    {
+        std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NEEDMOREPARAMS) + " " + words[0] + " :Not enough parameters\r\n";
+        send(fd, str.c_str(), str.length(), 0);
+        return (1);
+    }
+    else
+    {
+        if(server.TopicChannel(words , server.getChannels(), fd, server) == -1)
+        {
+            std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NOSUCHCHANNEL) + " " + server.get_nickname(fd) + " " + words[1] + " :No such channel\r\n";
+            send(fd, str.c_str(), str.length(), 0);
+        }
+    }
+    return (0);
+}
+
+int Server::part_command(std::vector<std::string > words , Server &server , int fd)
+{
+    if(words.size() == 1)
+    {
+        std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NEEDMOREPARAMS) + " " + words[0] + " :Not enough parameters\r\n";
+        send(fd, str.c_str(), str.length(), 0);
+        return (1);
+    }
+    else
+    {
+        if(server.PartChannel(words , server.getChannels(), fd, server.get_nickname(fd), server) == -1)
+        {
+            std::string str = ":" + server.get_hostnames() + " " + server.to_string(ERR_NOSUCHCHANNEL) + " " + server.get_nickname(fd) + " " + words[1] + " :No such channel\r\n";
+            send(fd, str.c_str(), str.length(), 0);
+        }
+    }
+    return (0);
+}
+
+int Server::quit_command(std::vector<std::string > words , Server &server , int fd)
+{
+    if(words[0] == "QUIT" && server.get_password(fd) != "" && server.is_registered(fd) == 1)
+    {
+        close(fd);
+        // remove client from the channels
+        server.remove_client_from_channels(fd);
+        // remove client from the map
+        server.removeClient(fd);
+        // free the memory
+        delete server.getClients()[fd];
+        return (1);
+    }
+    return (0);
+}
+
+int Server::join_topic_part_part(std::vector<std::string > &words, Server &server, int fd , std::string &str)
+{
+    if(words[0] == "JOIN" && server.get_password(fd) != "" && server.is_registered(fd) == 1)
+    {
+        if(join_command(words, server, fd , str) == 1)
+            return (1);
+    }
+    else if(words[0] == "TOPIC" && server.get_password(fd) != "" && server.is_registered(fd) == 1)
+    {
+        if(topic_command(words, server, fd) == 1)
+            return (1);
+    }
+    else if(words[0] == "PART" && server.get_password(fd) != "" && server.is_registered(fd) == 1)
+    {
+        if(part_command(words, server, fd) == 1)
+            return (1);
+    }
+    else if(words[0] == "KICK" && server.get_password(fd) != "" && server.is_registered(fd) == 1)
+    {
+        if(kick_command(words, server, fd, str) == 1)
+            return (1);
+    }
+    return (0);
+}
+void	Server::commands(Server server, Message &msg, std::vector <std::string> &SplitedMsg)
 {
 	Client *c ;
 
@@ -33,6 +145,19 @@ void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg)
         {
 			if(!SplitedMsg[0].compare("PRIVMSG"))
 				cmdprivmsg(SplitedMsg, c);
+			else if (!SplitedMsg[0].compare("BOT"))
+				server.comdBot(server, SplitedMsg, c->getFd());
+			else if (server.quit_command(SplitedMsg, server, c->getFd()) == 1)
+					return ;
+			else if(!SplitedMsg[0].compare("JOIN") || !SplitedMsg[0].compare("TOPIC") || !SplitedMsg[0].compare("PART") || !SplitedMsg[0].compare("KICK"))
+			{
+				if (server.join_topic_part_part(SplitedMsg, server, c->getFd(), server.get_allstring()) == 1)
+					return ;
+			}
+			else if (!SplitedMsg[0].compare("INVITE"))
+				server.invitecmd(SplitedMsg, server, c->getFd());
+			else if (!SplitedMsg[0].compare("MODE"))
+				server.modecmd(SplitedMsg, server, c->getFd());
 			else 
 				throw Myexception(ERR_UNKNOWNCOMMAND);
 		}

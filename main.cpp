@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 09:39:17 by araiteb           #+#    #+#             */
-/*   Updated: 2024/02/25 03:06:38 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/09 01:19:42 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,6 @@ int main(int ac, char **av)
 		exit (1);
 	if (!S.listenSocket())
 		exit (1);
-	S.PollingFd();
+	S.PollingFd(S);
 	return 0;
 }

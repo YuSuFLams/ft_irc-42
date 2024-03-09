@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/06 13:20:01 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/09 03:01:11 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,15 @@
 #include "../message/messages.hpp"
 #include "../Exeption/Exception.hpp"
 #include <map>
+#include <vector>
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include "Channels.hpp"
 
 #define LIMITCNX 5000
 class Client;
+class Channel;
 class Message;
 
 class Server {
@@ -64,8 +70,18 @@ class Server {
 		std::string					msgsendResponce;
 		std::string					checkPiv;
 		std::map <int, Client *>	clients;
+		
+
+		/////////////////////////  TOOLS  //////////////////////////
+		std::map<std::string , Channel *> channels;
+		std::map<std::string, float> Student_13;
+		bool flagMode;
+		std::string allstring;
 
 	public:
+		std::string &get_allstring() { return allstring; }
+		void set_allstring(std::string str) { allstring = str; }
+		
 		Server(const std::string ipAdd, int port);
 		Server(Server &sr);
 		Server& operator=(const Server &sr);
@@ -92,10 +108,10 @@ class Server {
 		int				BindSocket();
 		int				listenSocket();
 		int 			acceptingData();
-		int 			checkmsg(int i);
-		void			PollingFd();
+		int 			checkmsg(Server server, int i);
+		void			PollingFd(Server server);
 		
-		void			commands(Message &, std::vector <std::string>&);
+		void			commands(Server server, Message &, std::vector <std::string>&);
 		
 		void			cmduser(Client *c, std::vector<std::string> &SplitedMsg);
 		void			cmdpass(std::vector<std::string>& SplitedMsg, Client &c);
@@ -105,11 +121,89 @@ class Server {
 		Client*			getClientByFd(int fdUser);
 		Client*			getClientByNickname(std::string nickname);
 		bool			IsAuthorized(Client &);
-		void			TraiteMessage(Message &);
+		void			TraiteMessage(Server server, Message &);
 
 		void 			clientLeft(int fd);
 		void 			quitServer();
 
+
+		int topic_command(std::vector<std::string > words , Server &server , int fd);
+		int quit_command(std::vector<std::string > words , Server &server , int fd);
+		int part_command(std::vector<std::string > words , Server &server , int fd);
+		int join_command(std::vector<std::string > words , Server &server , int fd , std::string str);
+		int join_topic_part_part(std::vector<std::string > &words, Server &server, int fd , std::string &str);
+		int kick_command(std::vector<std::string > words , Server &server , int fd , std::string str);
+		/////////////////////////  CHANNELS  //////////////////////////
+		void addClient(int fd, Client *client);
+        void removeClient(int fd);
+        void setClients(std::map<int, Client *> clients);
+        void set_realname(int fd, std::string realname);
+        void set_hostname(int fd, std::string hostname);
+        void set_servername(int fd, std::string servername);
+        std::string get_password(int fd);
+        bool getInviteToChannel(int fd);
+        
+        std::string get_realname(int fd);
+        void set_fd(int fd, int new_fd);
+        void set_password(int fd, std::string password);
+        void set_client(int fd, Client *client);
+        void set_clients(std::map<int, Client *> clients);
+        std::string get_servername(int fd);
+        std::string get_current_time();
+        int is_nickname_exist(std::string nickname);
+        void set_is_registered(int fd, int is_registered);
+        int is_registered(int fd);
+        void addChannel(std::string name, Channel *channel);
+        void set_creator(std::string channel, bool creater);
+        std::string get_creator_name(std::string channel);
+        int is_nickname_exist_and_registered(std::string nickname);
+        void set_topic(std::string channel, std::string topic);
+        std::string get_topic(std::string channel);
+        void priny_users(std::string channel);
+        std::string to_string(int number);
+        void remove_client_from_channels(int fd);
+        std::string get_users(std::string channel);
+        long get_limit(std::string channel);
+        std::map<int, Client *> getClients();
+		int get_fd_users(const std::string& nickname) const;
+        std::string get_username(int fd);
+		std::string get_hostname(int fd);
+        void set_username(int fd, std::string username);
+		
+		/////////////////////////  TOOLS  //////////////////////////
+		std::string get_hostnames();
+        std::string get_nickname(int fd);
+		void set_nickname(int fd, std::string nickname);
+        std::map<std::string, Channel *> &getChannels();
+		void setFlagMode(bool flag) { flagMode = flag; }
+        bool getFlagMode() { return flagMode; }
+		std::map<std::string, float> getStudent_13() { return (this->Student_13);}
+        void comdBot(Server server, std::vector<std::string> &words, int fd);
+        void setStudent_13(std::map<std::string, float> Student_13) { this->Student_13 = Student_13;}
+		// invite
+        bool isClientExist(std::string nickname);
+        bool isValidChannelName(std::string name);
+        bool isChannelExist(std::string channelname);
+        void invitecmd(std::vector<std::string> words, Server server, int fd);
+        bool isClientInChannel(std::string nickname, std::string channelname, std::map<std::string, Channel *> &channel);
+        bool isClientOperatorInChannel(std::string clientname, std::string channelname, std::map<std::string, Channel *> &channel);
+        Client*   getClientByNickname(std::string nick, std::map <int, Client *> clients);
+        bool isSenderInChannel(std::string nickname, std::string channelname, std::map<std::string, Channel *> &channel);
+		//-------------------//
+        int	JoinChannel(std::vector<std::string> strs , std::string nickname, int fd, Server &server , std::string str);
+        int public_channel(std::string channel_name , std::string key , int fd, Server &server);
+        int	PartChannel(std::vector<std::string> strs ,std::map<std::string, Channel *> &channels,  int fd, std::string nickname,  Server &server);
+        void handleChannels(std::vector<std::pair<std::string, std::string> >& pairs, int fd, const std::string& nickname , Server &server);
+        int	TopicChannel(std::vector<std::string> strs ,std::map<std::string, Channel *> &channels,  int fd,  Server &server);
+        void KickChannel(std::vector<std::string> strs, std::map<std::string, Channel *> &channels, int fd, std::string nickname, Server &server , std::string str);
+		// mode
+        void modecmd(std::vector<std::string> words, Server server, int fd);
+        void addMode_I(Server server, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
+        void addMode_O(int fd, std::vector<std::string> words, Server server, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
+        void addMode_T(Server server, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
+        void addMode_L(int fd, std::vector<std::string> words, Server server, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
+        void addMode_K(int fd, std::vector<std::string> words, Server server, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
+        bool isAllDigit(std::string str);
 };
 
 void	split(std::string msg, std::vector<std::string> &SplitedMsg);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/25 15:04:50 by araiteb           #+#    #+#             */
-/*   Updated: 2024/02/25 02:57:44 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/09 00:55:30 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ Client::Client(int fd)
 	this->hostname = "";
 	this->servername = "";
 	this->realname = "";
+	this->is_registered = 0;
+	this->InviteToChannel = false;
 }
 Client::Client(Client &cl)
 {
@@ -44,52 +46,47 @@ Client& Client::operator=(const Client &cl)
 	this->hostname = cl.hostname;
 	this->realname = cl.realname;
 	this->servername = cl.servername;
+	this->is_registered = cl.is_registered;
+	this->InviteToChannel = cl.InviteToChannel;
 	return (*this);
 }
-Client::~Client()
-{
-	
-}
-void    Client::seTNick(std::string nick)
-{
-	nickname = nick;
-}
 
-void    Client::seTPass(std::string pwd)
-{
-	pass = pwd;
-}
-void    Client::setFdUser(int FdUser)
-{
-	fd = FdUser;
-}
+Client::~Client() {}
 
-std::string     Client::getNick() { return (nickname); }
+void    Client::seTNick(std::string nick) { nickname = nick; }
 
-std::string     Client::geTPass(){ return (pass); }
+void    Client::seTPass(std::string pwd) { pass = pwd; }
+
+void    Client::setFdUser(int FdUser) { fd = FdUser; }
 
 void	Client::setusename(std::string val) { this->username = val; }
+
 void	Client::sethostname(std::string val) { this->hostname = val; }
-void	Client::setservername(std::string val) { this->servername = val; }
+
 void	Client::setrealname(std::string val) { this->realname = val; }
 
-std::string		Client::getusername(){
-	return this->username;
-}
-std::string		Client::gethostname(){
-	return this->hostname;
-}
-std::string		Client::getservername(){
-	return this->servername;
-}
-std::string		Client::getrealname(){
-	return this->realname;
-}
+void	Client::setservername(std::string val) { this->servername = val; }
 
-int             Client::getFd() {
-	return this->fd;
-}
+void	Client::setInviteToChannel(bool InviteToChannel) { this->InviteToChannel = InviteToChannel; }
 
-std::string   Client::getIdent(){
-	return (this->getNick() + "!" + this->gethostname() + "@localhost");
-}
+void	Client::set_is_Registered(int is_registered) { this->is_registered = is_registered; }
+
+std::string     Client::getNick() { return this->nickname; }
+
+std::string     Client::geTPass(){ return this->pass; }
+
+std::string		Client::getusername(){ return this->username; }
+
+std::string		Client::gethostname(){ return this->hostname; }
+
+std::string		Client::getservername(){ return this->servername; }
+
+std::string		Client::getrealname(){ return this->realname; }
+
+int             Client::getFd() { return this->fd; }
+
+std::string		Client::getIdent(){ return (this->getNick() + "!" + this->gethostname() + "@localhost");}
+
+bool			Client::getInviteToChannel() { return (this->InviteToChannel); }
+
+int				Client::is_Registered() { return (this->is_registered); }
