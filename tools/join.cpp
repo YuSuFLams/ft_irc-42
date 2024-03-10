@@ -6,12 +6,11 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 01:40:02 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/09 10:29:24 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/09 12:04:07 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../server/server.hpp"
-
 
 void Server::join_broadcast_msg(std::map<std::string, Channel*>& channels , std::string msg , std::string channelName)
 {

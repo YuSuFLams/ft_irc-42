@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 00:19:26 by ylamsiah          #+#    #+#             */
-/*   Updated: 2024/03/09 10:10:07 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/10 07:05:51 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ void Server::comdBot(std::vector<std::string> &words, int fd)
     this->setStudent_13(first_read(file));
     std::map<std::string, float> listStud = this->getStudent_13();
 
-    if (words.size() < 2) {
+    if (words.size() < 2) 
+    {
         std::string botMsg = "Bot: Insufficient arguments.\r\n";
         send(fd, botMsg.c_str(), botMsg.length(), 0);
         return;

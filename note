@@ -1,0 +1,98 @@
+Server is running . . . 
+New connection
+Received: PASS ss
+NICK ff
+USER ff 0 * ff
+
+Received: 
+Client left. . .
+New connection
+Received: PASS ss
+
+Received: NICK ff
+
+Received: USER ff 0 * ff
+
+New connection
+Received: PASS ss
+
+Received: NICK mm
+
+Received: USER s s s s
+
+Received: PRIVMSG ff :fen asat
+
+Received: PRIVMSG mm labas
+
+Received: PONG e3r8p1.1337.ma
+
+Received: PRIVMSG ff :cv wntna hani
+
+Received: JOIN #bb
+
+Received: MODE #bb +sn
+
+Received: JOIN #dd
+
+Received: JOIN #bb
+
+Received: PONG e3r8p1.1337.ma
+
+Received: PRIVMSG mm :DCC SEND join.o 168626177 1096 281116
+
+Received: PONG e3r8p1.1337.ma
+
+New connection
+Received: PASS ss
+
+Received: NICK jj
+
+Received: USER jj 0 * jj
+
+Received: JOIN #bb
+
+Received: MODE #bb
+
+Received: PRIVMSG jj :DCC SEND join.o 168626177 1097 281116
+
+Received: PONG e3r8p1.1337.ma
+
+Received: PONG e3r8p1.1337.ma
+
+Received: PONG e3r8p1.1337.ma
+
+Received: PONG e3r8p1.1337.ma
+
+Received: PRIVMSG jj :DCC SEND ircserv 168626177 1100 527872
+
+Received: QUIT Leaving...
+
+QUIT
+Received: 
+Received: QUIT Leaving...
+
+QUIT
+Received: 
+New connection
+Received: PASS ss
+
+Received: NICK ff
+
+Received: USER ff 0 * ff
+
+New connection
+Received: PASS ss
+
+Received: NICK jj
+
+Received: USER jj 0 * jj
+
+Received: JOIN #bb
+
+Received: MODE #bb
+
+ircserv(44583,0x114084dc0) malloc: can't allocate region
+:*** mach_vm_map(size=1152921504606851072, flags: 100) failed (error code=3)
+ircserv(44583,0x114084dc0) malloc: *** set a breakpoint in malloc_error_break to debug
+libc++abi.dylib: terminating with uncaught exception of type std::bad_alloc: std::bad_alloc
+[1]    44583 abort      ./ircserv 6667 ss

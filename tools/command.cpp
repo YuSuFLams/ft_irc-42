@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 03:00:11 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/09 11:53:08 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/10 07:08:44 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,20 +82,6 @@ void Server::part_command(std::vector<std::string > words  , int fd)
     }
 }
 
-void Server::quit_command(std::vector<std::string > words  , int fd)
-{
-    if(words[0] == "QUIT" && this->get_password(fd) != "" && this->is_registered(fd) == 1)
-    {
-        close(fd);
-        // remove client from the channels
-        this->remove_client_from_channels(fd);
-        // remove client from the map
-        this->removeClient(fd);
-        // free the memory
-        delete this->getClients()[fd];
-        return ;
-    }
-}
 
 void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg, std::string str)
 {
@@ -115,20 +101,17 @@ void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg, std::
             cmduser(c, SplitedMsg);
         else if (this->IsAuthorized(*c))
         {
-            if(!SplitedMsg[0].compare("PRIVMSG"))
-                cmdprivmsg(SplitedMsg, c);
-            else if (!SplitedMsg[0].compare("BOT"))
+            if (!SplitedMsg[0].compare("BOT"))
                 this->comdBot(SplitedMsg, c->getFd());
             else if (!SplitedMsg[0].compare("QUIT"))
             {
-                std::cout << "QUIT" << std::endl;
                 close(c->getFd());
                 this->remove_client_from_channels(c->getFd());
                 this->removeClient(c->getFd());
                 delete this->getClients()[c->getFd()];
                 return ;
             }
-            else if(!SplitedMsg[0].compare("JOIN") || !SplitedMsg[0].compare("TOPIC") || !SplitedMsg[0].compare("PART") || !SplitedMsg[0].compare("KICK"))
+            else if(!SplitedMsg[0].compare("JOIN") || !SplitedMsg[0].compare("TOPIC") || !SplitedMsg[0].compare("PART") || !SplitedMsg[0].compare("KICK") || !SplitedMsg[0].compare("PRIVMSG"))
             {
                 std::string buffer = str;
     
@@ -148,6 +131,8 @@ void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg, std::
                 int fd = c->getFd();
                 if(words[0] == "JOIN")
                     join_command(words, fd , buffer);
+                else if(words[0] == "PRIVMSG")
+                    privmsg_command(words, fd, buffer);
                 else if(words[0] == "TOPIC")
                     topic_command(words, fd);
                 else if(words[0] == "PART")
@@ -213,7 +198,7 @@ void	Server::cmdknick(std::vector<std::string> &SplitedMsg, Client *c)
         {
             sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 001 " + this->get_nickname(c->getFd()) + " :Welcome to the Internet Relay Network " + this->get_nickname(c->getFd())+ "!" + this->get_username(c->getFd()) + "@" + this->get_hostnames() + "\r\n");
             sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 002 " + this->get_nickname(c->getFd()) + " :Your host is " + this->get_servername(c->getFd()) + ", running version 1.0\r\n");
-            sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 003 " + this->get_nickname(c->getFd()) + " :This server was created " +  this->birthday + "\r");
+            sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 003 " + this->get_nickname(c->getFd()) + " :This server was created " +  this->get_current_time() + "\r\n");
         }
     }
 }
@@ -224,23 +209,10 @@ void	Server::cmdpass(std::vector<std::string>& SplitedMsg, Client *c)
         throw Myexception(ERR_ALREADYREGISTRED);
 	if (SplitedMsg.size() != 2)
 		throw Myexception(ERR_NEEDMOREPARAMS);
-	else {
+	else 
+    {
 		if (SplitedMsg[1].compare(this->m_pass))
 			throw Myexception(ERR_PASSWDMISMATCH);
 		c->seTPass(SplitedMsg[1]);
-	}
-}
-
-
-void	Server::cmdprivmsg(std::vector<std::string>& SplitedMsg, Client *c)
-{
-	Client *newClient;
-	newClient = getClientByNickname(SplitedMsg[1]);
-	if (!newClient)
-		throw Myexception(ERR_NOSUCHNICK);
-	else if (!SplitedMsg[2].empty()) {
-		std::string msg = ":" + c->getNick() + " " + SplitedMsg[0] + " " + SplitedMsg[1] + " :" + SplitedMsg[2];
-		sendResponce(newClient->getFd(), msg);
-		sendResponce(newClient->getFd(), "\n");
 	}
 }
