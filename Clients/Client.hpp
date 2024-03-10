@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/25 15:04:46 by araiteb           #+#    #+#             */
-/*   Updated: 2024/02/25 03:07:09 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/09 00:49:55 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,9 @@ class Client
 		std::string		hostname;
 		std::string		servername;
 		std::string		realname;
-		int fd;
+		int 			fd;
+		int 			is_registered;
+		bool 			InviteToChannel;
 	public:
 		Client();
 		Client(int fd);
@@ -42,17 +44,21 @@ class Client
 		void			sethostname(std::string);
 		void			setservername(std::string);
 		void			setrealname(std::string);
-		
-		 
+		void			set_is_Registered(int is_registered);
+		void 			setInviteToChannel(bool InviteToChannel);
+
+
 		int				getFd();
 		std::string		getNick();
 		std::string		geTPass();
+		std::string 	getIdent();
 		std::string		getusername();
 		std::string		gethostname();
-		std::string		getservername();
 		std::string		getrealname();
+		std::string		getservername();
+		bool			getInviteToChannel();
 		
-		std::string 	getIdent();
+		int 			is_Registered();
 };
 
 
