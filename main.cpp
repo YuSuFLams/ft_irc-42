@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 09:39:17 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/10 11:52:01 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/10 13:29:09 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int main(int ac, char **av)
 {
 	if (ac != 3)
 	{
-		std::cerr << "prob in arguments" << std::endl;
+		std::cout << "Usage: ./ircserv [port] [password]" << std::endl;
 		return 0;
 	}
 	

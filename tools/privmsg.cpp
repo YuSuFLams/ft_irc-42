@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 04:50:39 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/10 12:32:38 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/10 13:43:21 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,21 +90,22 @@ void Server::privmsg_command(std::vector<std::string > words  , int fd , std::st
     
     for (std::vector<std::string>::iterator it = targets.begin(); it != targets.end(); it++)
     {
+        std::cout << "target: " << *it << std::endl;
         if(it->at(0) == '#' || it->at(0) == '&')
         {
-            if(this->getChannels()[*it]->isUser(this->get_nickname(fd)) == false)
+            if(this->getChannels().find(*it) != this->getChannels().end() && this->getChannels()[*it]->getUsers().find(this->get_nickname(fd)) != this->getChannels()[*it]->getUsers().end())
             {
-                std::string str = ":" + this->get_hostnames() + " " + this->to_string(ERR_CANNOTSENDTOCHAN) + " " + this->get_nickname(fd) + " " + *it + " :Cannot send to channel\r\n";
-                send(fd, str.c_str(), str.length(), 0);
-                continue;
-            }
-            if(this->getChannels().find(*it) != this->getChannels().end())
-            {
-                this->send_to_channel(words[1], message, fd);
+                this->send_to_channel(*it, message, fd);
             }
             else
             {
-                std::string str = ":" + this->get_hostnames() + " " + this->to_string(ERR_NOSUCHCHANNEL) + " " + this->get_nickname(fd) + " " + *it + " :No such channel\r\n";
+                if(this->getChannels().find(*it) == this->getChannels().end())
+                {
+                    std::string str = ":" + this->get_hostnames() + " " + this->to_string(ERR_NOSUCHCHANNEL) + " " + this->get_nickname(fd) + " " + *it + " :No such channel\r\n";
+                    send(fd, str.c_str(), str.length(), 0);
+                    continue;
+                }
+                std::string str = ":" + this->get_hostnames() + " " + this->to_string(ERR_CANNOTSENDTOCHAN) + " " + this->get_nickname(fd) + " " + *it + " :Cannot send to channel\r\n";
                 send(fd, str.c_str(), str.length(), 0);
             }
         }
