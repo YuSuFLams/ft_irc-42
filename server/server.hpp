@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/10 07:17:30 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/10 12:32:09 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ class Server {
 
 
 		void topic_command(std::vector<std::string > words , int fd);
-		void quit_command(std::vector<std::string > words , int fd);
+		void quit_command(int fd);
 		void part_command(std::vector<std::string > words , int fd);
 		void join_command(std::vector<std::string > words , int fd , std::string str);
 		void kick_command(std::vector<std::string > words , int fd , std::string str);
@@ -144,7 +144,7 @@ class Server {
         void set_servername(int fd, std::string servername);
         std::string get_password(int fd);
         bool getInviteToChannel(int fd);
-        
+        bool is_authenticated(Client &client);
         std::string get_realname(int fd);
         void set_fd(int fd, int new_fd);
         void set_password(int fd, std::string password);
@@ -193,7 +193,9 @@ class Server {
         bool isSenderInChannel(std::string nickname, std::string channelname, std::map<std::string, Channel *> &channel);
 		//-------------------//
 		void privmsg_command(std::vector<std::string > words  , int fd , std::string str);
+		void send_to_user(std::string nickname , std::string str ,int fd);
 		void send_to_channel(std::string channel_name , std::string str, int fd);
+		void send_to_all(std::string str, int fd);
 		void join_topic_part_kick_privmsg(int fd , std::string str);
         int	JoinChannel(std::vector<std::string> strs , std::string nickname, int fd, std::string str);
         int public_channel(std::string channel_name , std::string key , int fd);

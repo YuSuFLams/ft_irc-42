@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 04:50:39 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/10 07:08:14 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/10 12:32:38 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,14 @@ void Server::send_to_channel(std::string channel_name , std::string str ,int fd)
             }
         }
     }
+}
+
+
+void Server::send_to_user(std::string nickname , std::string str ,int fd)
+{
+    std::string message = ":" + this->get_nickname(fd) + "!" + this->get_username(fd) + "@" + this->get_hostnames() + " PRIVMSG " + nickname + " :" + str + "\r\n";
+    int user = this->get_fd_users(nickname);
+    send(user, message.c_str(), message.length(), 0);
 }
 
 void Server::privmsg_command(std::vector<std::string > words  , int fd , std::string str)
@@ -79,6 +87,7 @@ void Server::privmsg_command(std::vector<std::string > words  , int fd , std::st
     {
         targets.push_back(words[1]);
     }
+    
     for (std::vector<std::string>::iterator it = targets.begin(); it != targets.end(); it++)
     {
         if(it->at(0) == '#' || it->at(0) == '&')
@@ -101,15 +110,13 @@ void Server::privmsg_command(std::vector<std::string > words  , int fd , std::st
         }
         else
         {
-            if(!this->is_nickname_exist(*it))
+            if(!this->is_nickname_exist(*it) || !this->is_authenticated(*this->getClientByNickname(*it)))
             {
                 std::string str = ":" + this->get_hostnames() + " " + this->to_string(ERR_NOSUCHNICK) + " " + this->get_nickname(fd) + " " + *it + " :No such nick\r\n";
                 send(fd, str.c_str(), str.length(), 0);
                 continue;
             }
-            std::string msg = ":" + this->get_nickname(fd) + "!" + this->get_username(fd) + "@" + this->get_hostnames() + " PRIVMSG " + *it + " :" + message + "\r\n";
-            int fd = this->get_fd_users(*it);
-            send(fd, msg.c_str(), msg.length(), 0);
+            this->send_to_user(*it, message, fd);
         }
     }
     targets.clear();

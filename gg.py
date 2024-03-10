@@ -25,7 +25,7 @@ async def connect_socket(i):
             # print(f"Received: {response}")
 
             await asyncio.sleep(DELAY)
-            writer.write(f"PRIVMSG #general :A7san Server Fl3alam{i}\r\n".encode())
+            # writer.write(f"PRIVMSG #general :A7san Server Fl3alam{i}\r\n".encode())
             await writer.drain()
 
     except asyncio.CancelledError:

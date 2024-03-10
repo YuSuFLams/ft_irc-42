@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 03:00:11 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/10 07:17:22 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/10 12:02:03 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,16 +109,20 @@ void Server::join_topic_part_kick_privmsg(int fd , std::string str)
         part_command(words, fd);
     else if(words[0] == "KICK")
         kick_command(words, fd, buffer);
+    
+    iss.clear();
+    words.clear();
+    buffer.clear();
 }
 
 void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg, std::string str)
 {
     Client *c ;
-
     c = getClientByFd(msg.getSenderFd());
     if (!c)
         return ;
-
+    
+    
     try
     {
         if (!SplitedMsg[0].compare("PASS"))
@@ -133,10 +137,7 @@ void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg, std::
                 this->comdBot(SplitedMsg, c->getFd());
             else if (!SplitedMsg[0].compare("QUIT"))
             {
-                close(c->getFd());
-                this->remove_client_from_channels(c->getFd());
-                this->removeClient(c->getFd());
-                delete this->getClients()[c->getFd()];
+                this->quit_command(c->getFd());
                 return ;
             }
             else if(!SplitedMsg[0].compare("JOIN") || !SplitedMsg[0].compare("TOPIC") || !SplitedMsg[0].compare("PART") 
@@ -148,8 +149,8 @@ void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg, std::
                 this->invitecmd(SplitedMsg, c->getFd());
             else if (!SplitedMsg[0].compare("MODE"))
                 this->modecmd(SplitedMsg, c->getFd());
-            else 
-                throw Myexception(ERR_UNKNOWNCOMMAND);
+            // else 
+            //     throw Myexception(ERR_UNKNOWNCOMMAND);
         }
         else
             throw Myexception(ERR_ALREADYREGISTRED);
@@ -158,7 +159,8 @@ void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg, std::
     {
         sendResponce(c->getFd(), ":" + this->get_hostnames() + " " + int2string(e.getERROR_NO()) + c->getNick() + " "
         + SplitedMsg[0] + " " + e.what() + "\r\n");
-    }		
+    }
+    
 }
 
 

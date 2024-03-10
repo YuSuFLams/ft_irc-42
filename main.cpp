@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 09:39:17 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/09 10:13:00 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/10 11:52:01 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ int main(int ac, char **av)
 		std::cerr << "prob in arguments" << std::endl;
 		return 0;
 	}
+	
 	Server S(av[2], atoi(av[1]));
 	if (!S.CreateSocket())
 		exit (1);

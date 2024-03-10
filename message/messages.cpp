@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   messages.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 20:11:39 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/04 12:41:56 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/10 10:24:33 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ int     checkspace(std::string s)
     }
     return 0;
 }
-Message::Message(int fd, std::string msg){
+Message::Message(int fd, std::string msg)
+{
     char *ptr;
     std::string tmp;
 
