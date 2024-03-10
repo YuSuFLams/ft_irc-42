@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bot.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 00:19:26 by ylamsiah          #+#    #+#             */
-/*   Updated: 2024/03/09 10:10:07 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/10 02:42:00 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void Server::comdBot(std::vector<std::string> &words, int fd)
         std::stringstream ss;
         ss << std::fixed << std::setprecision(2) << it->second;
         std::string botMsg = "Bot: Level Of The " + words[1] + " is " + ss.str() + "%\r\n";
-        std::string botMsg2 = "Bot: " + words[1] + " is a student of 1337 (Promo 5).\r\n";
+        std::string botMsg2 = "Bot: " + words[1] + " is a student of 1337-Khouribga.\r\n";
         send(fd, botMsg.c_str(), botMsg.length(), 0);
         send(fd, botMsg2.c_str(), botMsg2.length(), 0);
     }
