@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/10 05:41:02 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/10 07:17:30 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,6 +194,7 @@ class Server {
 		//-------------------//
 		void privmsg_command(std::vector<std::string > words  , int fd , std::string str);
 		void send_to_channel(std::string channel_name , std::string str, int fd);
+		void join_topic_part_kick_privmsg(int fd , std::string str);
         int	JoinChannel(std::vector<std::string> strs , std::string nickname, int fd, std::string str);
         int public_channel(std::string channel_name , std::string key , int fd);
 		void join_broadcast_msg(std::map<std::string, Channel*>& channels , std::string msg, std::string channelName);

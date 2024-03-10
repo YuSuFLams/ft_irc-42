@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 03:00:11 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/10 07:08:44 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/10 07:17:22 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,34 @@ void Server::part_command(std::vector<std::string > words  , int fd)
     }
 }
 
+void Server::join_topic_part_kick_privmsg(int fd , std::string str)
+{
+     std::string buffer = str;
+    
+    buffer.erase(std::remove(buffer.begin(), buffer.end(), '\n'), buffer.end());
+    buffer.erase(std::remove(buffer.begin(), buffer.end(), '\r'), buffer.end());
+    if(buffer.empty())
+        return ;
+    std::vector<std::string> words;
+    std::string word;
+    std::istringstream iss(buffer);
+    while (iss >> word)
+    {
+        words.push_back(word);
+    }
+    if(words.size() == 0)
+        return ;
+    if(words[0] == "JOIN")
+        join_command(words, fd , buffer);
+    else if(words[0] == "PRIVMSG")
+        privmsg_command(words, fd, buffer);
+    else if(words[0] == "TOPIC")
+        topic_command(words, fd);
+    else if(words[0] == "PART")
+        part_command(words, fd);
+    else if(words[0] == "KICK")
+        kick_command(words, fd, buffer);
+}
 
 void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg, std::string str)
 {
@@ -111,34 +139,10 @@ void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg, std::
                 delete this->getClients()[c->getFd()];
                 return ;
             }
-            else if(!SplitedMsg[0].compare("JOIN") || !SplitedMsg[0].compare("TOPIC") || !SplitedMsg[0].compare("PART") || !SplitedMsg[0].compare("KICK") || !SplitedMsg[0].compare("PRIVMSG"))
+            else if(!SplitedMsg[0].compare("JOIN") || !SplitedMsg[0].compare("TOPIC") || !SplitedMsg[0].compare("PART") 
+                || !SplitedMsg[0].compare("KICK") || !SplitedMsg[0].compare("PRIVMSG"))
             {
-                std::string buffer = str;
-    
-                buffer.erase(std::remove(buffer.begin(), buffer.end(), '\n'), buffer.end());
-                buffer.erase(std::remove(buffer.begin(), buffer.end(), '\r'), buffer.end());
-                if(buffer.empty())
-                    return ;
-                std::vector<std::string> words;
-                std::string word;
-                std::istringstream iss(buffer);
-                while (iss >> word)
-                {
-                    words.push_back(word);
-                }
-                if(words.size() == 0)
-                    return ;
-                int fd = c->getFd();
-                if(words[0] == "JOIN")
-                    join_command(words, fd , buffer);
-                else if(words[0] == "PRIVMSG")
-                    privmsg_command(words, fd, buffer);
-                else if(words[0] == "TOPIC")
-                    topic_command(words, fd);
-                else if(words[0] == "PART")
-                    part_command(words, fd);
-                else if(words[0] == "KICK")
-                    kick_command(words, fd, buffer);
+                join_topic_part_kick_privmsg(c->getFd(), str);
             }
             else if (!SplitedMsg[0].compare("INVITE"))
                 this->invitecmd(SplitedMsg, c->getFd());
