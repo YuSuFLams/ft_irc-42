@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 04:50:39 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/10 13:43:21 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/10 14:27:01 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ void Server::send_to_channel(std::string channel_name , std::string str ,int fd)
             for (; it2 != it->second->getUsers().end(); it2++)
             {
                 int user = this->get_fd_users(*it2);
+                if(user != fd)
                 send(user, message.c_str(), message.length(), 0);
             }
         }
@@ -37,6 +38,8 @@ void Server::send_to_user(std::string nickname , std::string str ,int fd)
     int user = this->get_fd_users(nickname);
     send(user, message.c_str(), message.length(), 0);
 }
+
+
 
 void Server::privmsg_command(std::vector<std::string > words  , int fd , std::string str)
 {
@@ -90,7 +93,7 @@ void Server::privmsg_command(std::vector<std::string > words  , int fd , std::st
     
     for (std::vector<std::string>::iterator it = targets.begin(); it != targets.end(); it++)
     {
-        std::cout << "target: " << *it << std::endl;
+
         if(it->at(0) == '#' || it->at(0) == '&')
         {
             if(this->getChannels().find(*it) != this->getChannels().end() && this->getChannels()[*it]->getUsers().find(this->get_nickname(fd)) != this->getChannels()[*it]->getUsers().end())

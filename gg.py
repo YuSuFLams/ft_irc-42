@@ -1,7 +1,7 @@
 import asyncio
 import signal
 
-MAX_SOCKETS = 100
+MAX_SOCKETS = 500
 DELAY = 0.03
 
 async def connect_socket(i):
@@ -25,7 +25,7 @@ async def connect_socket(i):
             # print(f"Received: {response}")
 
             await asyncio.sleep(DELAY)
-            # writer.write(f"PRIVMSG #general :A7san Server Fl3alam{i}\r\n".encode())
+            writer.write(f"PRIVMSG #general :A7san Server Fl3alam{i}\r\n".encode())
             await writer.drain()
 
     except asyncio.CancelledError:
