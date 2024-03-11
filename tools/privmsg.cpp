@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 04:50:39 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/11 06:37:47 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/11 09:07:26 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,11 @@ void Server::send_to_channel(std::string channel_name , std::string str ,int fd)
             for (; it2 != it->second->getUsers().end(); it2++)
             {
                 int user = this->get_fd_users(*it2);
-                message = ":" + this->get_nickname(fd) + "!" + this->get_username(fd) + "@" + this->get_ip_address(user) + " PRIVMSG " + channel_name + " :" + str + "\r\n";
                 if(user != fd)
-                send(user, message.c_str(), message.length(), 0);
+                { 
+                    message = ":" + this->get_nickname(fd) + "!" + this->get_username(fd) + "@" + this->get_ip_address(user) + " PRIVMSG " + channel_name + " :" + str + "\r\n";
+                    send(user, message.c_str(), message.length(), 0);
+                }
             }
         }
     }

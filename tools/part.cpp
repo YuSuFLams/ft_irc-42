@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 21:09:08 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/11 06:54:37 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/11 08:36:18 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,20 @@
 
 int Server::PartChannel(std::vector<std::string> strs, std::map<std::string, Channel *> &channels, int fd, std::string nickname, std::string str)
 {
-    if (strs.size() < 2)
+    if (strs.size() < 2 )
         return -1;
+    
+    if((strs.size() > 3 && strs[2].at(0) != ':'))
+    {
+        std::string msg = ":" + this->get_hostnames() + " " + this->to_string(ERR_NEEDMOREPARAMS) + " " + nickname + " PART :Not enough parameters\r\n";
+        send(fd, msg.c_str(), msg.length(), 0);
+        return -2;
+    }
 
     std::stringstream ss(strs[1]);
     std::string msg;
     std::vector<std::string> all_channels;
 
-    // If the user is trying to leave multiple channels
     if (strs[1].find(',') != std::string::npos) 
     {
         std::string token;
@@ -35,11 +41,12 @@ int Server::PartChannel(std::vector<std::string> strs, std::map<std::string, Cha
         all_channels.push_back(strs[1]);
     
     std::string reason = "";
-    if(strs.size() > 3 && strs[3].at(0) == ':')
+    if(strs.size() > 3 && strs[2].at(0) == ':')
         reason = str.substr(str.find(":") + 1 , str.length());
     else
-        reason = strs[3];
+        reason = strs[2];
 
+    std::cout << "Reason: " << reason << std::endl;
     for (std::vector<std::string>::iterator it = all_channels.begin(); it != all_channels.end(); ++it) 
     {
         std::string channel_name = *it;
