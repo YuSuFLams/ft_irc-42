@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/10 12:32:09 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/11 06:56:11 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,9 @@
 #include <arpa/inet.h>
 
 #define LIMITCNX 5000
-class Client;
 class Channel;
 class Message;
+class Client;
 
 class Server {
 	
@@ -132,7 +132,7 @@ class Server {
 
 		void topic_command(std::vector<std::string > words , int fd);
 		void quit_command(int fd);
-		void part_command(std::vector<std::string > words , int fd);
+		void part_command(std::vector<std::string > words , int fd , std::string str);
 		void join_command(std::vector<std::string > words , int fd , std::string str);
 		void kick_command(std::vector<std::string > words , int fd , std::string str);
 		/////////////////////////  CHANNELS  //////////////////////////
@@ -151,6 +151,9 @@ class Server {
         void set_client(int fd, Client *client);
         void set_clients(std::map<int, Client *> clients);
         std::string get_servername(int fd);
+		
+		std::string get_ip_address(int fd);
+		void set_ip_address(int fd, std::string ip_address);
         std::string get_current_time();
         int is_nickname_exist(std::string nickname);
         void set_is_registered(int fd, int is_registered);
@@ -200,7 +203,7 @@ class Server {
         int	JoinChannel(std::vector<std::string> strs , std::string nickname, int fd, std::string str);
         int public_channel(std::string channel_name , std::string key , int fd);
 		void join_broadcast_msg(std::map<std::string, Channel*>& channels , std::string msg, std::string channelName);
-        int	PartChannel(std::vector<std::string> strs ,std::map<std::string, Channel *> &channels,  int fd, std::string nickname);
+        int	PartChannel(std::vector<std::string> strs ,std::map<std::string, Channel *> &channels,  int fd, std::string nickname , std::string str);
         void topic_broadcast_msg(std::map<std::string, Channel*>& channels, const std::string& channelName, const std::string& nickname);
 		void handleChannels(std::vector<std::pair<std::string, std::string> >& pairs, int fd, const std::string& nickname);
         int	TopicChannel(std::vector<std::string> strs ,std::map<std::string, Channel *> &channels,  int fd);
@@ -213,6 +216,7 @@ class Server {
         void addMode_L(int fd, std::vector<std::string> words, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
         void addMode_K(int fd, std::vector<std::string> words, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
         bool isAllDigit(std::string str);
+	
 };
 
 void	split(std::string msg, std::vector<std::string> &SplitedMsg);

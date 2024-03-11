@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 04:50:39 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/10 14:27:01 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/11 06:37:47 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void Server::send_to_channel(std::string channel_name , std::string str ,int fd)
 {
+    std::string message;
     std::map<std::string, Channel*>::iterator it = this->getChannels().begin();
-    std::string message = ":" + this->get_nickname(fd) + "!" + this->get_username(fd) + "@" + this->get_hostnames() + " PRIVMSG " + channel_name + " :" + str + "\r\n";
     for (; it != this->getChannels().end(); it++)
     {
         if(it->first == channel_name)
@@ -24,6 +24,7 @@ void Server::send_to_channel(std::string channel_name , std::string str ,int fd)
             for (; it2 != it->second->getUsers().end(); it2++)
             {
                 int user = this->get_fd_users(*it2);
+                message = ":" + this->get_nickname(fd) + "!" + this->get_username(fd) + "@" + this->get_ip_address(user) + " PRIVMSG " + channel_name + " :" + str + "\r\n";
                 if(user != fd)
                 send(user, message.c_str(), message.length(), 0);
             }
@@ -34,7 +35,7 @@ void Server::send_to_channel(std::string channel_name , std::string str ,int fd)
 
 void Server::send_to_user(std::string nickname , std::string str ,int fd)
 {
-    std::string message = ":" + this->get_nickname(fd) + "!" + this->get_username(fd) + "@" + this->get_hostnames() + " PRIVMSG " + nickname + " :" + str + "\r\n";
+    std::string message = ":" + this->get_nickname(fd) + "!" + this->get_username(fd) + "@" + this->get_ip_address(fd) + " PRIVMSG " + nickname + " :" + str + "\r\n";
     int user = this->get_fd_users(nickname);
     send(user, message.c_str(), message.length(), 0);
 }

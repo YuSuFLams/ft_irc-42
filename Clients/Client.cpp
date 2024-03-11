@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/25 15:04:50 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/09 10:37:02 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/11 06:16:08 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ Client::Client()
 	this->hostname = "";
 	this->servername = "";
 	this->realname = "";
+	this->ip_address = "";
 }
 Client::Client(int fd)
 {

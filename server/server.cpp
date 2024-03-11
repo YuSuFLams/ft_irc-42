@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 07:10:14 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/10 12:41:43 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/11 06:36:27 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,6 +210,15 @@ void Server::quitServer()
     exit (EXIT_FAILURE);
 }
 
+std::string Server::get_ip_address(int fd)
+{
+    std::map<int, Client *>::iterator it;
+    it = this->clients.find(fd);
+    if(it != this->clients.end())
+        return (this->clients[fd]->getipaddress());
+    return ("");
+}
+
 int 		Server::acceptingData()
 {
 	int newfd;
@@ -231,6 +240,9 @@ int 		Server::acceptingData()
 		this->clients.insert(std::pair<int, Client *>(newfd, c));
 		users[user_num].fd = newfd;
 		users[user_num]. events = POLLIN;
+		std::string hh = inet_ntoa(newAddresse.sin_addr);
+		this->clients[newfd]->set_ip_address(hh);
+		std::cout << "New connection from " << this->clients[newfd]->getipaddress() << std::endl;
 		user_num++;
 
 	} while (newfd != -1);

@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 14:59:22 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/09 10:15:25 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/11 06:52:25 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void Server::topic_broadcast_msg(std::map<std::string, Channel*>& channels, cons
         while (it2 != it->second->getUsers().end()) 
         {
             int fd = this->get_fd_users(*it2);
-            std::string msg = ":" + nickname + "!" + this->get_username(fd) + "@" + this->get_hostnames() + " TOPIC " + channelName + " :" + it->second->get_topic() + "\r\n";
+            std::string msg = ":" + nickname + "!" + this->get_username(fd) + "@" + this->get_ip_address(fd) + " TOPIC " + channelName + " :" + it->second->get_topic() + "\r\n";
             send(this->get_fd_users(*it2), msg.c_str(), msg.length(), 0);
             it2++;
         }

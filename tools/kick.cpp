@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 01:01:38 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/09 10:06:28 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/11 06:48:26 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,9 +112,9 @@ void Server::KickChannel(std::vector<std::string> strs, std::map<std::string, Ch
                 continue;
             }
             if(reason.empty())
-                message = ":" + nickname + "!" + this->get_username(fd) + "@" + this->get_hostnames() + " KICK " + *it + " " + *it1 + "\r\n";
+                message = ":" + nickname + "!" + this->get_username(fd) + "@" + this->get_ip_address(fd) + " KICK " + *it + " " + *it1 + "\r\n";
             else
-                message = ":" + nickname + "!" + this->get_username(fd) + "@" + this->get_hostnames() + " KICK " + *it + " " + *it1 + " :" + reason + "\r\n";
+                message = ":" + nickname + "!" + this->get_username(fd) + "@" + this->get_ip_address(fd) + " KICK " + *it + " " + *it1 + " :" + reason + "\r\n";
 
             // Send the message to the user
             std::set<std::string>::iterator it2 = channels[*it]->getUsers().begin();

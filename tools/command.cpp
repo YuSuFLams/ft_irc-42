@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 03:00:11 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/10 12:02:03 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/11 06:56:03 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void Server::topic_command(std::vector<std::string > words  , int fd)
     }
 }
 
-void Server::part_command(std::vector<std::string > words  , int fd)
+void Server::part_command(std::vector<std::string > words  , int fd , std::string str)
 {
     if(words.size() == 1)
     {
@@ -74,7 +74,7 @@ void Server::part_command(std::vector<std::string > words  , int fd)
     }
     else
     {
-        if(this->PartChannel(words , this->getChannels(), fd, this->get_nickname(fd)) == -1)
+        if(this->PartChannel(words , this->getChannels(), fd, this->get_nickname(fd) , str) == -1)
         {
             std::string str = ":" + this->get_hostnames() + " " + this->to_string(ERR_NOSUCHCHANNEL) + " " + this->get_nickname(fd) + " " + words[1] + " :No such channel\r\n";
             send(fd, str.c_str(), str.length(), 0);
@@ -106,7 +106,7 @@ void Server::join_topic_part_kick_privmsg(int fd , std::string str)
     else if(words[0] == "TOPIC")
         topic_command(words, fd);
     else if(words[0] == "PART")
-        part_command(words, fd);
+        part_command(words, fd , buffer);
     else if(words[0] == "KICK")
         kick_command(words, fd, buffer);
     

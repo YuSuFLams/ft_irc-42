@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 01:40:02 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/09 12:04:07 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/11 06:44:42 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int Server::public_channel(std::string channel_name , std::string key , int fd)
         channels[channel_name] = newChannel; // Add the channel to the map
 
         // reply to the user
-        std::string msg = ":" + this->get_nickname(fd) + "!" + this->get_username(fd) + "@" + this->get_hostnames() + " JOIN " + channel_name + "\r\n";
+        std::string msg = ":" + this->get_nickname(fd) + "!" + this->get_username(fd) + "@" + this->get_ip_address(fd) + " JOIN " + channel_name + "\r\n";
         send(fd, msg.c_str(), msg.length(), 0);
 
         msg = ":" + this->get_hostnames() + " 313 " + this->get_nickname(fd) + " " + channel_name + " :" + this->get_topic(channel_name) + "\r\n";
@@ -85,7 +85,7 @@ int Server::public_channel(std::string channel_name , std::string key , int fd)
         if (key == channels[channel_name]->getChannelKey()) 
         {
             // broadcast to all users in the channel
-            std::string msg = ":" + this->get_nickname(fd) + "!" + this->get_username(fd) + "@" + this->get_hostnames() + " JOIN " + channel_name + "\r\n";
+            std::string msg = ":" + this->get_nickname(fd) + "!" + this->get_username(fd) + "@" + this->get_ip_address(fd) + " JOIN " + channel_name + "\r\n";
             join_broadcast_msg(channels, msg, channel_name);
 
             // add user to the channel

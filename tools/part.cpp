@@ -6,13 +6,13 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 21:09:08 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/09 10:15:40 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/11 06:54:37 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../server/server.hpp"
 
-int Server::PartChannel(std::vector<std::string> strs, std::map<std::string, Channel *> &channels, int fd, std::string nickname) 
+int Server::PartChannel(std::vector<std::string> strs, std::map<std::string, Channel *> &channels, int fd, std::string nickname, std::string str)
 {
     if (strs.size() < 2)
         return -1;
@@ -33,6 +33,12 @@ int Server::PartChannel(std::vector<std::string> strs, std::map<std::string, Cha
     } 
     else 
         all_channels.push_back(strs[1]);
+    
+    std::string reason = "";
+    if(strs.size() > 3 && strs[3].at(0) == ':')
+        reason = str.substr(str.find(":") + 1 , str.length());
+    else
+        reason = strs[3];
 
     for (std::vector<std::string>::iterator it = all_channels.begin(); it != all_channels.end(); ++it) 
     {
@@ -64,7 +70,10 @@ int Server::PartChannel(std::vector<std::string> strs, std::map<std::string, Cha
 
       
         // channel->print_users();
-        msg = ":" + this->get_nickname(fd) + "!" + this->get_realname(fd) + "@" + this->get_hostnames() + " PART " + channel_name + "\r\n";
+        if(reason.empty())
+            msg = ":" + nickname + "!" + this->get_username(fd) + "@" + this->get_ip_address(fd) + " PART " + channel_name + "\r\n";
+        else
+            msg = ":" + nickname + "!" + this->get_username(fd) + "@" + this->get_ip_address(fd) + " PART " + channel_name + " :" + reason + "\r\n";
 
         // Send to all users in the channel
         for (std::set<std::string>::iterator it = channel->getUsers().begin(); it != channel->getUsers().end(); ++it) 
