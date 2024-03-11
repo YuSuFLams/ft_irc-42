@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 03:00:11 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/10 12:02:03 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/11 04:30:26 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,9 +133,7 @@ void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg, std::
             cmduser(c, SplitedMsg);
         else if (this->IsAuthorized(*c))
         {
-            if (!SplitedMsg[0].compare("BOT"))
-                this->comdBot(SplitedMsg, c->getFd());
-            else if (!SplitedMsg[0].compare("QUIT"))
+            if (!SplitedMsg[0].compare("QUIT"))
             {
                 this->quit_command(c->getFd());
                 return ;
