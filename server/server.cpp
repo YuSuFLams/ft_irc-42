@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:24 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/10 08:30:57 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/10 21:42:56 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,6 +162,7 @@ Client*	Server::getClientByNickname(std::string nickname)
 
 void 	sendResponce(int fd, const std::string &responce)
 {
+    std::cout << responce << std::endl;
 	send(fd, responce.c_str(), responce.length(), 0);
 }
 

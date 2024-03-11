@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 03:00:11 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/09 11:53:08 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/10 23:46:08 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,8 +118,6 @@ void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg, std::
         {
             if(!SplitedMsg[0].compare("PRIVMSG"))
                 cmdprivmsg(SplitedMsg, c);
-            else if (!SplitedMsg[0].compare("BOT"))
-                this->comdBot(SplitedMsg, c->getFd());
             else if (!SplitedMsg[0].compare("QUIT"))
             {
                 std::cout << "QUIT" << std::endl;
@@ -238,12 +236,20 @@ void	Server::cmdpass(std::vector<std::string>& SplitedMsg, Client *c)
 void	Server::cmdprivmsg(std::vector<std::string>& SplitedMsg, Client *c)
 {
 	Client *newClient;
+    
 	newClient = getClientByNickname(SplitedMsg[1]);
 	if (!newClient)
 		throw Myexception(ERR_NOSUCHNICK);
 	else if (!SplitedMsg[2].empty()) {
-		std::string msg = ":" + c->getNick() + " " + SplitedMsg[0] + " " + SplitedMsg[1] + " :" + SplitedMsg[2];
-		sendResponce(newClient->getFd(), msg);
-		sendResponce(newClient->getFd(), "\n");
+        if (!c->getNick().compare("/Bot")){
+            std::string msg = ":" + c->getNick() + " " + SplitedMsg[0] + " " + SplitedMsg[1] + " :" + SplitedMsg[2] +":" +SplitedMsg[3] + ":" + SplitedMsg[4];
+            sendResponce(newClient->getFd(), msg);
+        }
+        else{
+		    std::string msg = ":" + c->getNick() + " " + SplitedMsg[0] + " " + SplitedMsg[1] + " :" + SplitedMsg[2];
+		    sendResponce(newClient->getFd(), msg);
+            
+        }
+        sendResponce(newClient->getFd(), "\n");
 	}
 }

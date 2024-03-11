@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 02:50:47 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/10 08:47:10 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/10 23:43:11 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,12 @@ class Bot  {
         std::map<std::string, float> getStudent_13() { return (this->Student_13);}
 
         void 	traitResvedData(std::string &msg, int client_fd);
-        void    comdBot(std::vector<std::string> &words, int fd);
+        
         void    comdlevel(std::vector<std::string> &words, int fd);
         void    comdhelp(std::vector<std::string> &words, int fd);
+        std::string   returntime();
+        void comdBot(std::vector<std::string> &words, int fd);
+        void setStudent_13(std::map<std::string, float> Student_13) { this->Student_13 = Student_13;}
         
 };
 void	split(std::string msg, std::vector<std::string> &SplitedMsg);

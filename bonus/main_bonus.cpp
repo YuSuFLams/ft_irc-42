@@ -6,17 +6,23 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 03:15:46 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/10 08:56:22 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/11 00:20:54 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Bot.hpp"
 
+void 	sendResponce(int fd, const std::string &responce)
+{
+    std::cout << responce << std::endl;
+	send(fd, responce.c_str(), responce.length(), 0);
+}
     // :/bot PRIVMSG test : Commands Comming Soon
 void 	Bot::traitResvedData(std::string &msg, int client_fd) {
 	std::vector<std::string> SplitedMsg;
-    char message[1024];
+    char message[1548];
 	std::string sender;
+	std::string arg;
     std::string command;
     std::vector<std::string> tmp1;
     std::vector<std::string> tmp2;
@@ -26,17 +32,17 @@ void 	Bot::traitResvedData(std::string &msg, int client_fd) {
     command = command.substr(0, command.size()-1); 
     splitCommand (tmp1[0], ' ', tmp2);
     sender = tmp2[0];
-    tmp1.clear();
-    tmp2.clear();
     if (!command.empty() && !command.compare("time")) {
-        std::cout << "sdfsdfafadsfasdfahjsdfhkldn   : " << sender << std::endl;
+        sprintf(message, "privmsg %s :%s\r\n", sender.c_str(), returntime().c_str());
         // if (!command.compare("TIME"))
     //         getTime();
     //     else if (!command.compare(""))
     //         ...
-        sprintf(message, "privmsg %s : Commands Comming Soon\r\n", sender.c_str());
-        send(client_fd, message, strlen(message), 0);
+        // sprintf(message, "privmsg %s : Commands Comming Soon\r\n", sender.c_str());
+        sendResponce(client_fd, message);
     }
+    tmp1.clear();
+    tmp2.clear();
 }
 
 

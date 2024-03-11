@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/10 02:51:33 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/11 00:11:10 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,9 +178,6 @@ class Server {
         std::map<std::string, Channel *> &getChannels();
 		void setFlagMode(bool flag) { flagMode = flag; }
         bool getFlagMode() { return flagMode; }
-		std::map<std::string, float> getStudent_13() { return (this->Student_13);}
-        void comdBot(std::vector<std::string> &words, int fd);
-        void setStudent_13(std::map<std::string, float> Student_13) { this->Student_13 = Student_13;}
 		// invite
         bool isClientExist(std::string nickname);
         bool isValidChannelName(std::string name);
