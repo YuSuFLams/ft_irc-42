@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 03:15:46 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/11 00:20:54 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/11 02:38:07 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,27 @@ void 	Bot::traitResvedData(std::string &msg, int client_fd) {
     sender = tmp2[0];
     if (!command.empty() && !command.compare("time")) {
         sprintf(message, "privmsg %s :%s\r\n", sender.c_str(), returntime().c_str());
-        // if (!command.compare("TIME"))
-    //         getTime();
-    //     else if (!command.compare(""))
-    //         ...
-        // sprintf(message, "privmsg %s : Commands Comming Soon\r\n", sender.c_str());
         sendResponce(client_fd, message);
+    }
+    else if (!command.empty() && !command.compare("help")){
+        sendResponce(client_fd , "privmsg " +sender+ ": * Available commands: \n -Command: PASS / Parameters: <password> \n");
+        usleep(1);
+        sendResponce(client_fd , "privmsg " +sender+ ": -Command: PASS / Parameters: <password> \n");
+        usleep(1);
+        sendResponce(client_fd , "privmsg " +sender+ ": -Command: NICK / Parameters: <nickname> [ <hopcount> ] \n");
+        usleep(1);
+        sendResponce(client_fd , "privmsg " +sender+ ": -Command: USER / Parameters: <username> <hostname> <servername> <realname> \n");
+        usleep(1);
+        sendResponce(client_fd , "privmsg " +sender+ ": -Command: JOIN / Parameters: <channel>{,<channel>} [<key>{,<key>}] \n");
+        usleep(1);
+        sendResponce(client_fd , "privmsg " +sender+ ": -Command: TOPIC / Parameters: <channel> [<topic>] \n");
+        usleep(1);
+        sendResponce(client_fd , "privmsg " +sender+ ": -Command: INVITE / Parameters: <nickname> <channel> \n");
+        usleep(1);
+        sendResponce(client_fd , "privmsg " +sender+ ": -Command: KICK  / Parameters: <channel> <user> [<comment>] \n");
+        usleep(1);
+        sendResponce(client_fd , "privmsg " +sender+ ": -Command: PRIVMSG / Parameters: <receiver>{,<receiver>} <text to be sent> \n");
+        usleep(1);
     }
     tmp1.clear();
     tmp2.clear();

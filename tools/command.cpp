@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 03:00:11 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/10 23:46:08 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/11 03:21:34 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,10 +240,20 @@ void	Server::cmdprivmsg(std::vector<std::string>& SplitedMsg, Client *c)
 	newClient = getClientByNickname(SplitedMsg[1]);
 	if (!newClient)
 		throw Myexception(ERR_NOSUCHNICK);
+    else if (SplitedMsg.size() < 3)
+        throw Myexception(ERR_NEEDMOREPARAMS);
+    else if (SplitedMsg.size() == 1)
+        throw Myexception(ERR_NORECIPIENT);
 	else if (!SplitedMsg[2].empty()) {
         if (!c->getNick().compare("/Bot")){
-            std::string msg = ":" + c->getNick() + " " + SplitedMsg[0] + " " + SplitedMsg[1] + " :" + SplitedMsg[2] +":" +SplitedMsg[3] + ":" + SplitedMsg[4];
-            sendResponce(newClient->getFd(), msg);
+            if (!SplitedMsg[3].empty() && !SplitedMsg[4].empty()){
+                std::string msg = ":" + c->getNick() + " " + SplitedMsg[0] + " " + SplitedMsg[1] + " :" + SplitedMsg[2] +":" +SplitedMsg[3] + ":" + SplitedMsg[4];
+                sendResponce(newClient->getFd(), msg);
+            }
+            else{
+                std::string msg = ":" + c->getNick() + " " + SplitedMsg[0] + " " + SplitedMsg[1] + " :" + SplitedMsg[2];
+		        sendResponce(newClient->getFd(), msg);
+            }
         }
         else{
 		    std::string msg = ":" + c->getNick() + " " + SplitedMsg[0] + " " + SplitedMsg[1] + " :" + SplitedMsg[2];
