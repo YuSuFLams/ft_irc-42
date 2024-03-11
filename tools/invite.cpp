@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 20:23:08 by ylamsiah          #+#    #+#             */
-/*   Updated: 2024/03/09 10:12:18 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/11 12:00:52 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,10 +148,10 @@ void Server::invitecmd(std::vector<std::string> words , int fd)
                     break;
                 }
             }
-            std::string inviteMsg = ":" + this->get_nickname(fd) + " INVITE " + words[1] + " " + words[2] + "\r\n";
-            send(fdRe, inviteMsg.c_str(), inviteMsg.length(), 0);
-            std::string inviteSent = ":" + this->get_nickname(fd) + " " + to_string(RPL_INVITING) + " " + this->get_nickname(fd) + " " + words[1] + " " + words[2] + "\r\n";
-			send(fd, inviteSent.c_str(), inviteSent.size(), 0);
+            std::string inviteSent = ":" + this->get_nickname(fd) + "!" + this->get_username(fd) + "@" + this->get_ip_address(fd) + " INVITE " + name + " " + words[2] + "\r\n";
+			send(fdRe, inviteSent.c_str(), inviteSent.size(), 0);
+            // std::string inviteMsg = ":" + this->get_nickname(fd) + " INVITE " + words[1] + " " + words[2] + "\r\n";
+            // send(fd, inviteMsg.c_str(), inviteMsg.length(), 0);
         }
     }
 }

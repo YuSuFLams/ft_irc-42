@@ -6,17 +6,37 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 09:39:17 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/10 13:29:09 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/11 11:13:09 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./server/server.hpp"
+
+int parssing_port(std::string port)
+{
+	int i = 0;
+	if(std::atoi(port.c_str()) > 65535)
+		return (0);
+	while (port[i])
+	{
+		if (!isdigit(port[i]))
+			return (0);
+		i++;
+	}
+	return (1);
+}
 
 int main(int ac, char **av)
 {
 	if (ac != 3)
 	{
 		std::cout << "Usage: ./ircserv [port] [password]" << std::endl;
+		return 0;
+	}
+
+	if (!parssing_port(av[1]))
+	{
+		std::cout << "Invalid port" << std::endl;
 		return 0;
 	}
 	

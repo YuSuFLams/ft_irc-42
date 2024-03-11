@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 14:59:22 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/11 06:52:25 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/11 11:43:05 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int Server::TopicChannel(std::vector<std::string> strs, std::map<std::string, Ch
             }
             
             // Channel exists and mode is set to private
-            if(channels[strs[1]]->isTopicRestriction() == true  && channels[strs[1]]->isOperator("@" + this->get_nickname(fd)) == false)
+            if(channels[strs[1]]->isTopicRestriction() == true  && channels[strs[1]]->isOperator("@" + this->get_nickname(fd)) == false && strs.size() > 2)
             {
                 std::string str = ":" + this->get_hostnames() + " " + "481 " + this->get_nickname(fd) + " " + strs[1] + " :Permission Denied- You're not an operator\r\n";
                 send(fd, str.c_str(), str.length(), 0);
