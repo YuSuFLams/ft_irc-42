@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   bot.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 00:19:26 by ylamsiah          #+#    #+#             */
-/*   Updated: 2024/03/10 07:10:40 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/12 06:30:22 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
-#include "../server/server.hpp"
+#include "../server/Server.hpp"
 
 std::map<std::string, float> first_read(std::string file)
 {

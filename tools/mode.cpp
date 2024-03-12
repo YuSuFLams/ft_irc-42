@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 02:08:17 by ylamsiah          #+#    #+#             */
-/*   Updated: 2024/03/11 11:53:39 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/12 06:29:49 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../server/server.hpp"
+#include "../server/Server.hpp"
 
 std::vector<std::string> get_modes(std::string word)
 {

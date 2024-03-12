@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   Channels.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 03:02:59 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/09 02:19:34 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/12 06:30:53 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.hpp"
+#include "Server.hpp"
 
 Channel::Channel(const std::string& channelName, const std::string& channelTopic, const std::string& channelPassword, bool creater)
 {

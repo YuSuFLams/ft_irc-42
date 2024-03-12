@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   quit.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 11:56:01 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/11 06:51:55 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/12 06:29:26 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../server/server.hpp"
+#include "../server/Server.hpp"
 
 
 void Server::send_to_all(std::string str, int fd)

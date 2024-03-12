@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   privmsg.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 04:50:39 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/11 09:07:26 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/12 06:29:40 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../server/server.hpp"
+#include "../server/Server.hpp"
 
 void Server::send_to_channel(std::string channel_name , std::string str ,int fd)
 {
@@ -117,6 +117,7 @@ void Server::privmsg_command(std::vector<std::string > words  , int fd , std::st
         }
         else
         {
+            
             if(!this->is_nickname_exist(*it) || !this->is_authenticated(*this->getClientByNickname(*it)))
             {
                 std::string str = ":" + this->get_hostnames() + " " + this->to_string(ERR_NOSUCHNICK) + " " + this->get_nickname(fd) + " " + *it + " :No such nick\r\n";

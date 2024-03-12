@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 01:40:02 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/11 06:44:42 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/12 06:30:01 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../server/server.hpp"
+#include "../server/Server.hpp"
 
 void Server::join_broadcast_msg(std::map<std::string, Channel*>& channels , std::string msg , std::string channelName)
 {

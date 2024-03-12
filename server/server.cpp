@@ -1,21 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.cpp                                         :+:      :+:    :+:   */
+/*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/10 07:10:14 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/11 06:36:27 by abel-hid         ###   ########.fr       */
+/*   Created: 2024/03/12 06:26:32 by araiteb           #+#    #+#             */
+/*   Updated: 2024/03/12 12:00:33 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.hpp"
+#include "Server.hpp"
 
 Server::Server(std::string ipAdd, int port): m_pass(ipAdd),m_port(port)
 {
 	this->name = this->get_hostnames();
 	flg = 1;
+	this->on = 1;
 	num = 1;
 	user_num = 1;
 	timeout = 3 * 60 * 10000000;
@@ -80,32 +81,40 @@ std::map<int, Client *>	Server::getClient()
 }
 int	Server::CreateSocket()
 {
+	std::cout << "building socket ... " ;
 	this->server_fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (this->server_fd < 0)
 	{
-		std::cout << "socket failed : " << errno << std::endl;
+		std::cout << " failed : " << errno << std::endl;
 		return 0;
 	}
+	std::cout << " created" << std::endl;
 	return 1;
 }
 int	Server::OptionSocket()
 {
-	int opt = 1;
-	if(setsockopt(this->server_fd , SOL_SOCKET,SO_REUSEPORT, &opt, sizeof(opt)) < 0)
-    {
-        std::cout << "Setsockopt failed" << std::endl;
-        return (0);
-    }
+	std::cout << "making socket reusable ... ";
+	int rec = setsockopt(this->server_fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
+	if (rec < 0)
+	{
+		std::cout << " failed : " << errno << std::endl;
+		close (this->server_fd);
+		return 0;
+	}
+		std::cout << " Finished." << std::endl;
 	return 1;
 }
 
 int	Server::NnBlockFd()
 {
-	if (fcntl(this->server_fd , F_SETFL, O_NONBLOCK) < 0)
-    {
-        std::cout << "Fcntl failed" << std::endl;
-        return (0);
-    }
+	std::cout << "making socket non bloking ... ";
+	int rec = fcntl(this->server_fd, F_SETFL, O_NONBLOCK);
+	if (rec < 0)
+	{
+		std::cout << " failed : " << errno << std::endl;
+		close(this->server_fd);
+		return 0;
+	}
 	return 1;
 }
 
@@ -114,7 +123,7 @@ int		Server::BindSocket()
 	address.sin_family = AF_INET;
 	address.sin_addr.s_addr = INADDR_ANY;
 	address.sin_port = htons(this->getport());
-	flg = bind(this->server_fd, (struct sockaddr *)&address, sizeof(address));
+	int flg = bind(this->server_fd, (struct sockaddr *)&address, sizeof(address));
 	if (flg < 0)
 	{
 		std::cout << " failed : " << errno << std::endl;
@@ -125,7 +134,7 @@ int		Server::BindSocket()
 }
 int	Server::listenSocket()
 {
-	flg = listen(this->server_fd, LIMITCNX);
+	int flg = listen(this->server_fd, LIMITCNX);
 	if (flg < 0)
 	{
 		std::cout << " failed : " << errno << std::endl;
@@ -206,6 +215,7 @@ void	Server::clientLeft(int fd) {
 void Server::quitServer() 
 {
     close (this->server_fd);
+	this->on = 1;
     this->~Server();
     exit (EXIT_FAILURE);
 }
@@ -244,6 +254,8 @@ int 		Server::acceptingData()
 		this->clients[newfd]->set_ip_address(hh);
 		std::cout << "New connection from " << this->clients[newfd]->getipaddress() << std::endl;
 		user_num++;
+		sendResponce(newfd, this->name + "NOTICE AUTH :*** Looking up your hostname . . .\n");
+	   	sendResponce(newfd, this->name + "NOTICE AUTH :*** Found your hostname\n");
 
 	} while (newfd != -1);
 	return 1;
@@ -258,7 +270,7 @@ int 	Server::checkmsg(int i)
 	memset(buffer, 0, sizeof(buffer));
 	Message mesg;
 
-    flg = recv(users[i].fd, buffer, sizeof(buffer), 0);
+    int flg = recv(users[i].fd, buffer, sizeof(buffer), 0);
     buffer[flg] = '\0';
     msg += buffer;
     std::cout << "Received: " << buffer << std::endl;
@@ -286,7 +298,7 @@ void	Server::PollingFd()
 	std::cout << "Server is running . . . " << std::endl;
 	do
 	{
-		flg = poll(users , user_num, timeout);
+		int flg = poll(users , user_num, timeout);
 		if (flg < 0)
 		{
 			std::cout << "Failed." << errno <<std::endl;
@@ -324,11 +336,6 @@ void	Server::PollingFd()
 			}
 		}
 	} while (1);
-	for(int i = 0;i < user_num ;i++)// moved to Discconected fct
-	{
-		if (users[i].fd >= 0)// moved to Discconected fct
-			close(users[i].fd);// moved to Discconected fct
-	}// moved to Discconected fct
 }
 bool	Server::IsAuthorized(Client& client) {
 	if (client.getNick().empty() || client.geTPass().empty() || client.getusername().empty())

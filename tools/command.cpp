@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   command.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 03:00:11 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/11 09:03:32 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/12 06:33:58 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../server/server.hpp"
+#include "../server/Server.hpp"
 
 void Server::kick_command(std::vector<std::string > words  , int fd , std::string str)
 {
@@ -121,8 +121,8 @@ void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg, std::
     c = getClientByFd(msg.getSenderFd());
     if (!c)
         return ;
-    
-    
+    for (int i = 0 ; SplitedMsg[0][i] ; i++)
+		SplitedMsg[0][i] = toupper(SplitedMsg[0][i]);
     try
     {
         if (!SplitedMsg[0].compare("PASS"))

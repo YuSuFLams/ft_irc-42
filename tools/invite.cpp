@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   invite.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 20:23:08 by ylamsiah          #+#    #+#             */
-/*   Updated: 2024/03/11 12:00:52 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/12 06:30:06 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../server/server.hpp"
+#include "../server/Server.hpp"
 
 bool Server::isValidChannelName(std::string name)
 {
