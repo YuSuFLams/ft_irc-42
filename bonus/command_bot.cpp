@@ -6,13 +6,14 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 06:21:49 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/13 20:41:28 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/13 22:44:44 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Bot.hpp"
 
-std::string Bot::returntime(){
+std::string Bot::returntime()
+{
     time_t now = time(0);
     struct tm tstruct;
     char buf[80];
@@ -74,10 +75,10 @@ std::string Bot::comdBot(std::vector<std::string> &words)
         std::string botMsg = "no "+ words[4] + " ";
         return botMsg;
     }
-    
 }
 
-void 	Bot::traitResvedData(std::string &msg, int client_fd) {
+void 	Bot::traitResvedData(std::string &msg, int client_fd)
+{
     char message[1548];
     std::cout << msg;
     std::string sender;

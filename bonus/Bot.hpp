@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 02:50:47 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/13 20:41:00 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/13 22:47:14 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,15 +53,14 @@ class Bot  {
         ~Bot();
         Bot(Bot &b);
         Bot& operator=(Bot &b);
-        
         void    ConnetToServer(int , std::string &);
-        void setStudent_13(std::map<std::string, float> Student_13) { this->Student_13 = Student_13;}
-        std::map<std::string, float> getStudent_13() { return (this->Student_13);}
-        std::map<std::string, float> first_read(std::string file);
+        void    setStudent_13(std::map<std::string, float> Student_13);
         void 	traitResvedData(std::string &msg, int client_fd);
         void 	sendResponce(int fd, const std::string &responce);
+        std::string     comdBot(std::vector<std::string> &words);
         std::string   returntime();
-        std::string comdBot(std::vector<std::string> &words);
+        std::map<std::string, float> getStudent_13();
+        std::map<std::string, float> first_read(std::string file);
         
 };
 void	split(std::string msg, std::vector<std::string> &SplitedMsg);

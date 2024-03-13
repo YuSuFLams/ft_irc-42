@@ -6,13 +6,14 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 03:15:46 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/13 20:41:31 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/13 22:44:59 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Bot.hpp"
 
-int main(int ac, char **av){
+int main(int ac, char **av)
+{
     
     if (ac != 3) {
         std::cerr << "Usage: ./Bot <port> <password>" << std::endl;
