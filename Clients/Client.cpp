@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/25 15:04:50 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/09 10:37:02 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/13 01:06:41 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ Client::Client()
 	this->hostname = "";
 	this->servername = "";
 	this->realname = "";
+	this->ip_address = "";
 }
 Client::Client(int fd)
 {

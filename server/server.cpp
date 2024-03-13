@@ -3,19 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/10 07:10:14 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/10 12:41:43 by abel-hid         ###   ########.fr       */
+/*   Created: 2024/03/12 06:26:32 by araiteb           #+#    #+#             */
+/*   Updated: 2024/03/13 02:09:27 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.hpp"
+#include "Server.hpp"
 
 Server::Server(std::string ipAdd, int port): m_pass(ipAdd),m_port(port)
 {
 	this->name = this->get_hostnames();
 	flg = 1;
+	this->on = 1;
 	num = 1;
 	user_num = 1;
 	timeout = 3 * 60 * 10000000;
@@ -83,29 +84,32 @@ int	Server::CreateSocket()
 	this->server_fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (this->server_fd < 0)
 	{
-		std::cout << "socket failed : " << errno << std::endl;
+		std::cout << " failed : " << errno << std::endl;
 		return 0;
 	}
 	return 1;
 }
 int	Server::OptionSocket()
 {
-	int opt = 1;
-	if(setsockopt(this->server_fd , SOL_SOCKET,SO_REUSEPORT, &opt, sizeof(opt)) < 0)
-    {
-        std::cout << "Setsockopt failed" << std::endl;
-        return (0);
-    }
+	int rec = setsockopt(this->server_fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
+	if (rec < 0)
+	{
+		std::cout << " failed : " << errno << std::endl;
+		close (this->server_fd);
+		return 0;
+	}
 	return 1;
 }
 
 int	Server::NnBlockFd()
 {
-	if (fcntl(this->server_fd , F_SETFL, O_NONBLOCK) < 0)
-    {
-        std::cout << "Fcntl failed" << std::endl;
-        return (0);
-    }
+	int rec = fcntl(this->server_fd, F_SETFL, O_NONBLOCK);
+	if (rec < 0)
+	{
+		std::cout << " failed : " << errno << std::endl;
+		close(this->server_fd);
+		return 0;
+	}
 	return 1;
 }
 
@@ -114,7 +118,7 @@ int		Server::BindSocket()
 	address.sin_family = AF_INET;
 	address.sin_addr.s_addr = INADDR_ANY;
 	address.sin_port = htons(this->getport());
-	flg = bind(this->server_fd, (struct sockaddr *)&address, sizeof(address));
+	int flg = bind(this->server_fd, (struct sockaddr *)&address, sizeof(address));
 	if (flg < 0)
 	{
 		std::cout << " failed : " << errno << std::endl;
@@ -125,7 +129,7 @@ int		Server::BindSocket()
 }
 int	Server::listenSocket()
 {
-	flg = listen(this->server_fd, LIMITCNX);
+	int flg = listen(this->server_fd, LIMITCNX);
 	if (flg < 0)
 	{
 		std::cout << " failed : " << errno << std::endl;
@@ -164,8 +168,6 @@ Client*	Server::getClientByNickname(std::string nickname)
 	}
 	return NULL;
 }
-
-
 
 void 	sendResponce(int fd, const std::string &responce)
 {
@@ -206,8 +208,18 @@ void	Server::clientLeft(int fd) {
 void Server::quitServer() 
 {
     close (this->server_fd);
+	this->on = 1;
     this->~Server();
     exit (EXIT_FAILURE);
+}
+
+std::string Server::get_ip_address(int fd)
+{
+    std::map<int, Client *>::iterator it;
+    it = this->clients.find(fd);
+    if(it != this->clients.end())
+        return (this->clients[fd]->getipaddress());
+    return ("");
 }
 
 int 		Server::acceptingData()
@@ -218,6 +230,7 @@ int 		Server::acceptingData()
 	do
 	{
 	   	newfd = accept (this->server_fd, (struct sockaddr *)&newAddresse, (socklen_t *)&lenadd);
+		std::cout << "New connection from " << newfd << std::endl;
 		if (newfd < 0)
 		{
 			if (errno != EWOULDBLOCK)
@@ -231,8 +244,10 @@ int 		Server::acceptingData()
 		this->clients.insert(std::pair<int, Client *>(newfd, c));
 		users[user_num].fd = newfd;
 		users[user_num]. events = POLLIN;
+		std::string hh = inet_ntoa(newAddresse.sin_addr);
+		this->clients[newfd]->set_ip_address(hh);
+		std::cout << "New connection from " << this->clients[newfd]->getipaddress()  << " on port " << ntohs(newAddresse.sin_port) << std::endl;
 		user_num++;
-
 	} while (newfd != -1);
 	return 1;
 }
@@ -246,10 +261,10 @@ int 	Server::checkmsg(int i)
 	memset(buffer, 0, sizeof(buffer));
 	Message mesg;
 
-    flg = recv(users[i].fd, buffer, sizeof(buffer), 0);
+    int flg = recv(users[i].fd, buffer, sizeof(buffer), 0);
     buffer[flg] = '\0';
     msg += buffer;
-    std::cout << "Received: " << buffer << std::endl;
+    std::cout << "Received: " << buffer;
     if (flg <= 0)
     {
         std::cout << "Client left. . ." << std::endl;
@@ -271,10 +286,11 @@ void	Server::PollingFd()
 
 	users[0].fd = server_fd;
 	users[0].events = POLLIN;
-	std::cout << "Server is running . . . " << std::endl;
+	std::cout << "fd : " << this->server_fd << std::endl;
+	std::cout << "Server is running on " << this->get_hostnames() << " on port " << this->getport() << std::endl;
 	do
 	{
-		flg = poll(users , user_num, timeout);
+		int flg = poll(users , user_num, timeout);
 		if (flg < 0)
 		{
 			std::cout << "Failed." << errno <<std::endl;
@@ -292,7 +308,6 @@ void	Server::PollingFd()
 				continue;
 			if (users[i].fd == this->server_fd)
 			{
-				std::cout << "New connection" << std::endl;
 				if (!acceptingData())
 					this->quitServer();
 			}
@@ -312,11 +327,6 @@ void	Server::PollingFd()
 			}
 		}
 	} while (1);
-	for(int i = 0;i < user_num ;i++)// moved to Discconected fct
-	{
-		if (users[i].fd >= 0)// moved to Discconected fct
-			close(users[i].fd);// moved to Discconected fct
-	}// moved to Discconected fct
 }
 bool	Server::IsAuthorized(Client& client) {
 	if (client.getNick().empty() || client.geTPass().empty() || client.getusername().empty())

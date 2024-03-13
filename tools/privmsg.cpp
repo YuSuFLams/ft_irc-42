@@ -6,16 +6,16 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 04:50:39 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/11 04:42:27 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/13 01:13:38 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../server/server.hpp"
+#include "../server/Server.hpp"
 
 void Server::send_to_channel(std::string channel_name , std::string str ,int fd)
 {
+    std::string message;
     std::map<std::string, Channel*>::iterator it = this->getChannels().begin();
-    std::string message = ":" + this->get_nickname(fd) + "!" + this->get_username(fd) + "@" + this->get_hostnames() + " PRIVMSG " + channel_name + " :" + str + "\r\n";
     for (; it != this->getChannels().end(); it++)
     {
         if(it->first == channel_name)
@@ -25,7 +25,10 @@ void Server::send_to_channel(std::string channel_name , std::string str ,int fd)
             {
                 int user = this->get_fd_users(*it2);
                 if(user != fd)
-                send(user, message.c_str(), message.length(), 0);
+                { 
+                    message = ":" + this->get_nickname(fd) + "!" + this->get_username(fd) + "@" + this->get_ip_address(user) + " PRIVMSG " + channel_name + " :" + str + "\r\n";
+                    send(user, message.c_str(), message.length(), 0);
+                }
             }
         }
     }
@@ -34,7 +37,7 @@ void Server::send_to_channel(std::string channel_name , std::string str ,int fd)
 
 void Server::send_to_user(std::string nickname , std::string str ,int fd)
 {
-    std::string message = ":" + this->get_nickname(fd) + "!" + this->get_username(fd) + "@" + this->get_hostnames() + " PRIVMSG " + nickname + " :" + str + "\r\n";
+    std::string message = ":" + this->get_nickname(fd) + "!" + this->get_username(fd) + "@" + this->get_ip_address(fd) + " PRIVMSG " + nickname + " :" + str + "\r\n";
     int user = this->get_fd_users(nickname);
     send(user, message.c_str(), message.length(), 0);
 }
@@ -114,6 +117,7 @@ void Server::privmsg_command(std::vector<std::string > words  , int fd , std::st
         }
         else
         {
+            
             if(!this->is_nickname_exist(*it) || !this->is_authenticated(*this->getClientByNickname(*it)))
             {
                 std::string str = ":" + this->get_hostnames() + " " + this->to_string(ERR_NOSUCHNICK) + " " + this->get_nickname(fd) + " " + *it + " :No such nick\r\n";

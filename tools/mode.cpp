@@ -6,11 +6,11 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 02:08:17 by ylamsiah          #+#    #+#             */
-/*   Updated: 2024/03/13 00:20:39 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/13 01:32:32 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../server/server.hpp"
+#include "../server/Server.hpp"
 
 std::vector<std::string> get_modes(std::string word)
 {

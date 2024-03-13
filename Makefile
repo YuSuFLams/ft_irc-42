@@ -11,7 +11,7 @@ RM      = rm -rf
 
 CFLAGS  = -Wall -Wextra -Werror -std=c++98
 
-HEADER  = server/server.hpp Clients/Client.hpp message/messages.hpp server/Channels.hpp Exeption/Exception.hpp
+HEADER  = server/Server.hpp Clients/Client.hpp message/messages.hpp server/Channels.hpp Exeption/Exception.hpp
 
 O_DIR   := OBJ_DER
 
@@ -19,7 +19,7 @@ B_DIR	:= OBJ_DER_BONUS
 
 TOOLS = $(addprefix tools/, ft_split.cpp command.cpp invite.cpp topic.cpp mode.cpp part.cpp kick.cpp join.cpp privmsg.cpp quit.cpp methods.cpp)
 
-SERVER = $(addprefix server/, server.cpp Channels.cpp)
+SERVER = $(addprefix server/, Server.cpp Channels.cpp)
 
 MESSAGE = $(addprefix message/, messages.cpp)
 

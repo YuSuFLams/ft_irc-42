@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 01:01:38 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/09 10:06:28 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/13 01:08:34 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../server/server.hpp"
+#include "../server/Server.hpp"
 
 void Server::KickChannel(std::vector<std::string> strs, std::map<std::string, Channel *> &channels, int fd, std::string nickname , std::string str)
 {
@@ -112,9 +112,9 @@ void Server::KickChannel(std::vector<std::string> strs, std::map<std::string, Ch
                 continue;
             }
             if(reason.empty())
-                message = ":" + nickname + "!" + this->get_username(fd) + "@" + this->get_hostnames() + " KICK " + *it + " " + *it1 + "\r\n";
+                message = ":" + nickname + "!" + this->get_username(fd) + "@" + this->get_ip_address(fd) + " KICK " + *it + " " + *it1 + "\r\n";
             else
-                message = ":" + nickname + "!" + this->get_username(fd) + "@" + this->get_hostnames() + " KICK " + *it + " " + *it1 + " :" + reason + "\r\n";
+                message = ":" + nickname + "!" + this->get_username(fd) + "@" + this->get_ip_address(fd) + " KICK " + *it + " " + *it1 + " :" + reason + "\r\n";
 
             // Send the message to the user
             std::set<std::string>::iterator it2 = channels[*it]->getUsers().begin();

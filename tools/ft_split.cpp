@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 14:09:12 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/10 10:27:39 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/13 01:10:21 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../server/server.hpp"
+#include "../server/Server.hpp"
 
 void	split(std::string msg, std::vector<std::string> &SplitedMsg)
 {

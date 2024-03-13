@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   methods.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 12:39:59 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/10 12:40:18 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/13 01:08:26 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../server/server.hpp"
+#include "../server/Server.hpp"
 
 std::string Server::to_string(int number)
 {

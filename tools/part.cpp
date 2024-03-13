@@ -3,25 +3,31 @@
 /*                                                        :::      ::::::::   */
 /*   part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 21:09:08 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/09 10:15:40 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/13 01:07:13 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../server/server.hpp"
+#include "../server/Server.hpp"
 
-int Server::PartChannel(std::vector<std::string> strs, std::map<std::string, Channel *> &channels, int fd, std::string nickname) 
+int Server::PartChannel(std::vector<std::string> strs, std::map<std::string, Channel *> &channels, int fd, std::string nickname, std::string str)
 {
-    if (strs.size() < 2)
+    if (strs.size() < 2 )
         return -1;
+    
+    if((strs.size() > 3 && strs[2].at(0) != ':'))
+    {
+        std::string msg = ":" + this->get_hostnames() + " " + this->to_string(ERR_NEEDMOREPARAMS) + " " + nickname + " PART :Not enough parameters\r\n";
+        send(fd, msg.c_str(), msg.length(), 0);
+        return -2;
+    }
 
     std::stringstream ss(strs[1]);
     std::string msg;
     std::vector<std::string> all_channels;
 
-    // If the user is trying to leave multiple channels
     if (strs[1].find(',') != std::string::npos) 
     {
         std::string token;
@@ -33,7 +39,14 @@ int Server::PartChannel(std::vector<std::string> strs, std::map<std::string, Cha
     } 
     else 
         all_channels.push_back(strs[1]);
+    
+    std::string reason = "";
+    if(strs.size() > 3 && strs[2].at(0) == ':')
+        reason = str.substr(str.find(":") + 1 , str.length());
+    else
+        reason = strs[2];
 
+    std::cout << "Reason: " << reason << std::endl;
     for (std::vector<std::string>::iterator it = all_channels.begin(); it != all_channels.end(); ++it) 
     {
         std::string channel_name = *it;
@@ -64,7 +77,10 @@ int Server::PartChannel(std::vector<std::string> strs, std::map<std::string, Cha
 
       
         // channel->print_users();
-        msg = ":" + this->get_nickname(fd) + "!" + this->get_realname(fd) + "@" + this->get_hostnames() + " PART " + channel_name + "\r\n";
+        if(reason.empty())
+            msg = ":" + nickname + "!" + this->get_username(fd) + "@" + this->get_ip_address(fd) + " PART " + channel_name + "\r\n";
+        else
+            msg = ":" + nickname + "!" + this->get_username(fd) + "@" + this->get_ip_address(fd) + " PART " + channel_name + " :" + reason + "\r\n";
 
         // Send to all users in the channel
         for (std::set<std::string>::iterator it = channel->getUsers().begin(); it != channel->getUsers().end(); ++it) 

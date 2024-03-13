@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 03:15:46 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/13 00:06:32 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/13 03:13:15 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,8 @@ std::map<std::string, float> first_read(std::string file)
     return listStud;
 }
 
-std::string Bot::comdBot(std::vector<std::string> &words, int fd)
+std::string Bot::comdBot(std::vector<std::string> &words)
 {
-    (void)fd;
     std::string file = "bot.txt";
     this->setStudent_13(first_read(file));
     std::map<std::string, float> listStud = this->getStudent_13();
@@ -93,7 +92,7 @@ void 	Bot::traitResvedData(std::string &msg, int client_fd) {
         sprintf(message, "%s\r\n", mssg.c_str());
         sendResponce(client_fd, message);
     }
-    else if (!words[3].empty() && !words[3].compare("::time")) {
+    else if (!words[3].empty() && !words[3].compare(":time")) {
         std::string mssg = "🤖: " + sender + " " + "time "+ " " + this->returntime();
         sprintf(message, "%s\r\n", mssg.c_str());
         sendResponce(client_fd, message);
@@ -106,7 +105,7 @@ void 	Bot::traitResvedData(std::string &msg, int client_fd) {
     }
     else if (!words[3].empty() && !words[3].compare(":level"))
     {
-        std::string mssg = "🤖:  level " + this->comdBot(words, client_fd) + sender.c_str();
+        std::string mssg = "🤖:  level " + this->comdBot(words) + sender.c_str();
         sprintf(message, "%s\r\n", mssg.c_str());
         sendResponce(client_fd, message);
     }
@@ -127,9 +126,9 @@ void 	Bot::traitResvedData(std::string &msg, int client_fd) {
 
 int main(int ac, char **av){
     
-    if(ac != 3){
-        std::cerr << "prob in arguments" << std::endl;
-        return 0;
+    if (ac != 3) {
+        std::cerr << "Usage: ./Bot <port> <password>" << std::endl;
+        return -1;
     }
     struct sockaddr_in serv_addr;
     int port = atoi(av[1]);
@@ -143,7 +142,6 @@ int main(int ac, char **av){
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(port);
     serv_addr.sin_addr.s_addr = INADDR_ANY;
- 
     if ((connect(sockfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr))) < 0) {
         std::cout << "Connection Failed  " << std::endl;;
         return -1;

@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 09:39:17 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/10 13:29:09 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/13 01:09:55 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./server/server.hpp"
+#include "./server/Server.hpp"
 
 int main(int ac, char **av)
 {

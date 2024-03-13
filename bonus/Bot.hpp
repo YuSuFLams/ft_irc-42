@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 02:50:47 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/12 17:47:43 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/13 01:28:59 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ class Bot  {
         std::string    comdlevel(std::vector<std::string> &words, int fd);
         void    comdhelp(std::vector<std::string> &words, int fd);
         std::string   returntime();
-        std::string comdBot(std::vector<std::string> &words, int fd);
+        std::string comdBot(std::vector<std::string> &words);
         
 };
 void	split(std::string msg, std::vector<std::string> &SplitedMsg);

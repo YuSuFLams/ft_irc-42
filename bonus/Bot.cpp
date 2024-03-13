@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 02:50:50 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/12 18:00:58 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/13 02:57:00 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 Bot::Bot() {
     this->name = "BetBot";
-    this->nickname = "/Bot";
+    this->nickname = "Bot";
     this->username = "betbot1";
     this->fullname = "dd";
     this->servername = "localhost";
@@ -51,7 +51,7 @@ void Bot::ConnetToServer(int fd, std::string &pass) {
     sprintf(message, "NICK %s\r\n", this->nickname.c_str());
     send(fd, message, strlen(message), 0);
     sleep(1);
-      while (true) {
+    while (true) {
         char buffer[1024];
         memset(buffer, 0, sizeof(buffer));
         int rc = recv(fd, buffer, sizeof(buffer), 0);
@@ -62,4 +62,5 @@ void Bot::ConnetToServer(int fd, std::string &pass) {
         std::string message(buffer, rc);
         this->traitResvedData(message, fd);
     }
+    
 }
