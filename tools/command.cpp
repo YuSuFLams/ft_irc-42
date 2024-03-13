@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 03:00:11 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/13 05:56:38 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/13 20:15:12 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,11 +136,12 @@ void Server::comdBotBot(std::string SplitedMsg)
     {
         int fd;
         if (it->second->getNick() == "Bot")
-             fd = it->second->getFd();
+            fd = it->second->getFd();
         if (it->second->getNick() == words[1] && words[2] == "time")
         {
             std::string botMsg = "🤖: Hello `" + words[0] + "' - 🕒 Current time is: " + words[2] + ":" + words[3] + " 😄.";
             send_to_user(it->second->getNick(), botMsg, fd);
+            return ;
         }
         else if (it->second->getNick() == words[3] && words[1] == "level" && words[2] == "mush")
         {
@@ -148,7 +149,7 @@ void Server::comdBotBot(std::string SplitedMsg)
             send_to_user(it->second->getNick(), botMsg, fd);
             return ;
         }
-        if (it->second->getNick() == words[2] && words[1] == "level")
+        else if (it->second->getNick() == words[4] && words[1] == "level" && words[2] == "NOT" && words[3] == "Mush")
         {
             std::string botMsg = "🤖: Please enter a name for searching 🤷.";
             send_to_user(it->second->getNick(), botMsg, fd);
@@ -169,23 +170,23 @@ void Server::comdBotBot(std::string SplitedMsg)
         else if (it->second->getNick() == words[1] && words[2] == ":help")
         {
             send_to_user(it->second->getNick(), "* Available commands: \n-Command: PASS / Parameters: <password> \n", fd);
-            usleep(1);
+            usleep(2);
             send_to_user(it->second->getNick(), "-Command: PASS / Parameters: <password> \n", fd);
-            usleep(1);
+            usleep(2);
             send_to_user(it->second->getNick(), "-Command: NICK / Parameters: <nickname> [ <hopcount> ] \n", fd);
-            usleep(1);
+            usleep(2);
             send_to_user(it->second->getNick(), "-Command: USER / Parameters: <username> <hostname> <servername> <realname> \n", fd);
-            usleep(1);
+            usleep(2);
             send_to_user(it->second->getNick(), "-Command: JOIN / Parameters: <channel>{,<channel>} [<key>{,<key>}] \n", fd);
-            usleep(1);
+            usleep(2);
             send_to_user(it->second->getNick(), "-Command: TOPIC / Parameters: <channel> [<topic>] \n", fd);
-            usleep(1);
+            usleep(2);
             send_to_user(it->second->getNick(), "-Command: INVITE / Parameters: <nickname> <channel> \n", fd);
-            usleep(1);
+            usleep(2);
             send_to_user(it->second->getNick(), "-Command: KICK  / Parameters: <channel> <user> [<comment>] \n", fd);
-            usleep(1);
+            usleep(2);
             send_to_user(it->second->getNick(), "-Command: PRIVMSG / Parameters: <receiver>{,<receiver>} <text to be sent> \n", fd);
-            usleep(1);
+            usleep(2);
         }
         else if (it->second->getNick() == words[1])
         {

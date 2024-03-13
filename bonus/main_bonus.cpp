@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 03:15:46 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/13 05:38:33 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/13 20:09:41 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,12 @@ void 	Bot::traitResvedData(std::string &msg, int client_fd) {
     if (!words[3].empty() && !words[3].compare(":level") && words.size() > 5)
     {
         std::string mssg = "🤖:  level  mush " + sender;
+        sprintf(message, "%s\r\n", mssg.c_str());
+        sendResponce(client_fd, message);
+    }
+    else if (!words[3].empty() && !words[3].compare("::level") && words.size() == 4 )
+    {
+        std::string mssg = "🤖:  level  NOT Mush " + sender;
         sprintf(message, "%s\r\n", mssg.c_str());
         sendResponce(client_fd, message);
     }
