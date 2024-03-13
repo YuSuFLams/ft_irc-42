@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Bot.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 02:50:50 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/10 08:53:49 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/12 18:00:58 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,5 +62,4 @@ void Bot::ConnetToServer(int fd, std::string &pass) {
         std::string message(buffer, rc);
         this->traitResvedData(message, fd);
     }
-
 }

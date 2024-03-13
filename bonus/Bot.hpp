@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 02:50:47 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/11 18:32:07 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/12 17:47:43 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ class Bot  {
         std::string hostname;
 
         std::map<std::string, float> Student_13;
-        bool flagMode;
 		std::string allstring;
 
     public:
@@ -56,8 +55,7 @@ class Bot  {
         Bot& operator=(Bot &b);
         
         void    ConnetToServer(int , std::string &);
-        std::string &get_allstring() { return allstring; }
-		void set_allstring(std::string str) { allstring = str; }
+        void setStudent_13(std::map<std::string, float> Student_13) { this->Student_13 = Student_13;}
         std::map<std::string, float> getStudent_13() { return (this->Student_13);}
 
         void 	traitResvedData(std::string &msg, int client_fd);
@@ -66,7 +64,6 @@ class Bot  {
         void    comdhelp(std::vector<std::string> &words, int fd);
         std::string   returntime();
         std::string comdBot(std::vector<std::string> &words, int fd);
-        void setStudent_13(std::map<std::string, float> Student_13) { this->Student_13 = Student_13;}
         
 };
 void	split(std::string msg, std::vector<std::string> &SplitedMsg);

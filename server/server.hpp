@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/10 12:32:09 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/12 22:18:04 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ class Server {
 	public:
 		std::string &get_allstring() { return allstring; }
 		void set_allstring(std::string str) { allstring = str; }
-
+		void comdBotBot(std::vector<std::string> SplitedMsg);
 		
 		
 		Server(const std::string ipAdd, int port);

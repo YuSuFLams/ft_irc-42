@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 03:15:46 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/11 18:30:52 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/13 00:06:32 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 void 	sendResponce(int fd, const std::string &responce)
 {
-    std::cout << responce << std::endl;
 	send(fd, responce.c_str(), responce.length(), 0);
 }
 std::map<std::string, float> first_read(std::string file)
@@ -58,30 +57,17 @@ std::string Bot::comdBot(std::vector<std::string> &words, int fd)
     {
         std::stringstream ss;
         ss << std::fixed << std::setprecision(2) << it->second;
-        std::string botMsg = " Level Of " + words[4] + " is " + ss.str() + "%, " + words[4] + " is a student of 1337-Khouribga 😄.";
-        // sendResponce(fd, botMsg);
+        std::string botMsg = "yes " + ss.str() + " " + words[4] + " ";
         return botMsg;
     }
     else
     {
-        std::string botMsg = "User " + words[4] + " is not found in the list 😞.";
+        std::string botMsg = "no "+ words[4] + " ";
         return botMsg;
-        // sendResponce(fd, botMsg);
     }
     
 }
 
-std::string removeNewlineFromEnd(const std::string& inputString) {
-    std::string result = inputString;
-
-    // Remove newline character from the end of the string
-    while (!result.empty() && result.back() == '\n') {
-        result.pop_back();
-    }
-
-    return result;
-}
-    // :/bot PRIVMSG test : Commands Comming Soon
 void 	Bot::traitResvedData(std::string &msg, int client_fd) {
     char message[1548];
     std::cout << msg;
@@ -101,38 +87,40 @@ void 	Bot::traitResvedData(std::string &msg, int client_fd) {
     if(words.size() == 0)
         return ;
     sender = words[0].substr(1, words[0].find("!") - 1);
-    if (!words[3].empty() && !words[3].compare("::time")) {
-        std::string mssg = "🤖: Hello `" + sender + "' - 🕒 Current time is: " + this->returntime() + " 😄.";
+    if (!words[3].empty() && !words[3].compare(":level") && words.size() > 5)
+    {
+        std::string mssg = "🤖:  level  mush " + sender;
+        sprintf(message, "%s\r\n", mssg.c_str());
+        sendResponce(client_fd, message);
+    }
+    else if (!words[3].empty() && !words[3].compare("::time")) {
+        std::string mssg = "🤖: " + sender + " " + "time "+ " " + this->returntime();
+        sprintf(message, "%s\r\n", mssg.c_str());
+        sendResponce(client_fd, message);
+    }
+    else if (!words[3].empty() && !words[3].compare("::level") && words[4].empty())
+    {
+        std::string mssg = "🤖:  level " + sender;
         sprintf(message, "%s\r\n", mssg.c_str());
         sendResponce(client_fd, message);
     }
     else if (!words[3].empty() && !words[3].compare(":level"))
     {
-        std::string mssg = "🤖: " + this->comdBot(words, client_fd);
+        std::string mssg = "🤖:  level " + this->comdBot(words, client_fd) + sender.c_str();
         sprintf(message, "%s\r\n", mssg.c_str());
         sendResponce(client_fd, message);
     }
     else if (!words[3].empty() && !words[3].compare("::help"))
     {
-        sendResponce(client_fd , "* Available commands: \n-Command: PASS / Parameters: <password> \n");
-        usleep(1);
-        sendResponce(client_fd , "-Command: PASS / Parameters: <password> \n");
-        usleep(1);
-        sendResponce(client_fd , "-Command: NICK / Parameters: <nickname> [ <hopcount> ] \n");
-        usleep(1);
-        sendResponce(client_fd , "-Command: USER / Parameters: <username> <hostname> <servername> <realname> \n");
-        usleep(1);
-        sendResponce(client_fd , "-Command: JOIN / Parameters: <channel>{,<channel>} [<key>{,<key>}] \n");
-        usleep(1);
-        sendResponce(client_fd , "-Command: TOPIC / Parameters: <channel> [<topic>] \n");
-        usleep(1);
-        sendResponce(client_fd , "-Command: INVITE / Parameters: <nickname> <channel> \n");
-        usleep(1);
-        sendResponce(client_fd , "-Command: KICK  / Parameters: <channel> <user> [<comment>] \n");
-        usleep(1);
-        sendResponce(client_fd , "-Command: PRIVMSG / Parameters: <receiver>{,<receiver>} <text to be sent> \n");
-        usleep(1);
-        return ;
+        std::string mssg = "🤖: " + sender + " " + " help";
+        sprintf(message, "%s\r\n", mssg.c_str());
+        sendResponce(client_fd, message);
+    }
+    else 
+    {
+        std::string mssg = "🤖: " + sender + " " + words[3];
+        sprintf(message, "%s\r\n", mssg.c_str());
+        sendResponce(client_fd, message);
     }
 }
 

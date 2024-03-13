@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 02:08:17 by ylamsiah          #+#    #+#             */
-/*   Updated: 2024/03/09 10:07:48 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/13 00:20:39 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -370,6 +370,7 @@ void Server::modecmd(std::vector<std::string> words, int fd)
                 std::string msg = std::string(it->second->getInviteOnly() ? "i" : "") + (it->second->isTopicRestriction() ? "t" : "") + (!it->second->getChannelKey().empty() ? "k" : "") + (it->second->getLimit() == -1 ? "" : "l");
                 std::string errorMode = ":" + this->get_hostnames() + " 324 " + this->get_nickname(fd) + " " + words[1] + (msg.empty() ? "" : " +" + msg) + " \r\n";
                 send(fd, errorMode.c_str(), errorMode.length(), 0);
+                return ;
             }
         }
         // check is sender in channel 
