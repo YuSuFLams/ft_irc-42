@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 03:00:11 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/13 03:48:52 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/13 05:56:38 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,71 +131,66 @@ void Server::comdBotBot(std::string SplitedMsg)
     }
     if(words.size() == 0)
         return ;
-    std::cout <<  "words.size() = " << SplitedMsg << std::endl;
-    std::cout << "==========================" << std::endl;
-    for (std::vector<std::string>::iterator it = words.begin(); it != words.end(); it++)
-    {
-        std::cout << "{" << *it << "}" << std::endl;
-    }
-    std::cout << "==========================" << std::endl;
     std::map <int, Client *>	clients = this->getClients();
     for (std::map<int, Client *>::iterator it = clients.begin(); it!= clients.end(); it++)
     {
+        int fd;
+        if (it->second->getNick() == "Bot")
+             fd = it->second->getFd();
         if (it->second->getNick() == words[1] && words[2] == "time")
         {
             std::string botMsg = "🤖: Hello `" + words[0] + "' - 🕒 Current time is: " + words[2] + ":" + words[3] + " 😄.";
-            sendResponce(it->second->getFd(), botMsg + "\r\n");
+            send_to_user(it->second->getNick(), botMsg, fd);
         }
         else if (it->second->getNick() == words[3] && words[1] == "level" && words[2] == "mush")
         {
             std::string botMsg = ": 🤖: Too many name for searching in the list 🤔.";
-            sendResponce(it->second->getFd(), botMsg + "\r\n");
+            send_to_user(it->second->getNick(), botMsg, fd);
             return ;
         }
         if (it->second->getNick() == words[2] && words[1] == "level")
         {
             std::string botMsg = "🤖: Please enter a name for searching 🤷.";
-            sendResponce(it->second->getFd(), botMsg + "\r\n");
+            send_to_user(it->second->getNick(), botMsg, fd);
             return ;
         }
         if (it->second->getNick() == words[5] && words[1] == "level" && words[2] == "yes")
         {
             std::string botMsg = "🤖: Level Of `" + words[4] + "' is " + words[3] + "%, " + words[4] + " is a student of 1337-Khouribga 😄.";
-            sendResponce(it->second->getFd(), botMsg + "\r\n");
+            send_to_user(it->second->getNick(), botMsg, fd);
             return ;
         }
         else if (it->second->getNick() == words[4] && words[1] == "level"  && words[2] == "no")
         {
             std::string botMsg = "🤖: User `" + words[3] + "' is not found in the list 😞.";
-            sendResponce(it->second->getFd(), botMsg + "\r\n");
+            send_to_user(it->second->getNick(), botMsg, fd);
             return ;
         }
         else if (it->second->getNick() == words[1] && words[2] == ":help")
         {
-            sendResponce(it->second->getFd() , "* Available commands: \n-Command: PASS / Parameters: <password> \n");
+            send_to_user(it->second->getNick(), "* Available commands: \n-Command: PASS / Parameters: <password> \n", fd);
             usleep(1);
-            sendResponce(it->second->getFd() , "-Command: PASS / Parameters: <password> \n");
+            send_to_user(it->second->getNick(), "-Command: PASS / Parameters: <password> \n", fd);
             usleep(1);
-            sendResponce(it->second->getFd() , "-Command: NICK / Parameters: <nickname> [ <hopcount> ] \n");
+            send_to_user(it->second->getNick(), "-Command: NICK / Parameters: <nickname> [ <hopcount> ] \n", fd);
             usleep(1);
-            sendResponce(it->second->getFd() , "-Command: USER / Parameters: <username> <hostname> <servername> <realname> \n");
+            send_to_user(it->second->getNick(), "-Command: USER / Parameters: <username> <hostname> <servername> <realname> \n", fd);
             usleep(1);
-            sendResponce(it->second->getFd() , "-Command: JOIN / Parameters: <channel>{,<channel>} [<key>{,<key>}] \n");
+            send_to_user(it->second->getNick(), "-Command: JOIN / Parameters: <channel>{,<channel>} [<key>{,<key>}] \n", fd);
             usleep(1);
-            sendResponce(it->second->getFd() , "-Command: TOPIC / Parameters: <channel> [<topic>] \n");
+            send_to_user(it->second->getNick(), "-Command: TOPIC / Parameters: <channel> [<topic>] \n", fd);
             usleep(1);
-            sendResponce(it->second->getFd() , "-Command: INVITE / Parameters: <nickname> <channel> \n");
+            send_to_user(it->second->getNick(), "-Command: INVITE / Parameters: <nickname> <channel> \n", fd);
             usleep(1);
-            sendResponce(it->second->getFd() , "-Command: KICK  / Parameters: <channel> <user> [<comment>] \n");
+            send_to_user(it->second->getNick(), "-Command: KICK  / Parameters: <channel> <user> [<comment>] \n", fd);
             usleep(1);
-            sendResponce(it->second->getFd() , "-Command: PRIVMSG / Parameters: <receiver>{,<receiver>} <text to be sent> \n");
+            send_to_user(it->second->getNick(), "-Command: PRIVMSG / Parameters: <receiver>{,<receiver>} <text to be sent> \n", fd);
             usleep(1);
         }
-        
-        else if (it->second->getNick() == words[0])
+        else if (it->second->getNick() == words[1])
         {
             std::string botMsg = "🤖: I'm sorry, I don't understand what you mean 😞.";
-            sendResponce(it->second->getFd(), botMsg + "\r\n");
+            send_to_user(it->second->getNick(), botMsg, fd);
         }
     }
     iss.clear();
@@ -208,11 +203,6 @@ void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg, std::
     c = getClientByFd(msg.getSenderFd());
     if (!c)
         return ;
-
-    for (std::vector<std::string>::iterator it = SplitedMsg.begin(); it != SplitedMsg.end(); it++)
-    {
-        std::cout << "{-" << *it << "}" << std::endl;
-    }
     try
     {
         if (!SplitedMsg[0].compare("PASS"))
@@ -228,6 +218,8 @@ void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg, std::
                 this->quit_command(c->getFd());
                 return ;
             }
+            else if (!SplitedMsg[0].compare("PONG"))
+                return ;
             else if (!SplitedMsg[0].compare("🤖"))
             {
                 comdBotBot(msg.getMessage());

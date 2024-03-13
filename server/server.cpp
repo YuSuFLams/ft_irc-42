@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.cpp                                         :+:      :+:    :+:   */
+/*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 06:26:32 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/13 02:09:27 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/13 05:39:29 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,7 +230,6 @@ int 		Server::acceptingData()
 	do
 	{
 	   	newfd = accept (this->server_fd, (struct sockaddr *)&newAddresse, (socklen_t *)&lenadd);
-		std::cout << "New connection from " << newfd << std::endl;
 		if (newfd < 0)
 		{
 			if (errno != EWOULDBLOCK)
@@ -286,7 +285,6 @@ void	Server::PollingFd()
 
 	users[0].fd = server_fd;
 	users[0].events = POLLIN;
-	std::cout << "fd : " << this->server_fd << std::endl;
 	std::cout << "Server is running on " << this->get_hostnames() << " on port " << this->getport() << std::endl;
 	do
 	{

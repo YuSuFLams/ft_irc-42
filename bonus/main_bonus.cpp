@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 03:15:46 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/13 03:13:15 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/13 05:38:33 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ void 	Bot::traitResvedData(std::string &msg, int client_fd) {
         sprintf(message, "%s\r\n", mssg.c_str());
         sendResponce(client_fd, message);
     }
-    else if (!words[3].empty() && !words[3].compare("::level") && words[4].empty())
+    else if (!words[3].empty() && !words[3].compare(":level") && words[4].empty())
     {
         std::string mssg = "🤖:  level " + sender;
         sprintf(message, "%s\r\n", mssg.c_str());
