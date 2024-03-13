@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 02:50:47 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/13 01:28:59 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/13 20:41:00 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,9 @@ class Bot  {
         void    ConnetToServer(int , std::string &);
         void setStudent_13(std::map<std::string, float> Student_13) { this->Student_13 = Student_13;}
         std::map<std::string, float> getStudent_13() { return (this->Student_13);}
-
+        std::map<std::string, float> first_read(std::string file);
         void 	traitResvedData(std::string &msg, int client_fd);
-        
-        std::string    comdlevel(std::vector<std::string> &words, int fd);
-        void    comdhelp(std::vector<std::string> &words, int fd);
+        void 	sendResponce(int fd, const std::string &responce);
         std::string   returntime();
         std::string comdBot(std::vector<std::string> &words);
         
