@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 03:00:11 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/14 02:38:56 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/14 11:23:41 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,8 @@ void Server::join_topic_part_kick_privmsg(int fd , std::string str)
     }
     if(words.size() == 0)
         return ;
+    for (int i = 0 ; words[0][i] ; i++)
+		words[0][i] = toupper(words[0][i]);
     if(words[0] == "JOIN")
         join_command(words, fd , buffer);
     else if(words[0] == "PRIVMSG")
@@ -204,6 +206,8 @@ void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg, std::
     c = getClientByFd(msg.getSenderFd());
     if (!c)
         return ;
+    for (int i = 0 ; SplitedMsg[0][i] ; i++)
+		SplitedMsg[0][i] = toupper(SplitedMsg[0][i]);
     try
     {
         if (!SplitedMsg[0].compare("PASS"))
@@ -282,7 +286,7 @@ void	Server::cmdknick(std::vector<std::string> &SplitedMsg, Client *c)
     if (!SplitedMsg[1].empty() && SplitedMsg[2].empty())
     {
         tmpClient = this->getClientByNickname(SplitedMsg[1]);
-        if (tmpClient && tmpClient->getFd() != c->getFd())
+        if (tmpClient && (tmpClient->getFd() != c->getFd() || !SplitedMsg[1].compare("/Bot")))
             throw Myexception(ERR_NICKNAMEINUSE);
         c->seTNick(SplitedMsg[1]);
         if (this->IsAuthorized(*c))

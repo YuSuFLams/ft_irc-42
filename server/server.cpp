@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Server.cpp                                         :+:      :+:    :+:   */
+/*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 06:26:32 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/13 05:39:29 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/14 11:02:42 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -247,6 +247,8 @@ int 		Server::acceptingData()
 		this->clients[newfd]->set_ip_address(hh);
 		std::cout << "New connection from " << this->clients[newfd]->getipaddress()  << " on port " << ntohs(newAddresse.sin_port) << std::endl;
 		user_num++;
+		sendResponce(newfd, this->name + "NOTICE AUTH :*** Looking up your hostname . . .\n");
+	   	sendResponce(newfd, this->name + "NOTICE AUTH :*** Found your hostname\n");
 	} while (newfd != -1);
 	return 1;
 }
