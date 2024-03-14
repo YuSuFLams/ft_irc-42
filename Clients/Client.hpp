@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/25 15:04:46 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/12 06:29:00 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/14 04:56:08 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include<string>
 #include <vector>
 #include "../server/Server.hpp"
+
 class Client
 {
 	private:
@@ -31,6 +32,7 @@ class Client
 		int 			is_registered;
 		bool 			InviteToChannel;
 		std::string		ip_address;
+		std::vector<std::string> str;
 	public:
 		Client();
 		Client(int fd);
@@ -69,6 +71,19 @@ class Client
 		{
 			this->ip_address = ip;
 		}
+		std::vector<std::string> getStr()
+		{
+			return (this->str);
+		}
+		void setStr(std::string str)
+		{
+			this->str.push_back(str);
+		}
+		void clearStr()
+		{
+			this->str.clear();
+		}
+		
 };
 
 

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Server.cpp                                         :+:      :+:    :+:   */
+/*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 06:26:32 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/12 12:00:33 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/14 05:34:31 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,35 +261,53 @@ int 		Server::acceptingData()
 	return 1;
 }
 
-int 	Server::checkmsg(int i)
+int Server::checkmsg(int i)
 {
+    std::string msg;
+    char buffer[1024];
 
-	std::string msg;
+    memset(buffer, 0, sizeof(buffer));
+    Message mesg;
 
-	msg = "";
-	memset(buffer, 0, sizeof(buffer));
-	Message mesg;
-
-    int flg = recv(users[i].fd, buffer, sizeof(buffer), 0);
-    buffer[flg] = '\0';
-    msg += buffer;
-    std::cout << "Received: " << buffer << std::endl;
+    int flg = recv(users[i].fd, buffer, sizeof(buffer) - 1, 0);
     if (flg <= 0)
     {
         std::cout << "Client left. . ." << std::endl;
         return 0;
     }
-    if (msg.find_first_of("\r\n") != std::string::npos && msg != "\n")
+
+    buffer[flg] = '\0';
+    msg = buffer;
+
+    size_t newline_pos = msg.find_first_of("\r\n");
+    if (newline_pos == std::string::npos)
     {
-        size_t pos = msg.find_last_of("\r\n");
-        msg = msg.substr(0, pos);
-        mesg = Message(users[i].fd, msg);
-        TraiteMessage(mesg);
-        return 1;
+        this->clients[users[i].fd]->setStr(msg);
+		return 1;
     }
-    
+    else
+    {
+		std::string tmp = "";
+        if (!this->clients[users[i].fd]->getStr().empty())
+        {
+           for (size_t j = 0; j < this->clients[users[i].fd]->getStr().size(); j++)
+			  tmp += this->clients[users[i].fd]->getStr()[j];
+            this->clients[users[i].fd]->clearStr();
+        }
+        msg = tmp + msg;
+        std::cout << "Received: " << msg << std::endl;
+        if (msg.find_first_of("\r\n") != std::string::npos && msg != "\n")
+		{
+			size_t pos = msg.find_last_of("\r\n");
+			msg = msg.substr(0, pos);
+			mesg = Message(users[i].fd, msg);
+			TraiteMessage(mesg);
+			return 1;
+    	}
+    }
     return 1;
 }
+
 void	Server::PollingFd()
 {
 
