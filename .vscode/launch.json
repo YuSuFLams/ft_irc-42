@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/ylamsiah/HAHAHAHAHAHAH",
-      "program": "/home/ylamsiah/HAHAHAHAHAHAH/build/Debug/outDebug",
+      "cwd": "/Users/ylamsiah/Desktop/MY_last",
+      "program": "/Users/ylamsiah/Desktop/MY_last/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
