@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 14:59:22 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/12 06:29:30 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/14 06:24:59 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,7 @@ int Server::TopicChannel(std::vector<std::string> strs, std::map<std::string, Ch
             return -2;
         }
         if (channels.find(strs[1]) == channels.end()) 
-        {
-            // Channel doesn't exist
             return -1;
-        }
         else 
         {
             // Channel exists and user is in it

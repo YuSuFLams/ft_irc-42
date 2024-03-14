@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 03:00:11 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/12 06:33:58 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/14 08:11:20 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,7 +191,8 @@ void	Server::cmdknick(std::vector<std::string> &SplitedMsg, Client *c)
 
     if (SplitedMsg.size() != 2 ||  SplitedMsg[1].empty())
         throw Myexception(ERR_NONICKNAMEGIVEN);
-    std::size_t found = SplitedMsg[1].find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789[]`|/^{}");
+        //'-' | '[' | ']' | '\' | '`' | '^' | '{' | '}'
+    std::size_t found = SplitedMsg[1].find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_[]`^{}\\");
     if (found != std::string::npos)
         throw Myexception(ERR_ERRONEUSNICKNAME);
     if (!SplitedMsg[1].empty() && SplitedMsg[2].empty())

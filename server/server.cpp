@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 06:26:32 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/14 05:34:31 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/14 09:06:21 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,7 +186,7 @@ void 	Server::TraiteMessage(Message &msg)
 	std::vector<std::string> SplitedMsg;
     if(msg.getMessage().empty() || msg.getMessage() == "\n")
         return ;
-
+	
 	split(msg.getMessage(), SplitedMsg);
 	std::string tmp = msg.getMessage();
     if(SplitedMsg.size() == 0)
@@ -195,7 +195,8 @@ void 	Server::TraiteMessage(Message &msg)
 	SplitedMsg.clear();
 }
 
-void	Server::clientLeft(int fd) {
+void	Server::clientLeft(int fd) 
+{
 	try
 	{
 		std::map<int, Client *>::iterator		client;
@@ -261,6 +262,19 @@ int 		Server::acceptingData()
 	return 1;
 }
 
+std::string update_str(std::string str)
+{
+    if(str[0] == ':')
+    {
+        size_t space_pos = str.find(" ");
+        if (space_pos != std::string::npos) 
+		{
+            str = str.substr(space_pos + 1);
+        }
+    }
+    return str;
+}
+
 int Server::checkmsg(int i)
 {
     std::string msg;
@@ -295,6 +309,7 @@ int Server::checkmsg(int i)
             this->clients[users[i].fd]->clearStr();
         }
         msg = tmp + msg;
+		msg  = update_str(msg);
         std::cout << "Received: " << msg << std::endl;
         if (msg.find_first_of("\r\n") != std::string::npos && msg != "\n")
 		{

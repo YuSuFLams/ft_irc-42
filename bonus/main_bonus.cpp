@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_bonus.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 03:15:46 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/11 02:38:07 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/14 07:31:33 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,8 @@ void 	Bot::traitResvedData(std::string &msg, int client_fd) {
 }
 
 
-int main(int ac, char **av){
+int main(int ac, char **av)
+{
     
     if(ac != 3){
         std::cerr << "prob in arguments" << std::endl;
@@ -80,7 +81,8 @@ int main(int ac, char **av){
     serv_addr.sin_port = htons(port);
     serv_addr.sin_addr.s_addr = INADDR_ANY;
  
-    if ((connect(sockfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr))) < 0) {
+    if ((connect(sockfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr))) < 0) 
+    {
         std::cout << "Connection Failed  " << std::endl;;
         return -1;
     }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 01:01:38 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/12 06:29:57 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/14 06:23:46 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 void Server::KickChannel(std::vector<std::string> strs, std::map<std::string, Channel *> &channels, int fd, std::string nickname , std::string str)
 {
-    // Check if the command has enough parameters
     if (strs.size() < 3)
     {
         std::string error_message = ":" + this->get_hostnames() + " " + this->to_string(ERR_NEEDMOREPARAMS) + " " + this->get_nickname(fd) + " KICK :Not enough parameters\r\n";
@@ -70,7 +69,6 @@ void Server::KickChannel(std::vector<std::string> strs, std::map<std::string, Ch
         reason = str.substr(str.find(":") + 1 , str.length());
     else
         reason = strs[3];
-    // std::cout<< "reason: " << reason << std::endl;
 
     // Check if the channel exists
     for(std::vector<std::string>::iterator it = kick_channel.begin(); it != kick_channel.end(); it++)
@@ -138,7 +136,6 @@ void Server::KickChannel(std::vector<std::string> strs, std::map<std::string, Ch
             }
         }
     }
-    // Clear the vectors
     kick_channel.clear();
     users.clear();
     message.clear();
