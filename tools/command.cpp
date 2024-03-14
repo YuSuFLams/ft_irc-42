@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 03:00:11 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/13 20:15:12 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/14 02:38:56 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ void Server::comdBotBot(std::string SplitedMsg)
             fd = it->second->getFd();
         if (it->second->getNick() == words[1] && words[2] == "time")
         {
-            std::string botMsg = "🤖: Hello `" + words[0] + "' - 🕒 Current time is: " + words[2] + ":" + words[3] + " 😄.";
+            std::string botMsg = "🤖: Hello `" + words[1] + "' - 🕒 Current time is: " + words[2] + ":" + words[3] + " 😄.";
             send_to_user(it->second->getNick(), botMsg, fd);
             return ;
         }

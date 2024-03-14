@@ -77,4 +77,6 @@ fclean_bonus: clean_bonus
 	@$(RM) $(NAME_BONUS)
 	@echo "$(C_CYAN)     🚀 'Bot' executable has been removed (bonus).....$(C_RESET)"
 
+re_bonus: fclean_bonus bonus
+
 .PHONY: all clean fclean re bonus clean_bonus fclean_bonus
