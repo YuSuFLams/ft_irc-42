@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   methods.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 12:39:59 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/12 06:29:53 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/15 23:19:22 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,19 @@ std::string Server::to_string(int number)
     return (ss.str());
 }
 
-
 std::string Server::get_hostnames()
 {
     char buffer[1024] = {0};
-    std::string hostnames;
-    gethostname(buffer, 1024);
-    hostnames = buffer;
+    std::string hostnames = "";
+    FILE *stream = popen("hostname", "r");
+    if (stream) 
+    {
+        if (fgets(buffer, sizeof(buffer), stream) != NULL) 
+        {
+            hostnames = buffer;
+        }
+        pclose(stream);
+    }
     return (hostnames);
 }
 std::string Server::get_nickname(int fd)
