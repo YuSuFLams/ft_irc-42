@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 03:00:11 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/14 08:11:20 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/14 10:48:18 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,8 +149,6 @@ void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg, std::
                 this->invitecmd(SplitedMsg, c->getFd());
             else if (!SplitedMsg[0].compare("MODE"))
                 this->modecmd(SplitedMsg, c->getFd());
-            // else 
-            //     throw Myexception(ERR_UNKNOWNCOMMAND);
         }
         else
             throw Myexception(ERR_ALREADYREGISTRED);
@@ -178,7 +176,7 @@ void	Server::cmduser(Client *c, std::vector<std::string> &SplitedMsg)
 	if (this->IsAuthorized(*c)) 
     {
         sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 001 " + this->get_nickname(c->getFd()) + " :Welcome to the Internet Relay Network " + this->get_nickname(c->getFd())+ "!" + this->get_username(c->getFd()) + "@" + this->get_hostnames() + "\r\n");
-        sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 002 " + this->get_nickname(c->getFd()) + " :Your host is " + this->get_servername(c->getFd()) + ", running version 1.0\r\n");
+        sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 002 " + this->get_nickname(c->getFd()) + " :Your host is " + this->get_hostnames() + ", running version 1.0\r\n");
         sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 003 " + this->get_nickname(c->getFd()) + " :This server was created " +  this->get_current_time() + "\r\n");
     }
 

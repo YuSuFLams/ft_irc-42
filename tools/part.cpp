@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 21:09:08 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/12 06:29:44 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/15 22:45:07 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ int Server::PartChannel(std::vector<std::string> strs, std::map<std::string, Cha
         // If the channel is empty after the user leaves, remove it from the map
         if (channel->getUsers().empty()) 
         {
-            delete channel;  // Free the memory if the channel is empty
+            delete channel;
             channels.erase(channel_name);
         }
     }

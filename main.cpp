@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 09:39:17 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/14 09:40:29 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/14 10:48:47 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 int parssing_port(std::string port)
 {
-	int i = 0;
 	if(std::atoi(port.c_str()) > 65535 || std::atoi(port.c_str()) < 1024)
 		return (0);
+	int i = 0;
 	while (port[i])
 	{
 		if (!isdigit(port[i]))

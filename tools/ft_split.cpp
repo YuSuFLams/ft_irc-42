@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 14:09:12 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/12 06:30:11 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/15 22:45:44 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ void    splitCommand(std::string str, char oper, std::vector<std::string> &Split
 	}
 }
 
-std::string const   int2string(int n) {
+std::string const   int2string(int n) 
+{
     std::stringstream    ss;
 
     ss << n;
