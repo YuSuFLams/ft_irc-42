@@ -6,11 +6,20 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 03:15:46 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/13 22:44:59 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/15 21:44:07 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Bot.hpp"
+
+void handl_client_signal(int signum)
+{
+    if (signum == SIGINT)
+    {
+        std::cout << "\n\033[31;1mBot is shutting down...\033[0m" << std::endl;
+        exit(0);
+    }
+}
 
 int main(int ac, char **av)
 {
@@ -19,6 +28,7 @@ int main(int ac, char **av)
         std::cerr << "Usage: ./Bot <port> <password>" << std::endl;
         return -1;
     }
+    signal(SIGINT, handl_client_signal);
     struct sockaddr_in serv_addr;
     int port = atoi(av[1]);
     std::string pass = av[2];
