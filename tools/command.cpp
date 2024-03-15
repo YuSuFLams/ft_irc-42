@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 03:00:11 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/14 21:16:34 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/15 02:17:52 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,7 +190,7 @@ void Server::comdBotBot(std::string SplitedMsg)
             send_to_user(it->second->getNick(), "-Command: PRIVMSG / Parameters: <receiver>{,<receiver>} <text to be sent> \n", fd);
             usleep(2);
         }
-        else if (it->second->getNick() == words[1])
+        else if (it->second->getNick() == words[1] || (it->second->getNick() == words[2] && words[1] == "level"))
         {
             std::string botMsg = "🤖: I'm sorry, I don't understand what you mean 😞.";
             send_to_user(it->second->getNick(), botMsg, fd);
@@ -206,8 +206,6 @@ void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg, std::
     c = getClientByFd(msg.getSenderFd());
     if (!c)
         return ;
-    for (int i = 0 ; SplitedMsg[0][i] ; i++)
-		SplitedMsg[0][i] = toupper(SplitedMsg[0][i]);
     try
     {
         if (!SplitedMsg[0].compare("PASS"))

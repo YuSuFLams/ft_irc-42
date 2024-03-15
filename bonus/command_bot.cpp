@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 06:21:49 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/13 22:44:44 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/15 02:11:58 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,12 @@ void 	Bot::traitResvedData(std::string &msg, int client_fd)
         sprintf(message, "%s\r\n", mssg.c_str());
         sendResponce(client_fd, message);
     }
+    else if (!words[3].empty() && !words[3].compare(":level") && words.size() == 4)
+    {
+        std::string mssg = "🤖:  level " + sender;
+        sprintf(message, "%s\r\n", mssg.c_str());
+        sendResponce(client_fd, message);
+    }
     else if (!words[3].empty() && !words[3].compare("::level") && words.size() == 4 )
     {
         std::string mssg = "🤖:  level  NOT Mush " + sender;
@@ -111,12 +117,6 @@ void 	Bot::traitResvedData(std::string &msg, int client_fd)
     }
     else if (!words[3].empty() && !words[3].compare(":time")) {
         std::string mssg = "🤖: " + sender + " " + "time "+ " " + this->returntime();
-        sprintf(message, "%s\r\n", mssg.c_str());
-        sendResponce(client_fd, message);
-    }
-    else if (!words[3].empty() && !words[3].compare(":level") && words[4].empty())
-    {
-        std::string mssg = "🤖:  level " + sender;
         sprintf(message, "%s\r\n", mssg.c_str());
         sendResponce(client_fd, message);
     }
