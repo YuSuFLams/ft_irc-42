@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.cpp                                         :+:      :+:    :+:   */
+/*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 06:26:32 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/14 22:55:29 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/15 21:25:30 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,7 +267,10 @@ int 	Server::checkmsg(int i)
     buffer[flg] = '\0';
     msg += buffer;
 	std::string tmp = buffer;
-	std::cout << "[\033[33;1mCMD\033[0m] \033[32;1m" << tmp.substr(0, tmp.find_first_of(" ")) << "\033[0m \033[33;1mFrom\033[0m [\033[32;1m" << this->get_ip_address(users[i].fd) \
+	std::string up = tmp.substr(0, tmp.find_first_of(" "));
+	for (int i = 0 ; up[i] ; i++)
+		up[i] = toupper(up[i]);
+	std::cout << "[\033[33;1mCMD\033[0m] \033[32;1m" << up << "\033[0m \033[33;1mFrom\033[0m [\033[32;1m" << this->get_ip_address(users[i].fd) \
 	<< "\033[0m]\033[0m \033[33;1mFrom port\033[0m [\033[32;1m" << this->getPport(users[i].fd) << "\033[0m]" << std::endl;
     if (flg <= 0)
     {

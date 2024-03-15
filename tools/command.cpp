@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 03:00:11 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/15 02:17:52 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/15 21:21:46 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,6 +206,8 @@ void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg, std::
     c = getClientByFd(msg.getSenderFd());
     if (!c)
         return ;
+    for (int i = 0 ; SplitedMsg[0][i] ; i++)
+		SplitedMsg[0][i] = toupper(SplitedMsg[0][i]);
     try
     {
         if (!SplitedMsg[0].compare("PASS"))
