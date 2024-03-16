@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 12:39:59 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/15 23:53:02 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/16 21:47:33 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,13 +243,13 @@ void Server::set_clients(std::map<int, Client *> clients)
 }
 void Server::remove_client_from_channels(int fd)
 {
+    std::string str =  ":" + this->get_nickname(fd) + "!" + this->get_username(fd) + "@" + this->get_ip_address(fd) + " QUIT : QUIT Leaving...\r\n";
+    this->send_to_all(str, fd);
     std::map<std::string, Channel *>::iterator it;
     for (it = this->channels.begin(); it != this->channels.end(); it++)
     {
         it->second->quit_channel(this->get_nickname(fd));
     }
-
-    it = this->channels.begin();
     while(it != this->channels.end())
     {
         if (it->second->getUsers().size() == 0)
@@ -258,7 +258,9 @@ void Server::remove_client_from_channels(int fd)
             this->channels.erase(it++);
         }
         else
+        {
             it++;
+        }
     }
 }
 
