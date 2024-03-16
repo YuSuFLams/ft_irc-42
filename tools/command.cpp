@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 03:00:11 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/16 21:13:23 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/16 23:35:58 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -368,7 +368,7 @@ void	Server::cmdknick(std::vector<std::string> &SplitedMsg, Client *c)
     if (!SplitedMsg[1].empty() && SplitedMsg[2].empty())
     {
         tmpClient = this->getClientByNickname(SplitedMsg[1]);
-        if ((tmpClient && tmpClient->getFd() != c->getFd()) || !SplitedMsg[1].compare("Bot"))
+        if ((tmpClient && tmpClient->getFd() != c->getFd()) || (tmpClient && !SplitedMsg[1].compare("Bot")))
         {
             std::string nickMsg = ":" + this->get_hostnames() + " " + this->to_string(ERR_NICKNAMEINUSE) + " " + c->getNick() + " " + SplitedMsg[1] + " :Nickname is already in use\r\n";
             send(c->getFd(), nickMsg.c_str(), nickMsg.length(), 0);
