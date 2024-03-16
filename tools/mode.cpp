@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 02:08:17 by ylamsiah          #+#    #+#             */
-/*   Updated: 2024/03/16 01:43:13 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/16 21:10:00 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -339,9 +339,22 @@ void Server::addMode_K(int fd, std::vector<std::string> words, std::map<std::str
     }
 }
 
-void Server::modecmd(std::vector<std::string> words, int fd)
+void Server::modecmd(std::string str, int fd)
 {
-
+    std::string buffer = str;
+    buffer.erase(std::remove(buffer.begin(), buffer.end(), '\n'), buffer.end());
+    buffer.erase(std::remove(buffer.begin(), buffer.end(), '\r'), buffer.end());
+    if(buffer.empty())
+        return ;
+    std::vector<std::string> words;
+    std::string word;
+    std::istringstream iss(buffer);
+    while (iss >> word)
+    {
+        words.push_back(word);
+    }
+    if(words.size() == 0)
+        return ;
     if ((int)(words.size() - 3) > getNumMode(words[2]))
     {
         return ;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/16 17:56:42 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/16 21:09:23 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@ class Server {
         bool isClientExist(std::string nickname);
         bool isValidChannelName(std::string name);
         bool isChannelExist(std::string channelname);
-        void invitecmd(std::vector<std::string> words, int fd);
+        void invitecmd(std::string str, int fd);
         bool isClientInChannel(std::string nickname, std::string channelname, std::map<std::string, Channel *> &channel);
         bool isClientOperatorInChannel(std::string clientname, std::string channelname, std::map<std::string, Channel *> &channel);
         Client*   getClientByNickname(std::string nick, std::map <int, Client *> clients);
@@ -191,7 +191,7 @@ class Server {
 		void handleChannels(std::vector<std::pair<std::string, std::string> >& pairs, int fd, const std::string& nickname);
         int	TopicChannel(std::vector<std::string> strs ,std::map<std::string, Channel *> &channels,  int fd , std::string str);
         void KickChannel(std::vector<std::string> strs, std::map<std::string, Channel *> &channels, int fd, std::string nickname, std::string str);
-        void modecmd(std::vector<std::string> words, int fd);
+        void modecmd(std::string str, int fd);
         void addMode_I(std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
         void addMode_O(int fd, std::vector<std::string> words, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
         void addMode_T(std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 03:00:11 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/16 17:52:21 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/16 21:13:23 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,28 +220,32 @@ void Server::nickCmd1(std::string msg, Client *c)
 		words[0][i] = toupper(words[0][i]);
     if (!words[0].compare("NICK") && words.size() < 2)
     {
-        std::cout << "NICK1" << std::endl;
-        std::string nickMsg = ":" + this->get_hostnames() + " " + this->to_string(ERR_ERRONEUSNICKNAME) + " " + c->getNick() + " " + words[1] + " :Erroneous nickname\r\n";
+        std::string nickMsg = ":" + this->get_hostnames() + " " + this->to_string(ERR_ERRONEUSNICKNAME) + " " + c->getNick() + " :Erroneous nickname\r\n";
         send(c->getFd(), nickMsg.c_str(), nickMsg.length(), 0);
         return ;
     }
     else if (!words[0].compare("NICK") && words.size() == 2 && words[1] == ":")
     {
-        std::cout << "NICK" << std::endl;
-        std::string nickMsg = ":" + this->get_hostnames() + " " + this->to_string(ERR_ERRONEUSNICKNAME) + " " + c->getNick() + " " + words[1] + " :Erroneous nickname\r\n";
+        std::string nickMsg = ":" + this->get_hostnames() + " " + this->to_string(ERR_ERRONEUSNICKNAME) + " " + c->getNick() + " :Erroneous nickname\r\n";
         send(c->getFd(), nickMsg.c_str(), nickMsg.length(), 0);
         return ;
     }
     else if (!words[0].compare("NICK") && words.size() > 1 && c->getNick() != words[1])
     {
-        std::string nickMsg = ":" + c->getNick() + "!" + c->getusername() + "@" + c->gethostname() + " NICK " + words[1] + "\r\n";
-        c->seTNick(words[1]);
+        std::string nickMsg;
+        Client *tmpClient = this->getClientByNickname(words[1]);
+        if (tmpClient)
+            nickMsg = ":" + this->get_hostnames() + " " + this->to_string(ERR_NICKNAMEINUSE) + " " + c->getNick() + " " + words[1] + " :Nickname is already in use\r\n";
+        else
+        {
+            nickMsg = ":" + c->getNick() + "!" + c->getusername() + "@" + c->gethostname() + " NICK " + words[1] + "\r\n";
+            c->seTNick(words[1]);
+        }
         send(c->getFd(), nickMsg.c_str(), nickMsg.length(), 0);
         return ;
     }
     else if (words.size() > 2)
     {
-        std::cout << "NICK2" << std::endl;
         std::string nickMsg = ":" + this->get_hostnames() + " " + this->to_string(ERR_NEEDMOREPARAMS) + " " + c->getNick() + " :Too many parameters\r\n";
         send(c->getFd(), nickMsg.c_str(), nickMsg.length(), 0);
         return ;
@@ -268,7 +272,7 @@ void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg, std::
                 cmduser(c, SplitedMsg);
             else 
             {
-                std::string nickMsg = ":" + this->get_hostnames() + " " + this->to_string(ERR_NOTREGISTERED) + " * :You have not registered\r\n";
+                std::string nickMsg = ":" + this->get_hostnames() + " " + this->to_string(ERR_NOTREGISTERED) + " " + c->getNick() + " :You have not registered\r\n";
                 send(c->getFd(), nickMsg.c_str(), nickMsg.length(), 0);
                 return ;
             }
@@ -282,7 +286,7 @@ void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg, std::
             }
             else if (!SplitedMsg[0].compare("PASS") || !SplitedMsg[0].compare("USER"))
             {
-                std::string nickMsg = ":" + this->get_hostnames() + " " + this->to_string(ERR_NOTREGISTERED) + " * :You have not registered\r\n";
+                std::string nickMsg = ":" + this->get_hostnames() + " " + this->to_string(ERR_ALREADYREGISTRED) + " " + c->getNick() + " :You may not reregister\r\n";
                 send(c->getFd(), nickMsg.c_str(), nickMsg.length(), 0);
                 return ;
             }
@@ -297,7 +301,7 @@ void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg, std::
             }
             else if (!SplitedMsg[0].compare("🤖"))
             {
-                comdBotBot(msg.getMessage());
+                comdBotBot(str);
             }
             else if(!SplitedMsg[0].compare("JOIN") || !SplitedMsg[0].compare("TOPIC") || !SplitedMsg[0].compare("PART") 
                 || !SplitedMsg[0].compare("KICK") || !SplitedMsg[0].compare("PRIVMSG"))
@@ -305,9 +309,9 @@ void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg, std::
                 join_topic_part_kick_privmsg(c->getFd(), str);
             }
             else if (!SplitedMsg[0].compare("INVITE"))
-                this->invitecmd(SplitedMsg, c->getFd());
+                this->invitecmd(str, c->getFd());
             else if (!SplitedMsg[0].compare("MODE"))
-                this->modecmd(SplitedMsg, c->getFd());
+                this->modecmd(str, c->getFd());
         }
     }
     catch (Myexception & e) {}
@@ -327,27 +331,30 @@ void	Server::cmduser(Client *c, std::vector<std::string> &SplitedMsg)
     c->sethostname(SplitedMsg[2]);
     c->setservername(SplitedMsg[3]);
     c->setrealname(SplitedMsg[4]);
-    
-	if (this->IsAuthorized(*c)) 
+	if (this->IsAuthorized(*c) && c->geTPass() == this->m_pass)
     {
         sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 001 " + this->get_nickname(c->getFd()) + " :Welcome to the Internet Relay Network " + this->get_nickname(c->getFd())+ "!" + this->get_username(c->getFd()) + "@" + this->get_hostnames() + "\r\n");
         sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 002 " + this->get_nickname(c->getFd()) + " :Your host is " + this->get_hostnames() + ", running version 1.0\r\n");
         sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 003 " + this->get_nickname(c->getFd()) + " :This server was created " +  this->get_current_time() + "\r\n");
     }
-
-	
+    else if(c->geTPass() != this->m_pass && this->IsAuthorized(*c))
+    {
+        std::string passMsg = ":" + this->get_hostnames() + " " + this->to_string(ERR_PASSWDMISMATCH) + " " + c->getNick() + " :Password incorrect\r\n";
+        send(c->getFd(), passMsg.c_str(), passMsg.length(), 0);
+        c->seTPass("");
+        return ;
+    }
 }
 void	Server::cmdknick(std::vector<std::string> &SplitedMsg, Client *c)
 {
     Client *tmpClient;
-
     if (SplitedMsg.size() != 2 ||  SplitedMsg[1].empty())
     {
         std::string nickMsg;
         if (SplitedMsg.size() < 2)
-            nickMsg = ":" + this->get_hostnames() + " " + this->to_string(ERR_NONICKNAMEGIVEN) + " " + "default" + " :No nickname given\r\n";
-        else
-            nickMsg = ":" + this->get_hostnames() + " " + this->to_string(ERR_ERRONEUSNICKNAME) + " " + c->getNick() + " " + SplitedMsg[1] + " :Erroneous nickname\r\n";
+            nickMsg = ":" + this->get_hostnames() + " " + this->to_string(ERR_NONICKNAMEGIVEN) + " :No nickname given\r\n";
+        else if (SplitedMsg.size() > 2)
+            nickMsg = ":" + this->get_hostnames() + " " + this->to_string(ERR_ERRONEUSNICKNAME) + " " + SplitedMsg[0] + " :Erroneous nickname\r\n";
         send(c->getFd(), nickMsg.c_str(), nickMsg.length(), 0);
         return ;
     }
@@ -361,18 +368,25 @@ void	Server::cmdknick(std::vector<std::string> &SplitedMsg, Client *c)
     if (!SplitedMsg[1].empty() && SplitedMsg[2].empty())
     {
         tmpClient = this->getClientByNickname(SplitedMsg[1]);
-        if (tmpClient && (tmpClient->getFd() != c->getFd() || !SplitedMsg[1].compare("Bot")))
+        if ((tmpClient && tmpClient->getFd() != c->getFd()) || !SplitedMsg[1].compare("Bot"))
         {
             std::string nickMsg = ":" + this->get_hostnames() + " " + this->to_string(ERR_NICKNAMEINUSE) + " " + c->getNick() + " " + SplitedMsg[1] + " :Nickname is already in use\r\n";
             send(c->getFd(), nickMsg.c_str(), nickMsg.length(), 0);
             return ;
         }
         c->seTNick(SplitedMsg[1]);
-        if (this->IsAuthorized(*c))
+        if (this->IsAuthorized(*c) && c->geTPass() == this->m_pass)
         {
             sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 001 " + this->get_nickname(c->getFd()) + " :Welcome to the Internet Relay Network " + this->get_nickname(c->getFd())+ "!" + this->get_username(c->getFd()) + "@" + this->get_hostnames() + "\r\n");
             sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 002 " + this->get_nickname(c->getFd()) + " :Your host is " + this->get_hostnames() + ", running version 1.0\r\n");
             sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 003 " + this->get_nickname(c->getFd()) + " :This server was created " +  this->get_current_time() + "\r\n");
+        }
+        else if(c->geTPass() != this->m_pass && this->IsAuthorized(*c))
+        {
+            std::string passMsg = ":" + this->get_hostnames() + " " + this->to_string(ERR_PASSWDMISMATCH) + " " + c->getNick() + " :Password incorrect\r\n";
+            send(c->getFd(), passMsg.c_str(), passMsg.length(), 0);
+            c->seTPass("");
+            return ;
         }
     }
 }
@@ -387,12 +401,6 @@ void	Server::cmdpass(std::vector<std::string>& SplitedMsg, Client *c)
     }
 	else 
     {
-		if (SplitedMsg[1].compare(this->m_pass))
-		{
-            std::string passMsg = ":" + this->get_hostnames() + " " + this->to_string(ERR_PASSWDMISMATCH) + " " + "default" + " :Password incorrect\r\n";
-            send(c->getFd(), passMsg.c_str(), passMsg.length(), 0);
-            return ;
-        }
         if (c->getNick() == "Bot" && SplitedMsg[2].compare(this->m_pass))
         {
             std::string passMsg = ":" + this->get_hostnames() + " " + this->to_string(ERR_PASSWDMISMATCH) + " " + c->getNick() + " :Password incorrect\r\n";
@@ -400,5 +408,18 @@ void	Server::cmdpass(std::vector<std::string>& SplitedMsg, Client *c)
             return ;
         }
 		c->seTPass(SplitedMsg[1]);
+        if (this->IsAuthorized(*c) && c->geTPass() == this->m_pass)
+        {
+            sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 001 " + this->get_nickname(c->getFd()) + " :Welcome to the Internet Relay Network " + this->get_nickname(c->getFd())+ "!" + this->get_username(c->getFd()) + "@" + this->get_hostnames() + "\r\n");
+            sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 002 " + this->get_nickname(c->getFd()) + " :Your host is " + this->get_hostnames() + ", running version 1.0\r\n");
+            sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 003 " + this->get_nickname(c->getFd()) + " :This server was created " +  this->get_current_time() + "\r\n");
+        }
+        else if(c->geTPass() != this->m_pass && this->IsAuthorized(*c))
+        {
+            std::string passMsg = ":" + this->get_hostnames() + " " + this->to_string(ERR_PASSWDMISMATCH) + " " + c->getNick() + " :Password incorrect\r\n";
+            send(c->getFd(), passMsg.c_str(), passMsg.length(), 0);
+            c->seTPass("");
+            return ;
+        }
 	}
 }

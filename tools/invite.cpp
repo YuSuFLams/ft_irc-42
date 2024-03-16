@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 20:23:08 by ylamsiah          #+#    #+#             */
-/*   Updated: 2024/03/13 01:40:27 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/16 21:10:07 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,8 +91,22 @@ Client*   Server::getClientByNickname(std::string nick, std::map<int , Client *>
     return NULL;
 }
 
-void Server::invitecmd(std::vector<std::string> words , int fd)
+void Server::invitecmd(std::string str, int fd)
 {
+    std::string buffer = str;
+    buffer.erase(std::remove(buffer.begin(), buffer.end(), '\n'), buffer.end());
+    buffer.erase(std::remove(buffer.begin(), buffer.end(), '\r'), buffer.end());
+    if(buffer.empty())
+        return ;
+    std::vector<std::string> words;
+    std::string word;
+    std::istringstream iss(buffer);
+    while (iss >> word)
+    {
+        words.push_back(word);
+    }
+    if(words.size() == 0)
+        return ;
     if (words.size() != 3)
     {
         std::string errorMsg = ":" + this->get_hostnames() + " " + to_string(ERR_NEEDMOREPARAMS) + " " + this->get_nickname(fd) + " INVITE :Not enough parameters\r\n";
