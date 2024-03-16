@@ -6,45 +6,19 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 03:15:46 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/16 00:10:13 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/16 00:43:35 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Bot.hpp"
 
-void handl_client_signal(int signum)
-{
-    if (signum == SIGINT)
-    {
-        std::cout << "\n\033[31;1mBot is shutting down...\033[0m" << std::endl;
-        exit(0);
-    }
-}
-int parssing_port(std::string port)
-{
-	if(std::atoi(port.c_str()) > 65535 || std::atoi(port.c_str()) < 1024)
-		return (0);
-	int i = 0;
-	while (port[i])
-	{
-		if (!isdigit(port[i]))
-			return (0);
-		i++;
-	}
-	return (1);
-}
 int main(int ac, char **av)
 {
+    
     if (ac != 3) {
         std::cerr << "Usage: ./Bot <port> <password>" << std::endl;
         return -1;
     }
-    if (!parssing_port(av[1]))
-	{
-		std::cout << "Invalid port" << std::endl;
-		return 0;
-	}
-    signal(SIGINT, handl_client_signal);
     struct sockaddr_in serv_addr;
     int port = atoi(av[1]);
     std::string pass = av[2];

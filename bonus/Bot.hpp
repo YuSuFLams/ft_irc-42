@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 02:50:47 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/16 00:04:31 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/16 00:43:42 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ class Bot  {
         std::string   returntime();
         std::map<std::string, float> getStudent_13();
         std::map<std::string, float> first_read(std::string file);
+        
 };
 void	split(std::string msg, std::vector<std::string> &SplitedMsg);
 void    splitCommand(std::string str, char oper, std::vector<std::string> &SplitedMsg);

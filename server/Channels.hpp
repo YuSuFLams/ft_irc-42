@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 03:03:46 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/09 03:34:47 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/16 01:52:19 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 
 #define RPL_INVITING 341 
 #define RPL_TOPIC 332
+#define RPL_NICK 353 
 #define RPL_NOTOPIC 331
 #define ERR_NOTONCHANNEL 442
 #define ERR_NEEDMOREPARAMS 461

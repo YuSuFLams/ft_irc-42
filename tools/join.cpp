@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 01:40:02 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/13 01:08:41 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/16 03:19:42 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,6 @@ int Server::public_channel(std::string channel_name , std::string key , int fd)
             std::string msg = ":" + this->get_hostnames() + " " + this->to_string(ERR_BADCHANNELKEY) + " " + this->get_nickname(fd) + " " + channel_name + " :Cannot join channel (+k)\r\n";
             send(fd, msg.c_str(), msg.length(), 0);
         }
-       
     }
     return (0);
 }

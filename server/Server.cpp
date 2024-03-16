@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 06:26:32 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/16 00:25:59 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/16 02:41:31 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -270,11 +270,11 @@ int 		Server::acceptingData()
 		this->clients.insert(std::pair<int, Client *>(newfd, c));
 		users[user_num].fd = newfd;
 		users[user_num]. events = POLLIN;
-		std::string hh = inet_ntoa(newAddresse.sin_addr);
-		this->clients[newfd]->set_ip_address(hh);
+		std::string add = inet_ntoa(newAddresse.sin_addr);
+		this->clients[newfd]->set_ip_address(add);
 		this->pport[newfd] = ntohs(newAddresse.sin_port);
 		this->setPport(newfd, ntohs(newAddresse.sin_port));
-		std::cout << "\n[\033[32;1mINFO\033[0m] \033[33;1mNew client connected with ip address\033[0m [\033[32;1m" << hh << "\033[0m] \033[33;1mFrom port\033[0m [\033[32;1m" \
+		std::cout << "\n[\033[32;1mINFO\033[0m] \033[33;1mNew client connected with ip address\033[0m [\033[32;1m" << add << "\033[0m] \033[33;1mFrom port\033[0m [\033[32;1m" \
 		<< ntohs(newAddresse.sin_port) << "\033[0m]" << std::endl;
 		user_num++;
 	} while (newfd != -1);
@@ -342,13 +342,13 @@ int Server::checkmsg(int i)
         }
         msg = tmp + msg;
 		msg  = update_str(msg);
-		std::cout <<msg << std::endl;
         std::string tmp1 = msg;
 		std::string up = tmp1.substr(0, tmp1.find_first_of(" "));
 		for (int i = 0 ; up[i] ; i++)
 			up[i] = toupper(up[i]);
 		up.erase(std::remove(up.begin(), up.end(), '\n'), up.end());
 		up.erase(std::remove(up.begin(), up.end(), '\r'), up.end());
+		std::cout << "Received : <<" << tmp1.erase(tmp1.find_first_of("\r\n")) << ">>" << std::endl;
 		std::cout << "[\033[33;1mCMD\033[0m] \033[32;1m" << up << "\033[0m \033[33;1mFrom\033[0m [\033[32;1m" << this->get_ip_address(users[i].fd) \
 		<< "\033[0m]\033[0m \033[33;1mFrom port\033[0m [\033[32;1m" << this->getPport(users[i].fd) << "\033[0m]" << std::endl;
         if (msg.find_first_of("\r\n") != std::string::npos && msg != "\n")

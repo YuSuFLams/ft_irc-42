@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Bot.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 02:50:50 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/14 11:12:42 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/16 01:19:38 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,15 +55,23 @@ void Bot::ConnetToServer(int fd, std::string &pass)
     sprintf(message, "NICK %s\r\n", this->nickname.c_str());
     send(fd, message, strlen(message), 0);
     sleep(1);
-    while (true) {
+    while (true) 
+    {
         char buffer[1024];
         memset(buffer, 0, sizeof(buffer));
         int rc = recv(fd, buffer, sizeof(buffer), 0);
-        if (rc <= 0) {
+        if (rc <= 0)
+        {
             std::cerr << "Receive failed" << std::endl;
             break;
         }
         std::string message(buffer, rc);
+        if (message.find("464") != std::string::npos && message.find("Password incorrect") != std::string::npos)
+        {
+            std::cerr << "\033[31;1mError: \033[0m \033[32;1mPassword incorrect\033[0m" << std::endl;
+            close(fd);
+            break ;
+        }
         this->traitResvedData(message, fd);
     }
 }

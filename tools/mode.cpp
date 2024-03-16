@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 02:08:17 by ylamsiah          #+#    #+#             */
-/*   Updated: 2024/03/13 01:32:32 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/16 01:43:13 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -408,6 +408,10 @@ void Server::modecmd(std::vector<std::string> words, int fd)
                 {
                     switch ((*it)[0])
                     {
+                        case 's':
+                            break ;
+                        case 'n':
+                            break ;
                         case 'i':
                             this->addMode_I(this->getChannels(), words[1], *it, add);
                             break;
