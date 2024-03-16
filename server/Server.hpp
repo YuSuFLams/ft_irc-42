@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/14 22:54:17 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/16 00:23:23 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,16 +97,11 @@ class Server {
 		void 			seTmsocket(int sock);
 		void 			seTServerFd(int server);
 		void 			seTmapClient(std::map<int, Client *>);
-
 		std::string			getPass();
 		int 				getport();
 		int 				getsocket();
 		int 				getSeverSocket();
 		std::map<int, Client *> getClient();
-
-
-
-		
 		int				CreateSocket();
 		int				OptionSocket();
 		int				NnBlockFd();
@@ -115,19 +110,15 @@ class Server {
 		int 			acceptingData();
 		int 			checkmsg(int i);
 		void			PollingFd();
-		
 		void			commands(Message &, std::vector <std::string>&, std::string str);
-		
 		void			cmduser(Client *c, std::vector<std::string> &SplitedMsg);
 		void			cmdpass(std::vector<std::string>& SplitedMsg, Client *c);
 		void			cmdknick(std::vector<std::string> &SplitedMsg, Client *c);
 		void			cmdprivmsg(std::vector<std::string>& SplitedMsg, Client *c);
-
 		Client*			getClientByFd(int fdUser);
 		Client*			getClientByNickname(std::string nickname);
 		bool			IsAuthorized(Client &);
 		void			TraiteMessage(Message &);
-
 		void 			clientLeft(int fd);
 		void 			quitServer();
 		void comdBotBot(std::string SplitedMsg);
@@ -136,7 +127,6 @@ class Server {
 		void part_command(std::vector<std::string > words , int fd , std::string str);
 		void join_command(std::vector<std::string > words , int fd , std::string str);
 		void kick_command(std::vector<std::string > words , int fd , std::string str);
-		/////////////////////////  CHANNELS  //////////////////////////
 		void addClient(int fd, Client *client);
         void removeClient(int fd);
         void setClients(std::map<int, Client *> clients);
@@ -152,7 +142,6 @@ class Server {
         void set_client(int fd, Client *client);
         void set_clients(std::map<int, Client *> clients);
         std::string get_servername(int fd);
-		
 		std::string get_ip_address(int fd);
 		void set_ip_address(int fd, std::string ip_address);
         std::string get_current_time();
@@ -175,18 +164,12 @@ class Server {
         std::string get_username(int fd);
 		std::string get_hostname(int fd);
         void set_username(int fd, std::string username);
-		
-		/////////////////////////  TOOLS  //////////////////////////
 		std::string get_hostnames();
         std::string get_nickname(int fd);
 		void set_nickname(int fd, std::string nickname);
         std::map<std::string, Channel *> &getChannels();
-		void setFlagMode(bool flag) { flagMode = flag; }
-        bool getFlagMode() { return flagMode; }
-		std::map<std::string, float> getStudent_13() { return (this->Student_13);}
-        void comdBot(std::vector<std::string> &words, int fd);
-        void setStudent_13(std::map<std::string, float> Student_13) { this->Student_13 = Student_13;}
-		// invite
+		void setFlagMode(bool flag);
+        bool getFlagMode();
         bool isClientExist(std::string nickname);
         bool isValidChannelName(std::string name);
         bool isChannelExist(std::string channelname);
@@ -195,7 +178,6 @@ class Server {
         bool isClientOperatorInChannel(std::string clientname, std::string channelname, std::map<std::string, Channel *> &channel);
         Client*   getClientByNickname(std::string nick, std::map <int, Client *> clients);
         bool isSenderInChannel(std::string nickname, std::string channelname, std::map<std::string, Channel *> &channel);
-		//-------------------//
 		void privmsg_command(std::vector<std::string > words  , int fd , std::string str);
 		void send_to_user(std::string nickname , std::string str ,int fd);
 		void send_to_channel(std::string channel_name , std::string str, int fd);
@@ -209,7 +191,6 @@ class Server {
 		void handleChannels(std::vector<std::pair<std::string, std::string> >& pairs, int fd, const std::string& nickname);
         int	TopicChannel(std::vector<std::string> strs ,std::map<std::string, Channel *> &channels,  int fd);
         void KickChannel(std::vector<std::string> strs, std::map<std::string, Channel *> &channels, int fd, std::string nickname, std::string str);
-		// mode
         void modecmd(std::vector<std::string> words, int fd);
         void addMode_I(std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
         void addMode_O(int fd, std::vector<std::string> words, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
@@ -217,7 +198,6 @@ class Server {
         void addMode_L(int fd, std::vector<std::string> words, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
         void addMode_K(int fd, std::vector<std::string> words, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
         bool isAllDigit(std::string str);
-	
 };
 
 void	split(std::string msg, std::vector<std::string> &SplitedMsg);

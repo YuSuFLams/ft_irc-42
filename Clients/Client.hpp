@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/25 15:04:46 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/13 01:06:34 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/15 23:40:10 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ class Client
 		int 			is_registered;
 		bool 			InviteToChannel;
 		std::string		ip_address;
+		std::vector<std::string> str;
 	public:
 		Client();
 		Client(int fd);
@@ -68,6 +69,18 @@ class Client
 		void			set_ip_address(std::string ip)
 		{
 			this->ip_address = ip;
+		}
+		std::vector<std::string> getStr()
+		{
+			return (this->str);
+		}
+		void setStr(std::string str)
+		{
+			this->str.push_back(str);
+		}
+		void clearStr()
+		{
+			this->str.clear();
 		}
 };
 

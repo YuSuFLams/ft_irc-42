@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 12:39:59 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/13 01:08:26 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/15 23:53:02 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,23 @@ std::string Server::to_string(int number)
     return (ss.str());
 }
 
-
 std::string Server::get_hostnames()
 {
     char buffer[1024] = {0};
-    std::string hostnames;
-    gethostname(buffer, 1024);
-    hostnames = buffer;
+    std::string hostnames = "";
+    FILE *stream = popen("hostname", "r");
+    if (stream) 
+    {
+        if (fgets(buffer, sizeof(buffer), stream) != NULL) 
+        {
+            hostnames = buffer;
+        }
+        pclose(stream);
+    }
+    hostnames.erase(std::remove(hostnames.begin(), hostnames.end(), '\n'), hostnames.end());
     return (hostnames);
 }
+
 std::string Server::get_nickname(int fd)
 {
     std::map<int, Client *>::iterator it;
@@ -253,7 +261,6 @@ void Server::remove_client_from_channels(int fd)
             it++;
     }
 }
-
 
 void Server::set_username(int fd, std::string username)
 {

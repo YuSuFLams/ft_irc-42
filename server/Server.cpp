@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 06:26:32 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/15 21:25:30 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/16 00:25:59 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,12 @@ Server::Server(std::string ipAdd, int port): m_pass(ipAdd),m_port(port)
 	memset(&address, 0, sizeof(address));
 	memset(users, 0, sizeof(users));
 }
+
 Server::Server(Server &sr)
 {
 	*this = sr;
 }
+
 Server&	Server::operator=(const Server &sr)
 {
 	m_port = sr.m_port;
@@ -36,24 +38,48 @@ Server&	Server::operator=(const Server &sr)
 	return (*this);
 	
 }
-Server::~Server(){}
+
+Server::~Server()
+{
+	std::map<int, Client *>::iterator it;
+	it = this->clients.begin();
+	while (it != this->clients.end())
+	{
+		close(it->first);
+		delete it->second;
+		it++;
+	}
+	this->clients.clear();
+	std::map<std::string, Channel *>::iterator it1;
+	it1 = this->channels.begin();
+	while (it1 != this->channels.end())
+	{
+		delete it1->second;
+		it1++;
+	}
+	this->channels.clear();
+}
 
 void 	Server::seTpass(std::string pass)
 {
 	this->m_pass = pass;
 }
+
 void 	Server::seTport(int p)
 {
 	this->m_port = p;
 }
+
 void 	Server::seTmsocket(int sock)
 {
 	this->m_socket = sock;
 }
+
 void 	Server::seTServerFd(int fd_serv)
 {
 	this->server_fd = fd_serv;
 }
+
 void 	Server::seTmapClient(std::map<int, Client *> mapClient)
 {
 	this->clients = mapClient;
@@ -63,6 +89,7 @@ std::string		Server::getPass()
 {
 	return (this->m_pass);
 }
+
 int 	Server::getport()
 {
 	return this->m_port;
@@ -253,39 +280,86 @@ int 		Server::acceptingData()
 	} while (newfd != -1);
 	return 1;
 }
-
-int 	Server::checkmsg(int i)
+std::string update_str(std::string str)
 {
+    if(str[0] == ':')
+    {
+        size_t space_pos = str.find(" ");
+        if (space_pos != std::string::npos) 
+		{
+            str = str.substr(space_pos + 1);
+        }
+		else
+		{
+			str = "";
+		}
+    }
+    return str;
+}
+void Server::setFlagMode(bool flag) 
+{
+	flagMode = flag;
+}
 
-	std::string msg;
+bool Server::getFlagMode() 
+{
+	return flagMode;
+}
 
-	msg = "";
-	memset(buffer, 0, sizeof(buffer));
-	Message mesg;
+int Server::checkmsg(int i)
+{
+    std::string msg;
+    char buffer[1024];
 
-    int flg = recv(users[i].fd, buffer, sizeof(buffer), 0);
-    buffer[flg] = '\0';
-    msg += buffer;
-	std::string tmp = buffer;
-	std::string up = tmp.substr(0, tmp.find_first_of(" "));
-	for (int i = 0 ; up[i] ; i++)
-		up[i] = toupper(up[i]);
-	std::cout << "[\033[33;1mCMD\033[0m] \033[32;1m" << up << "\033[0m \033[33;1mFrom\033[0m [\033[32;1m" << this->get_ip_address(users[i].fd) \
-	<< "\033[0m]\033[0m \033[33;1mFrom port\033[0m [\033[32;1m" << this->getPport(users[i].fd) << "\033[0m]" << std::endl;
+    memset(buffer, 0, sizeof(buffer));
+    Message mesg;
+
+    int flg = recv(users[i].fd, buffer, sizeof(buffer) - 1, 0);
     if (flg <= 0)
     {
         std::cout << "[\033[31;1mINFO\033[0m] \033[31;1mClient Disconnected\033[0m" << std::endl;
+		send(users[i].fd, "\033[31;1mYou are Disconnected 😞.\r\n\033[0m", 40, 0);
         return 0;
     }
-    if (msg.find_first_of("\r\n") != std::string::npos && msg != "\n")
+
+    buffer[flg] = '\0';
+    msg = buffer;
+
+    size_t newline_pos = msg.find_first_of("\r\n");
+    if (newline_pos == std::string::npos)
     {
-        size_t pos = msg.find_last_of("\r\n");
-        msg = msg.substr(0, pos);
-        mesg = Message(users[i].fd, msg);
-        TraiteMessage(mesg);
-        return 1;
+        this->clients[users[i].fd]->setStr(msg);
+		return 1;
     }
-    
+    else
+    {
+		std::string tmp = "";
+        if (!this->clients[users[i].fd]->getStr().empty())
+        {
+           for (size_t j = 0; j < this->clients[users[i].fd]->getStr().size(); j++)
+			  tmp += this->clients[users[i].fd]->getStr()[j];
+            this->clients[users[i].fd]->clearStr();
+        }
+        msg = tmp + msg;
+		msg  = update_str(msg);
+		std::cout <<msg << std::endl;
+        std::string tmp1 = msg;
+		std::string up = tmp1.substr(0, tmp1.find_first_of(" "));
+		for (int i = 0 ; up[i] ; i++)
+			up[i] = toupper(up[i]);
+		up.erase(std::remove(up.begin(), up.end(), '\n'), up.end());
+		up.erase(std::remove(up.begin(), up.end(), '\r'), up.end());
+		std::cout << "[\033[33;1mCMD\033[0m] \033[32;1m" << up << "\033[0m \033[33;1mFrom\033[0m [\033[32;1m" << this->get_ip_address(users[i].fd) \
+		<< "\033[0m]\033[0m \033[33;1mFrom port\033[0m [\033[32;1m" << this->getPport(users[i].fd) << "\033[0m]" << std::endl;
+        if (msg.find_first_of("\r\n") != std::string::npos && msg != "\n")
+		{
+			size_t pos = msg.find_last_of("\r\n");
+			msg = msg.substr(0, pos);
+			mesg = Message(users[i].fd, msg);
+			TraiteMessage(mesg);
+			return 1;
+    	}
+    }
     return 1;
 }
 void	Server::PollingFd()
