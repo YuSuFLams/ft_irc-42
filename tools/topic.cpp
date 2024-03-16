@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 14:59:22 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/13 01:06:57 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/16 18:17:35 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void Server::topic_broadcast_msg(std::map<std::string, Channel*>& channels, cons
     }
 }
 
-int Server::TopicChannel(std::vector<std::string> strs, std::map<std::string, Channel *> &channels, int fd) 
+int Server::TopicChannel(std::vector<std::string> strs, std::map<std::string, Channel *> &channels, int fd , std::string str)
 {
     if (strs.size() >= 2 && strs[0] == "TOPIC") 
     {
@@ -89,20 +89,15 @@ int Server::TopicChannel(std::vector<std::string> strs, std::map<std::string, Ch
                     if (strs[2] == ":" && strs.size() == 3 && strs[2].size() == 1)
                     {
                         // Clear the topic
-                        channels[strs[1]]->set_topic("No topic is set");
+                        channels[strs[1]]->set_topic("");
+                        topic_broadcast_msg(channels, strs[1], this->get_nickname(fd));
                     } 
                     else if (strs[2][0] == ':' && strs.size() >= 3)
                     {
                         // Set a new topic
-                        std::string new_topic = strs[2].substr(1);
-                            
-                        for (size_t i = 3; i < strs.size(); ++i) 
-                        {
-                            new_topic += " " + strs[i];
-                        }
+                        std::string new_topic = str.substr(str.find(":") + 1 , str.length());
                         channels[strs[1]]->set_topic(new_topic);
                         topic_broadcast_msg(channels, strs[1], this->get_nickname(fd));
-                        // Send the new topic to all users in the channel
                     }
                     else
                     {

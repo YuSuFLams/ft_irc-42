@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/16 02:45:49 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/16 17:56:42 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ class Server {
 		void 			clientLeft(int fd);
 		void 			quitServer();
 		void comdBotBot(std::string SplitedMsg);
-		void topic_command(std::vector<std::string > words , int fd);
+		void topic_command(std::vector<std::string > words , int fd , std::string str);
 		void quit_command(int fd);
 		void part_command(std::vector<std::string > words , int fd , std::string str);
 		void join_command(std::vector<std::string > words , int fd , std::string str);
@@ -189,7 +189,7 @@ class Server {
         int	PartChannel(std::vector<std::string> strs ,std::map<std::string, Channel *> &channels,  int fd, std::string nickname , std::string str);
         void topic_broadcast_msg(std::map<std::string, Channel*>& channels, const std::string& channelName, const std::string& nickname);
 		void handleChannels(std::vector<std::pair<std::string, std::string> >& pairs, int fd, const std::string& nickname);
-        int	TopicChannel(std::vector<std::string> strs ,std::map<std::string, Channel *> &channels,  int fd);
+        int	TopicChannel(std::vector<std::string> strs ,std::map<std::string, Channel *> &channels,  int fd , std::string str);
         void KickChannel(std::vector<std::string> strs, std::map<std::string, Channel *> &channels, int fd, std::string nickname, std::string str);
         void modecmd(std::vector<std::string> words, int fd);
         void addMode_I(std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);

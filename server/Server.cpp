@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 06:26:32 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/16 02:41:31 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/16 17:42:12 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -407,7 +407,8 @@ void	Server::PollingFd()
 		}
 	} while (1);
 }
-bool	Server::IsAuthorized(Client& client) {
+bool	Server::IsAuthorized(Client& client) 
+{
 	if (client.getNick().empty() || client.geTPass().empty() || client.getusername().empty())
 		return 0;
 	return 1;

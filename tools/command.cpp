@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 03:00:11 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/16 03:16:04 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/16 17:52:21 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void Server::join_command(std::vector<std::string > words  , int fd , std::strin
     }
 }
 
-void Server::topic_command(std::vector<std::string > words  , int fd)
+void Server::topic_command(std::vector<std::string > words  , int fd , std::string str)
 {
 
     if(words.size() == 1)
@@ -56,7 +56,7 @@ void Server::topic_command(std::vector<std::string > words  , int fd)
     }
     else
     {
-        if(this->TopicChannel(words , this->getChannels(), fd) == -1)
+        if(this->TopicChannel(words , this->getChannels(), fd , str) == -1)
         {
             std::string str = ":" + this->get_hostnames() + " " + this->to_string(ERR_NOSUCHCHANNEL) + " " + this->get_nickname(fd) + " " + words[1] + " :No such channel\r\n";
             send(fd, str.c_str(), str.length(), 0);
@@ -106,7 +106,7 @@ void Server::join_topic_part_kick_privmsg(int fd , std::string str)
     else if(words[0] == "PRIVMSG")
         privmsg_command(words, fd, buffer);
     else if(words[0] == "TOPIC")
-        topic_command(words, fd);
+        topic_command(words, fd , buffer);
     else if(words[0] == "PART")
         part_command(words, fd, buffer);
     else if(words[0] == "KICK")
