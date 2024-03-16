@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 03:00:11 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/16 23:35:58 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/16 23:51:54 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,7 +169,7 @@ void Server::comdBotBot(std::string SplitedMsg)
             send_to_user(it->second->getNick(), botMsg, fd);
             return ;
         }
-        else if (it->second->getNick() == words[1] && words[2] == ":help")
+        else if (it->second->getNick() == words[1] && words[2] == ":help" && words.size() == 3)
         {
             send_to_user(it->second->getNick(), "* Available commands: \n-Command: PASS / Parameters: <password> \n", fd);
             usleep(2);

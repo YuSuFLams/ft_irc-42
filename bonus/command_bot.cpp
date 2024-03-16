@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 06:21:49 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/16 23:35:50 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/16 23:51:58 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,8 @@ void 	Bot::traitResvedData(std::string &msg, int client_fd)
         sprintf(message, "%s\r\n", mssg.c_str());
         sendResponce(client_fd, message);
     }
-    else if (!words[3].empty() && !words[3].compare(":time")) {
+    else if (!words[3].empty() && !words[3].compare(":time") && words.size() == 4)
+    {
         std::string mssg = "🤖: " + sender + " " + "time "+ " " + this->returntime();
         sprintf(message, "%s\r\n", mssg.c_str());
         sendResponce(client_fd, message);
@@ -128,7 +129,7 @@ void 	Bot::traitResvedData(std::string &msg, int client_fd)
     }
     else if (!words[3].empty() && !words[3].compare("::help") && words.size() == 4)
     {
-        std::string mssg = "🤖: " + sender + " " + " help";
+        std::string mssg = "🤖: " + sender + " " + "help";
         sprintf(message, "%s\r\n", mssg.c_str());
         sendResponce(client_fd, message);
     }
