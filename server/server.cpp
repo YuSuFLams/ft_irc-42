@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.cpp                                         :+:      :+:    :+:   */
+/*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 06:26:32 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/14 11:02:42 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/17 12:59:18 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ Server::Server(std::string ipAdd, int port): m_pass(ipAdd),m_port(port)
 	this->birthday = ctime(&now);
 	memset(&address, 0, sizeof(address));
 	memset(users, 0, sizeof(users));
+	// this->m_pass = "";
 }
 Server::Server(Server &sr)
 {
@@ -192,7 +193,7 @@ void	Server::clientLeft(int fd) {
 	try
 	{
 		std::map<int, Client *>::iterator		client;
-
+		
 		client = this->clients.find(fd);
 		if (client != this->clients.end())
         {
@@ -328,8 +329,10 @@ void	Server::PollingFd()
 		}
 	} while (1);
 }
-bool	Server::IsAuthorized(Client& client) {
+int	Server::IsAuthorized(Client& client) {
 	if (client.getNick().empty() || client.geTPass().empty() || client.getusername().empty())
 		return 0;
+	if (client.geTPass().compare(this->m_pass))
+		return 2;
 	return 1;
 }

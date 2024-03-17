@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 14:09:12 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/13 01:10:21 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/17 14:18:30 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,18 +15,22 @@
 void	split(std::string msg, std::vector<std::string> &SplitedMsg)
 {
 	std::vector<std::string> tmpCommand;
+	std::string tmp;
 
-	splitCommand (msg, ':', tmpCommand);
+	int len = msg.size();
+	int pos2poin = msg.find_first_of (":");
+	if (pos2poin == -1)
+		pos2poin = len;
+	tmp = msg.substr(0, pos2poin);
+	if (!tmp.empty())
+		tmpCommand.push_back(tmp);
+	tmp.clear();
+	if ( pos2poin < len)
+		tmp= msg.substr(pos2poin + 1);
+	if (!tmp.empty())
+		tmpCommand.push_back(tmp);
 	splitCommand(tmpCommand[0], ' ', SplitedMsg);
-	for (size_t i = 1; i < tmpCommand.size(); i++)
-		SplitedMsg.push_back(tmpCommand[i]);
 	tmpCommand.clear();
-}
-
-void	initTab(std::string strs[MAX])
-{
-	for (int i = 0; i < MAX; i++)
-		strs[i] = "";
 }
 
 void    splitCommand(std::string str, char oper, std::vector<std::string> &SplitedMsg)

@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 03:00:11 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/14 11:23:41 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/17 12:23:20 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,6 +248,8 @@ void	Server::commands(Message &msg, std::vector <std::string> &SplitedMsg, std::
     {
         sendResponce(c->getFd(), ":" + this->get_hostnames() + " " + int2string(e.getERROR_NO()) + c->getNick() + " "
         + SplitedMsg[0] + " " + e.what() + "\r\n");
+        if (this->IsAuthorized(*c) == 2)
+            this->clientLeft(c->getFd());
     }
     
 }
@@ -263,21 +265,26 @@ void	Server::cmduser(Client *c, std::vector<std::string> &SplitedMsg)
     c->sethostname(SplitedMsg[2]);
     c->setservername(SplitedMsg[3]);
     c->setrealname(SplitedMsg[4]);
-    
-	if (this->IsAuthorized(*c)) 
+    if (this->IsAuthorized(*c) == 2){
+        throw  Myexception(ERR_PASSWDMISMATCH);
+        this->clientLeft(c->getFd());
+    }
+	if (this->IsAuthorized(*c) == 1) 
     {
         sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 001 " + this->get_nickname(c->getFd()) + " :Welcome to the Internet Relay Network " + this->get_nickname(c->getFd())+ "!" + this->get_username(c->getFd()) + "@" + this->get_hostnames() + "\r\n");
         sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 002 " + this->get_nickname(c->getFd()) + " :Your host is " + this->get_servername(c->getFd()) + ", running version 1.0\r\n");
         sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 003 " + this->get_nickname(c->getFd()) + " :This server was created " +  this->get_current_time() + "\r\n");
     }
-
+    
 	
 }
 void	Server::cmdknick(std::vector<std::string> &SplitedMsg, Client *c)
 {
     Client *tmpClient;
+    int flag = 0;
 
-
+    if (!c->getNick().empty())
+        flag = 1;
     if (SplitedMsg.size() != 2 ||  SplitedMsg[1].empty())
         throw Myexception(ERR_NONICKNAMEGIVEN);
     std::size_t found = SplitedMsg[1].find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789[]`|/^{}");
@@ -286,10 +293,12 @@ void	Server::cmdknick(std::vector<std::string> &SplitedMsg, Client *c)
     if (!SplitedMsg[1].empty() && SplitedMsg[2].empty())
     {
         tmpClient = this->getClientByNickname(SplitedMsg[1]);
-        if (tmpClient && (tmpClient->getFd() != c->getFd() || !SplitedMsg[1].compare("/Bot")))
+        if (tmpClient && (tmpClient->getFd() != c->getFd() || !SplitedMsg[1].compare("Bot")))
             throw Myexception(ERR_NICKNAMEINUSE);
         c->seTNick(SplitedMsg[1]);
-        if (this->IsAuthorized(*c))
+        if (this->IsAuthorized(*c) == 2)
+            throw  Myexception(ERR_PASSWDMISMATCH);
+        if (this->IsAuthorized(*c) == 1 && !flag)
         {
             sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 001 " + this->get_nickname(c->getFd()) + " :Welcome to the Internet Relay Network " + this->get_nickname(c->getFd())+ "!" + this->get_username(c->getFd()) + "@" + this->get_hostnames() + "\r\n");
             sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 002 " + this->get_nickname(c->getFd()) + " :Your host is " + this->get_servername(c->getFd()) + ", running version 1.0\r\n");
@@ -304,10 +313,5 @@ void	Server::cmdpass(std::vector<std::string>& SplitedMsg, Client *c)
         throw Myexception(ERR_ALREADYREGISTRED);
 	if (SplitedMsg.size() != 2)
 		throw Myexception(ERR_NEEDMOREPARAMS);
-	else 
-    {
-		if (SplitedMsg[1].compare(this->m_pass))
-			throw Myexception(ERR_PASSWDMISMATCH);
-		c->seTPass(SplitedMsg[1]);
-	}
+	c->seTPass(SplitedMsg[1]);
 }

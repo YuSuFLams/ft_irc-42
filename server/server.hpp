@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Server.hpp                                         :+:      :+:    :+:   */
+/*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/13 03:06:40 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/17 12:04:46 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ class Server {
 
 		Client*			getClientByFd(int fdUser);
 		Client*			getClientByNickname(std::string nickname);
-		bool			IsAuthorized(Client &);
+		int				IsAuthorized(Client &);
 		void			TraiteMessage(Message &);
 
 		void 			clientLeft(int fd);
