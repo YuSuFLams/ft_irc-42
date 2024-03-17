@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/16 21:09:23 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/17 23:24:56 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,10 +111,10 @@ class Server {
 		int 			checkmsg(int i);
 		void			PollingFd();
 		void			commands(Message &, std::vector <std::string>&, std::string str);
-		void			cmduser(Client *c, std::vector<std::string> &SplitedMsg);
-		void			cmdpass(std::vector<std::string>& SplitedMsg, Client *c);
-		void			cmdknick(std::vector<std::string> &SplitedMsg, Client *c);
-		void			cmdprivmsg(std::vector<std::string>& SplitedMsg, Client *c);
+		void			cmduser(Client *c, std::vector<std::string> &SplitedMsg , std::string str);
+		void			cmdpass(std::vector<std::string>& SplitedMsg, Client *c , std::string str);
+		void			cmdknick(std::vector<std::string> &SplitedMsg, Client *c );
+		void			cmdprivmsg(std::vector<std::string>& SplitedMsg, Client *c , std::string str);
 		Client*			getClientByFd(int fdUser);
 		Client*			getClientByNickname(std::string nickname);
 		bool			IsAuthorized(Client &);

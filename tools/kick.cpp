@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 01:01:38 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/13 01:08:34 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/17 23:23:46 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,10 +67,14 @@ void Server::KickChannel(std::vector<std::string> strs, std::map<std::string, Ch
     }
     reason = "";
     if(strs.size() > 3 && strs[3].at(0) == ':')
-        reason = str.substr(str.find(":") + 1 , str.length());
+    {
+        str = str.erase(0, str.find(strs[0]) + strs[0].length() + 1);
+        str = str.erase(0, str.find(strs[1]) + strs[1].length() + 1);
+        str = str.erase(0, str.find(strs[2]) + strs[2].length() + 1);
+        reason = str.erase(0,1);
+    }
     else
         reason = strs[3];
-    // std::cout<< "reason: " << reason << std::endl;
 
     // Check if the channel exists
     for(std::vector<std::string>::iterator it = kick_channel.begin(); it != kick_channel.end(); it++)

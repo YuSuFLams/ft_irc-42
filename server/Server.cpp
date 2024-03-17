@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 06:26:32 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/16 17:42:12 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/17 23:23:46 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,16 +203,21 @@ void 	sendResponce(int fd, const std::string &responce)
 
 void 	Server::TraiteMessage(Message &msg) 
 {
-	std::vector<std::string> SplitedMsg;
-    if(msg.getMessage().empty() || msg.getMessage() == "\n")
+	std::string buffer = msg.getMessage();
+    buffer.erase(std::remove(buffer.begin(), buffer.end(), '\n'), buffer.end());
+    buffer.erase(std::remove(buffer.begin(), buffer.end(), '\r'), buffer.end());
+    if(buffer.empty())
         return ;
-
-	split(msg.getMessage(), SplitedMsg);
-	std::string tmp = msg.getMessage();
-    if(SplitedMsg.size() == 0)
+    std::vector<std::string> words;
+    std::string word;
+    std::istringstream iss(buffer);
+    while (iss >> word)
+    {
+        words.push_back(word);
+    }
+    if(words.size() == 0)
         return ;
-	this->commands(msg, SplitedMsg, tmp);
-	SplitedMsg.clear();
+	this->commands(msg, words , msg.getMessage());
 }
 
 void	Server::clientLeft(int fd) {

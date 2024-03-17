@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 21:09:08 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/13 01:07:13 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/17 23:23:46 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,11 @@ int Server::PartChannel(std::vector<std::string> strs, std::map<std::string, Cha
     
     std::string reason = "";
     if(strs.size() > 3 && strs[2].at(0) == ':')
-        reason = str.substr(str.find(":") + 1 , str.length());
+    {
+        str = str.erase(0, str.find(strs[0]) + strs[0].length() + 1);
+        str = str.erase(0, str.find(strs[1]) + strs[1].length() + 1);
+        reason = str.erase(0,1);
+    }
     else
         reason = strs[2];
 

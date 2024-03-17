@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 14:59:22 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/16 18:17:35 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/17 23:23:46 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int Server::TopicChannel(std::vector<std::string> strs, std::map<std::string, Ch
             // Channel exists and mode is set to private
             if(channels[strs[1]]->isTopicRestriction() == true  && channels[strs[1]]->isOperator("@" + this->get_nickname(fd)) == false && strs.size() > 2)
             {
-                std::string str = ":" + this->get_hostnames() + " " + "481 " + this->get_nickname(fd) + " " + strs[1] + " :Permission Denied- You're not an operator\r\n";
+                std::string str = ":" + this->get_hostnames() + " " + this->to_string(ERR_CHANOPRIVSNEEDED) + " " + this->get_nickname(fd) + " " + strs[1] + " :You're not channel operator\r\n";
                 send(fd, str.c_str(), str.length(), 0);
                 return -2;
             }
@@ -94,8 +94,10 @@ int Server::TopicChannel(std::vector<std::string> strs, std::map<std::string, Ch
                     } 
                     else if (strs[2][0] == ':' && strs.size() >= 3)
                     {
-                        // Set a new topic
-                        std::string new_topic = str.substr(str.find(":") + 1 , str.length());
+                        // Set the topic
+                        str = str.erase(0, str.find(strs[0]) + strs[0].length() + 1);
+                        str = str.erase(0, str.find(strs[1]) + strs[1].length() + 1);
+                        std::string new_topic = str.erase(0,1);
                         channels[strs[1]]->set_topic(new_topic);
                         topic_broadcast_msg(channels, strs[1], this->get_nickname(fd));
                     }
