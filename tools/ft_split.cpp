@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 14:09:12 by araiteb           #+#    #+#             */
-/*   Updated: 2024/02/28 17:50:51 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/17 17:17:05 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,22 @@
 void	split(std::string msg, std::vector<std::string> &SplitedMsg)
 {
 	std::vector<std::string> tmpCommand;
-
-	splitCommand (msg, ':', tmpCommand);
+	std::string tmp;
+	std::string tmp2;
+	int len = msg.size();
+	int pos2poin = msg.find_first_of(":");
+	if (pos2poin == -1)
+		pos2poin = len;
+	tmp = msg.substr(0, pos2poin);
+	if (!tmp.empty())
+		tmpCommand.push_back(tmp);
+	if ( pos2poin < len)
+		tmp2= msg.substr(pos2poin + 1, len);
+	if (!tmp2.empty())
+		tmpCommand.push_back(tmp2);
 	splitCommand(tmpCommand[0], ' ', SplitedMsg);
-	for (size_t i = 1; i < tmpCommand.size(); i++)
-		SplitedMsg.push_back(tmpCommand[i]);
+	if (!tmpCommand[1].empty())
+		SplitedMsg.push_back(tmpCommand[1]);
 	tmpCommand.clear();
 }
 

@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/11 00:11:10 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/17 17:34:35 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ class Server {
 		int							user_num;
 		int							num;
 		int							end_con;
-		sockaddr_in			address;
+		sockaddr_in					address;
 		struct pollfd				users[LIMITCNX];
 		int							len;
 		long int					timeout;
@@ -101,9 +101,6 @@ class Server {
 		int 				getSeverSocket();
 		std::map<int, Client *> getClient();
 
-
-
-		
 		int				CreateSocket();
 		int				OptionSocket();
 		int				NnBlockFd();
@@ -122,7 +119,7 @@ class Server {
 
 		Client*			getClientByFd(int fdUser);
 		Client*			getClientByNickname(std::string nickname);
-		bool			IsAuthorized(Client &);
+		int			IsAuthorized(Client &);
 		void			TraiteMessage(Message &);
 
 		void 			clientLeft(int fd);

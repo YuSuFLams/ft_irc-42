@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:24 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/10 21:42:56 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/17 17:29:05 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,7 +211,6 @@ int 		Server::acceptingData(){
 			break ;
 		}
 		Client *c = new Client(newfd);
-		// if there is space in server
 		this->clients.insert(std::pair<int, Client *>(newfd, c));
 		users[user_num].fd = newfd;
 		users[user_num]. events = POLLIN;
@@ -307,11 +306,14 @@ void	Server::PollingFd()
 		}
 	} while (1);
 }
-bool	Server::IsAuthorized(Client& client) {
+int	Server::IsAuthorized(Client& client) {
 	if (client.getNick().empty() || client.geTPass().empty() || client.getusername().empty())
 		return 0;
+	if (client.geTPass().compare(this->m_pass))
+		return 2;
 	return 1;
 }
+
 
 
 std::string Server::to_string(int number)

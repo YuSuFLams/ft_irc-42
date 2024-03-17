@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 02:50:50 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/10 08:53:49 by araiteb          ###   ########.fr       */
+/*   Updated: 2024/03/17 17:25:41 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 Bot::Bot() {
     this->name = "BetBot";
-    this->nickname = "/Bot";
+    this->nickname = "Bot";
     this->username = "betbot1";
     this->fullname = "dd";
     this->servername = "localhost";
