@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quit.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 11:56:01 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/13 01:07:04 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/18 19:55:22 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,9 @@ void Server::send_to_all(std::string str, int fd)
 
 void Server::quit_command(int fd)
 {
-    std::string str =  ":" + this->get_nickname(fd) + "!" + this->get_username(fd) + "@" + this->get_ip_address(fd) + " QUIT : QUIT Leaving...\r\n";
-    this->send_to_all(str, fd);
     this->remove_client_from_channels(fd);
     this->removeClient(fd);
     delete this->clients[fd];
     this->clients.erase(fd);
     close(fd);
-    str.clear();
 }

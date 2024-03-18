@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 12:39:59 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/18 00:19:29 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/18 19:52:52 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -260,6 +260,7 @@ void Server::remove_client_from_channels(int fd)
     {
         it->second->quit_channel(this->get_nickname(fd));
     }
+    it = this->channels.begin();
     while(it != this->channels.end())
     {
         if (it->second->getUsers().size() == 0)

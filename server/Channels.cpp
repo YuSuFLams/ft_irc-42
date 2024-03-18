@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channels.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 03:02:59 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/13 01:16:50 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/18 19:48:56 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,8 @@ void Channel::quit_channel(std::string nickname)
         users.erase(nickname);
     if (operators.find(nickname) != operators.end())
         operators.erase(nickname);
+    if(creater == true)
+        creater = false;
 }
 
 void Channel::print_users()
