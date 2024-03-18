@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 01:40:02 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/16 03:19:42 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/18 01:22:53 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,14 +179,18 @@ int Server::JoinChannel(std::vector<std::string > strs , std::string nickname, i
     {
         if(!strs[2].empty() && strs[2].at(0) == ':')
         {
-            // get the key after the ':'
-            keys.push_back(str.substr(str.find(":") + 1 , str.length()));
-            for (size_t i = 3; i < strs.size(); i++)
+            str = str.erase(0, str.find(strs[0]) + strs[0].length() + 1);
+            str = str.erase(0, str.find(strs[1]) + strs[1].length() + 1);
+            str = str.erase(0, 1);
+            std::stringstream ss2(str);
+            std::string token_keys;
+            while (std::getline(ss2, token_keys, ' ')) 
             {
-                strs.pop_back();
+                keys.push_back(token_keys);
             }
+            token_keys.clear();
         }
-        else if (!strs[2].empty() && strs[2].find(',') != std::string::npos) 
+        if (!strs[2].empty() && strs[2].find(',') != std::string::npos) 
         {
             std::stringstream ss2(strs[2]);
             std::string token_keys;
@@ -234,6 +238,13 @@ int Server::JoinChannel(std::vector<std::string > strs , std::string nickname, i
                 it++;
             }
         }
+    }
+    // print pairs
+    std::vector<std::pair<std::string, std::string> >::iterator it = pair.begin();
+    while(it != pair.end())
+    {
+        std::cout << it->first << " " << it->second << std::endl;
+        it++;
     }
     handleChannels(pair, fd, nickname);
     channels.clear();

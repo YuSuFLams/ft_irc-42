@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 02:08:17 by ylamsiah          #+#    #+#             */
-/*   Updated: 2024/03/16 21:10:00 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/18 00:49:36 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -313,7 +313,7 @@ void Server::addMode_K(int fd, std::vector<std::string> words, std::map<std::str
                     it->second->removeChannelKey();
                 else
                 {
-                    std::string errorMode = ":" + this->get_hostnames() + " 475 " + this->get_nickname(fd) + " " + channelname + " :Channel key already set\r\n";
+                    std::string errorMode = ":" + this->get_hostnames() + " 475 " + this->get_nickname(fd) + " " + channelname + " :Wrong channel key\r\n";
                     send(fd, errorMode.c_str(), errorMode.length(), 0);
                     return ;
                 }

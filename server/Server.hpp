@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/17 23:24:56 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/18 00:22:17 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,6 +199,7 @@ class Server {
         void addMode_K(int fd, std::vector<std::string> words, std::map<std::string, Channel *> &Channel, std::string channelname, std::string modeType, bool add);
         bool isAllDigit(std::string str);
 		void nickCmd1(std::string msg, Client *c);
+		int is_nickname_exist_and_registered(int fd, std::string nickname);
 };
 
 void	split(std::string msg, std::vector<std::string> &SplitedMsg);

@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 03:00:11 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/17 23:28:17 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/18 00:24:49 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -355,17 +355,20 @@ void	Server::cmduser(Client *c, std::vector<std::string> &words , std::string st
     else
         realname = words[4];
     c->setrealname(realname);
-    Client *tmpClient = this->getClientByNickname(c->getNick());
-    if (tmpClient && this->IsAuthorized(*tmpClient))
+    
+ 
+    if (this->is_nickname_exist_and_registered(c->getFd() , c->getNick()))
     {
-        std::string nickMsg = ":" + this->get_hostnames() + " " + this->to_string(ERR_NICKNAMEINUSE) + " " + c->getNick() + " " + words[0] + " :Nickname is already in use\r\n";
+        std::string nickMsg = ":" + this->get_hostnames() + " " + this->to_string(ERR_NICKNAMEINUSE) + " " + c->getNick() + " NICK :Nickname is already in use\r\n";
         send(c->getFd(), nickMsg.c_str(), nickMsg.length(), 0);
         c->seTNick("");
         return ;
     }
-    else
+    
+    
 	if (this->IsAuthorized(*c) && c->geTPass() == this->m_pass)
     {
+        c->set_is_Registered(1);
         sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 001 " + this->get_nickname(c->getFd()) + " :Welcome to the Internet Relay Network " + this->get_nickname(c->getFd())+ "!" + this->get_username(c->getFd()) + "@" + this->get_hostnames() + "\r\n");
         sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 002 " + this->get_nickname(c->getFd()) + " :Your host is " + this->get_hostnames() + ", running version 1.0\r\n");
         sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 003 " + this->get_nickname(c->getFd()) + " :This server was created " +  this->get_current_time() + "\r\n");
@@ -411,6 +414,7 @@ void	Server::cmdknick(std::vector<std::string> &words, Client *c)
         c->seTNick(words[1]);
         if (this->IsAuthorized(*c) && c->geTPass() == this->m_pass)
         {
+             c->set_is_Registered(1);
             sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 001 " + this->get_nickname(c->getFd()) + " :Welcome to the Internet Relay Network " + this->get_nickname(c->getFd())+ "!" + this->get_username(c->getFd()) + "@" + this->get_hostnames() + "\r\n");
             sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 002 " + this->get_nickname(c->getFd()) + " :Your host is " + this->get_hostnames() + ", running version 1.0\r\n");
             sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 003 " + this->get_nickname(c->getFd()) + " :This server was created " +  this->get_current_time() + "\r\n");
@@ -451,6 +455,7 @@ void	Server::cmdpass(std::vector<std::string>& words, Client *c , std::string st
 		c->seTPass(pass);
         if (this->IsAuthorized(*c) && c->geTPass() == this->m_pass)
         {
+            c->set_is_Registered(1);
             sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 001 " + this->get_nickname(c->getFd()) + " :Welcome to the Internet Relay Network " + this->get_nickname(c->getFd())+ "!" + this->get_username(c->getFd()) + "@" + this->get_hostnames() + "\r\n");
             sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 002 " + this->get_nickname(c->getFd()) + " :Your host is " + this->get_hostnames() + ", running version 1.0\r\n");
             sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 003 " + this->get_nickname(c->getFd()) + " :This server was created " +  this->get_current_time() + "\r\n");

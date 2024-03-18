@@ -6,7 +6,7 @@
 /*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 04:50:39 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/16 18:11:17 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/18 01:08:26 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,9 @@ void Server::privmsg_command(std::vector<std::string > words  , int fd , std::st
     std::string message = "";
     if(words.size() > 3 && words[2].at(0) == ':')
     {
-        message =  str.substr(str.find(":") + 1 , str.length());
+        str = str.erase(0, str.find(words[0]) + words[0].length() + 1);
+        str = str.erase(0, str.find(words[1]) + words[1].length() + 1);
+        message =  str.erase(0,1);
     }
     else
     {

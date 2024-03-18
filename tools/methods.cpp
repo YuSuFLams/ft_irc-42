@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   methods.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 12:39:59 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/16 21:47:33 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/18 00:19:29 by abel-hid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,16 @@ std::string Server::to_string(int number)
     std::stringstream ss;
     ss << number;
     return (ss.str());
+}
+int Server::is_nickname_exist_and_registered(int fd, std::string nickname)
+{
+    std::map<int, Client *>::iterator it;
+    for (it = this->clients.begin(); it != this->clients.end(); it++)
+    {
+        if (it->second->getNick() == nickname && it->second->is_Registered() && it->first != fd)
+            return (1);
+    }
+    return (0);
 }
 
 std::string Server::get_hostnames()
