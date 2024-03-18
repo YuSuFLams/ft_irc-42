@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 06:26:32 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/17 23:23:46 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/18 21:11:50 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -363,10 +363,17 @@ int Server::checkmsg(int i)
 			mesg = Message(users[i].fd, msg);
 			TraiteMessage(mesg);
 			return 1;
-    	}
+		}
+    	msg.clear();
+		tmp1.clear();
+		up.clear();
+		tmp.clear();
     }
+	buffer[0] = '\0';
+	mesg.getMessage().clear();
     return 1;
 }
+
 void	Server::PollingFd()
 {
 

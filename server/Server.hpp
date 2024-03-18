@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 10:35:28 by araiteb           #+#    #+#             */
-/*   Updated: 2024/03/18 00:22:17 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/18 21:03:12 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ class Channel;
 class Message;
 class Client;
 
-class Server {
+class Server 
+{
 	
 	private:
 		char *						birthday;

@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 02:01:29 by ylamsiah          #+#    #+#             */
-/*   Updated: 2024/03/18 02:01:49 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/18 20:15:24 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	Server::cmdpass(std::vector<std::string>& words, Client *c , std::string st
             sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 002 " + this->get_nickname(c->getFd()) + " :Your host is " + this->get_hostnames() + ", running version 1.0\r\n");
             sendResponce(c->getFd(), ":" + this->get_hostnames() +  " 003 " + this->get_nickname(c->getFd()) + " :This server was created " +  this->get_current_time() + "\r\n");
         }
-        else if(c->geTPass() != this->m_pass && this->IsAuthorized(*c))
+        else if(c->geTPass() != this->m_pass)
         {
             std::string passMsg = ":" + this->get_hostnames() + " " + this->to_string(ERR_PASSWDMISMATCH) + " PASS :Password incorrect\r\n";
             send(c->getFd(), passMsg.c_str(), passMsg.length(), 0);

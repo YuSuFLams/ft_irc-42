@@ -6,7 +6,7 @@
 /*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 02:01:59 by ylamsiah          #+#    #+#             */
-/*   Updated: 2024/03/18 02:02:22 by ylamsiah         ###   ########.fr       */
+/*   Updated: 2024/03/18 20:24:36 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ void	Server::cmduser(Client *c, std::vector<std::string> &words , std::string st
     else
         realname = words[4];
     c->setrealname(realname);
+
     if (this->is_nickname_exist_and_registered(c->getFd() , c->getNick()))
     {
         std::string nickMsg = ":" + this->get_hostnames() + " " + this->to_string(ERR_NICKNAMEINUSE) + " " + c->getNick() + " NICK :Nickname is already in use\r\n";
