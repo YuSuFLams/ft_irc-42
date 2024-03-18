@@ -3,14 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 01:01:38 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/17 23:23:46 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/18 02:03:42 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../server/Server.hpp"
+
+void Server::kick_command(std::vector<std::string > words  , int fd , std::string str)
+{
+
+    if(words.size() == 1)
+    {
+        std::string str = ":" + this->get_hostnames() + " " + this->to_string(ERR_NEEDMOREPARAMS) + " " + words[0] + " :Not enough parameters\r\n";
+        send(fd, str.c_str(), str.length(), 0);
+        return ;
+    }
+    else
+    {
+        this->KickChannel(words, this->getChannels(), fd, this->get_nickname(fd), str);
+    }
+}
 
 void Server::KickChannel(std::vector<std::string> strs, std::map<std::string, Channel *> &channels, int fd, std::string nickname , std::string str)
 {

@@ -3,14 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 14:59:22 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/17 23:23:46 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/18 02:52:05 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../server/Server.hpp"
+
+void Server::topic_command(std::vector<std::string > words  , int fd , std::string str)
+{
+
+    if(words.size() == 1)
+    {
+        std::string str = ":" + this->get_hostnames() + " " + this->to_string(ERR_NEEDMOREPARAMS) + " " + words[0] + " :Not enough parameters\r\n";
+        send(fd, str.c_str(), str.length(), 0);
+        return ;
+    }
+    else
+    {
+        if(this->TopicChannel(words , this->getChannels(), fd , str) == -1)
+        {
+            std::string str = ":" + this->get_hostnames() + " " + this->to_string(ERR_NOSUCHCHANNEL) + " " + this->get_nickname(fd) + " " + words[1] + " :No such channel\r\n";
+            send(fd, str.c_str(), str.length(), 0);
+        }
+    }
+}
 
 void Server::topic_broadcast_msg(std::map<std::string, Channel*>& channels, const std::string& channelName, const std::string& nickname)
 {
@@ -38,7 +57,7 @@ int Server::TopicChannel(std::vector<std::string> strs, std::map<std::string, Ch
             send(fd, str.c_str(), str.length(), 0);
             return -2;
         }
-        if(strs.size() > 3 && (strs[2].find(":") == std::string::npos && strs[2].size() != 1))
+        else if(strs.size() > 3 && (strs[2].find(":") == std::string::npos && strs[2].size() != 1))
         {
             std::string str = ":" + this->get_hostnames() + " " + this->to_string(ERR_NEEDMOREPARAMS) + " " + this->get_nickname(fd) + " " + strs[1] + " :Not enough parameters\r\n";
             send(fd, str.c_str(), str.length(), 0);

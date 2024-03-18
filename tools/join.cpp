@@ -3,14 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abel-hid <abel-hid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylamsiah <ylamsiah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 01:40:02 by abel-hid          #+#    #+#             */
-/*   Updated: 2024/03/18 01:22:53 by abel-hid         ###   ########.fr       */
+/*   Updated: 2024/03/18 02:03:51 by ylamsiah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../server/Server.hpp"
+
+void Server::join_command(std::vector<std::string > words  , int fd , std::string str)
+{
+    if(words.size() == 1)
+    {
+            std::string str = ":" + this->get_hostnames() + " " + this->to_string(ERR_NEEDMOREPARAMS) + " " + words[0] + " :Not enough parameters\r\n";
+            send(fd, str.c_str(), str.length(), 0);
+            return ;
+    }
+    else
+    {
+        if(this->JoinChannel(words, this->get_nickname(fd), fd , str) == -1)
+        {
+            std::string str = ":" + this->get_hostnames() + " " + this->to_string(ERR_NOSUCHCHANNEL) + " " + this->get_nickname(fd) + " " + words[1] + " :No such channel\r\n";
+            send(fd, str.c_str(), str.length(), 0);
+        }
+    }
+}
 
 void Server::join_broadcast_msg(std::map<std::string, Channel*>& channels , std::string msg , std::string channelName)
 {

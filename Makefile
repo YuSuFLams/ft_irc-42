@@ -17,7 +17,8 @@ O_DIR   := OBJ_DER
 
 B_DIR	:= OBJ_DER_BONUS
 
-TOOLS = $(addprefix tools/, ft_split.cpp command.cpp invite.cpp topic.cpp mode.cpp part.cpp kick.cpp join.cpp privmsg.cpp quit.cpp methods.cpp)
+TOOLS = $(addprefix tools/, ft_split.cpp command.cpp invite.cpp topic.cpp mode.cpp part.cpp kick.cpp join.cpp privmsg.cpp \
+	quit.cpp methods.cpp  Bot.cpp nick.cpp pass.cpp user.cpp)
 
 SERVER = $(addprefix server/, Server.cpp Channels.cpp)
 
